@@ -15,7 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.urls import include
+from django.views.generic import RedirectView
+
+# TODO Remove before migrating to a production environment
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-]
+    path('home/', include('wubrgapp.urls')),
+    path('', RedirectView.as_view(url='/home/', permanent=True)),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# TODO Remove before migrating to a production environment
+# Serve static files for development
