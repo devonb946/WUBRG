@@ -1,0 +1,14 @@
+{% extends 'browse/layout.html' %}
+
+{% block content %}
+<h2 class="center-align blue lighten-3">{{card.name}}</h2>
+<div class="card">
+  <div class="card-content">
+    {{card.oracle_text}}
+  </div>
+  <div class="card-action">
+    {{card.type_line}}
+  </div>
+</div>
+<a href="/browse" class="btn">Go Back</a>
+{% endblock %}
