@@ -1,12 +1,41 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
   {% block title %}<title>WUBRG</title>{% endblock %}
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'css/wubrgapp.css' %}">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </head>
 <body>
-  <h1>Welcome to <em>WUBRG!</em></h1>
-  <a href="/admin">Admin Login</a>
-  {% block sidebar %}<!-- insert default navigation text for every page -->{% endblock %}
-  {% block content %}<!-- default content text (typically empty) -->{% endblock %}
+  <div class="welcome-bar">
+    <h1 align="center">Welcome to <em>WUBRG!</em></h1>
+  </div>
+
+  <div>
+    <nav class="navbar navbar-dark bg-dark wubrgapp-navbar">
+      {% block sidebar %}
+        <h5><a class="navbar-link" href="/home">Home</a></h5>
+        <h5><a class="navbar-link" href="/browse">Browse Content</a></h5>
+        <h5><a class="navbar-link" href="/build">Build</a></h5>
+        <h5><a class="navbar-link" href="/profile">Profile</a></h5>
+        <h5><a class="navbar-link" href="/profile">Informational Tools</a></h5>
+        <h5><a class="navbar-link" href="/admin">Admin Login</a></h5>
+      {% endblock %}
+    </nav>
+  </div>
+
+  {% block content %}
+    <div class="wubrgapp-body" align="center">
+      WUBRG is an MTG companion in which players can search for cards, build decks,
+      playtest a build, share decks with others, and much more. WUBRG is built using
+      the Python Django framework and leverages existing MTG APIs in order to provide
+      a fast, efficient, and up-to-date service for users. By using the WUBRG web
+      application, a user can create their own account to retain various information,
+      such as decks and favorite cards.
+    </div>
+  {% endblock %}
 </body>
 </html>

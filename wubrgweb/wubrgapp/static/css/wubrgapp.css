@@ -1,0 +1,27 @@
+body {
+  background-color: lightgrey;
+}
+
+h1 a {
+    color: #00CC66;
+}
+
+.welcome-bar {
+  padding: 15px;
+}
+
+.wubrgapp-navbar {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.wubrgapp-body {
+    padding-left: 20%;
+    padding-right: 20%;
+    padding-top: 50px;
+    padding-bottom: 5%;
+}
+
+.navbar-link {
+    color: #ffff;
+}
