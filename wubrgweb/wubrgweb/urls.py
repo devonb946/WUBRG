@@ -26,6 +26,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('home/', include('wubrgapp.urls')),
     path('browse/', include('browse.urls')),
+    path('profile/', include('accounts.urls')),
+    path('builder/', include('builder.urls')),
+    path('tools/', include('information.urls')),
     path('', RedirectView.as_view(url='/home/', permanent=True)),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 # TODO Remove before migrating to a production environment

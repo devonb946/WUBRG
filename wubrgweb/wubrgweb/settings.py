@@ -38,7 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'wubrgapp.apps.WubrgappConfig',
-    'browse'
+    'accounts.apps.AccountsConfig',
+    'browse.apps.BrowseConfig',
+    'builder.apps.BuilderConfig',
+    'information.apps.InformationConfig',
 ]
 
 MIDDLEWARE = [
