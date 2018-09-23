@@ -1,14 +1,24 @@
-{% extends 'browse/layout.html' %}
-
-{% block content %}
-<h2 class="center-align blue lighten-3">{{card.name}}</h2>
-<div class="card">
-  <div class="card-content">
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatable" content="ie-edge">
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <title>{{card.name}} - WUBRG</title>
+</head>
+<body>
+  <header class="container center-align">
+    <h1>{{card.name}}</h1>
+  </header>
+  <div class="container center-align">
+    <a href="{{card.image}}"><img style="height:500px;" src="{{card.image}}" /></a>
+  </br>
     {{card.oracle_text}}
+  <br />
+    <a href="/browse">Back</a>
   </div>
-  <div class="card-action">
-    {{card.type_line}}
-  </div>
-</div>
-<a href="/browse" class="btn">Go Back</a>
-{% endblock %}
+
+</body>
+</html>

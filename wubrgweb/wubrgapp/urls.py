@@ -1,14 +1,16 @@
-from django.conf.urls import url
 from . import views
+from django.urls import path, include
 
 # This will house all of our urls for wubrgweb
 urlpatterns = [
-    url('', views.index, name='index'),
+    path('', views.index, name='index'),
+    path('browse/', include('browse.urls')),
 
+    #TODO:
     # header tabs
-    url('profile/{profileId}/', views.profile, name='profile'),
-    url('browse/cards/', views.browse_cards, name='browse_cards'),
-    url('tools/', views.tools, name='tools'),
-    url('browse/decks/', views.browse_decks, name='browse_decks'),
-    url('builder/', views.builder, name='builder'),
+    #path('profile/{profileId}/', views.profile, name='profile'),
+    #path('browse/cards/', views.browse_cards, name='browse_cards'),
+    #path('tools/', views.tools, name='tools'),
+    #path('browse/decks/', views.browse_decks, name='browse_decks'),
+    #path('builder/', views.builder, name='builder'),
 ]

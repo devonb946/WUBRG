@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import Card
+from django.http import HttpResponse
 
 # Create your views here.
 def index(request):
@@ -12,14 +13,21 @@ def index(request):
     return render(request, 'browse/index.html', context)
 
 def details(request, id):
-    card = Card.objects.get(id=collector_number)
+    card = Card.objects.get(collector_number=id)
 
     context = {
-        'card': card
+        'card': card,
     }
 
     return render(request, 'browse/details.html', context)
 
+
+
+
+
+
+
+# TODO: Implement all of this
 def cards_search(request):
 
     return render(request, 'browse/index.html')
