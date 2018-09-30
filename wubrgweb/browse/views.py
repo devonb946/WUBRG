@@ -4,7 +4,7 @@ from django.http import HttpResponse
 
 # Create your views here.
 def index(request):
-    cards = Card.objects.all()
+    cards = Card.objects.all()[:25]
 
     context = {
         'cards': cards
