@@ -6,7 +6,7 @@
   <ul class="collection">
   {% for card in cards %}
   <!--<li class="collection-item"><a href="/browse/details/{{card.collector_number}}">{{card.name}}</a></li>-->
-  <li class="collection-item"><a href="/browse/details/{{card.collector_number}}">{{card.name}}</a></li>
+  <li class="collection-item"><a href="/browse/details/{{card.set_abbr}}/{{card.collector_number}}">{{card.name}}</a></li>
   {% endfor %}
 </ul>
 </div>
