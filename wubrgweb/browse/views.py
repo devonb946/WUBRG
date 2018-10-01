@@ -4,16 +4,15 @@ from django.http import HttpResponse
 
 # Create your views here.
 def index(request):
-    cards = Card.objects.all()[:25]
-
+    cards = Card.objects.all()[:300]
     context = {
         'cards': cards
     }
 
     return render(request, 'browse/index.html', context)
 
-def details(request, id):
-    card = Card.objects.get(collector_number=id)
+def details(request, set, collect_num):
+    card = Card.objects.get(set_abbr=set, collector_number=collect_num)
 
     context = {
         'card': card,

@@ -5,7 +5,7 @@ urlpatterns = [
     path('', views.index, name='index'),
 
     # card paths
-    path('details/<int:id>', views.details, name='Card Details'),
+    path('details/<str:set>/<str:collect_num>', views.details, name='Card Details'),
 
     #TODO: Fully implement URLs
     #url('browse/cards/search/', views.cards_search, name='cards_search'),

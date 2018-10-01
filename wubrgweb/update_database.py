@@ -3,7 +3,7 @@ import requests, json, sqlite3, uuid
 
 url = "https://api.scryfall.com/bulk-data"
 database = "db.sqlite3"
-sqlite3.register_adapter(uuid.UUID, lambda u: u.bytes_le)
+sqlite3.register_adapter(uuid.UUID, lambda u: u.hex)
 
 def convert_border(crd_brdr):
     """quick little one-liner to convert json representation of border to database representation"""
