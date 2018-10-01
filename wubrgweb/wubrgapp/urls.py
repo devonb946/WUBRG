@@ -1,10 +1,9 @@
 from . import views
-from django.urls import path, include
+from django.urls import path
 
 # This will house all of our urls for wubrgweb
 urlpatterns = [
     path('', views.index, name='index'),
-    path('browse/', include('browse.urls')),
 
     #TODO:
     # header tabs
