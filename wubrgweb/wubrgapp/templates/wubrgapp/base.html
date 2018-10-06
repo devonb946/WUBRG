@@ -11,7 +11,17 @@
 </head>
 <body>
   <div class="welcome-bar">
+
     <h1 align="center">Welcome to <em>WUBRG!</em></h1>
+
+    {% if user.is_authenticated %}
+      <h4 align="right"><a href="/profile/user_page">{{ user.username }}</a></h4>
+      <h4 align="right"><a href="/profile/logout">Logout</a></h4>
+    {% else %}
+      <h4 align="right"><a href="/profile/register">Register</a></h4>
+      <h4 align="right"><a href="/profile/login">Login</a></h4>
+    {% endif %}
+    
   </div>
 
   <div>

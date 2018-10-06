@@ -1,0 +1,21 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+
+  {% if user.is_authenticated %}
+
+    <h1> Welcome, {{ user.username }} </h1>
+
+    <br>
+
+    <h2> Decks </h2>
+
+    <br>
+
+    <h2> Options </h2>
+    <h5><a href="{% url 'change_password' %}">Change password</a></h5>
+    <h5><a href="{% url 'remove_account' %}">Remove account</a></h5>
+
+  {% endif %}
+
+{% endblock %}

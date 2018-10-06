@@ -13,6 +13,14 @@
 <body>
   <div class="welcome-bar">
     <h1 align="center">Profile</h1>
+
+    {% if user.is_authenticated %}
+      <h4 align="right"><a href="/profile/user_page">{{ user.username }}</a></h4>
+      <h4 align="right"><a href="/profile/logout">Logout</a></h4>
+    {% else %}
+      <h4 align="right"><a href="/profile/register">Register</a></h4>
+      <h4 align="right"><a href="/profile/login">Login</a></h4>
+    {% endif %}
   </div>
 
   <div>
@@ -28,11 +36,11 @@
     </nav>
   </div>
 
-  <div class="container">
+  <div class="container" align="center"> <br>
     {% block content %}
 
-      <h5><a class="navbar-link" href="/profile/register/">Register</a></h5>
-      <h5><a class="navbar-link" href="/profile/login/">Login</a></h5>
+      <h3><a class="navbar-link" href="/profile/register">Register</a></h3>
+      <h3><a class="navbar-link" href="/profile/login">Login</a></h3>
 
     {% endblock %}
   </div>

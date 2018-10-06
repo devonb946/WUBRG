@@ -1,13 +1,18 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 
 # profile views
 def index(request):
-
-    #TODO redirect to user profile page if they are signed in
-    return render(request, 'accounts/base.html')
-
+    username = None
+    # redirect to user's actual profile page if they are logged in
+    if request.user.is_authenticated:
+        return redirect(reverse('profile', args=[request.user.username]))
+    else:
+        return render(request, 'accounts/base.html')
 
 def register(request):
     if request.method == 'POST':
@@ -23,41 +28,30 @@ def register(request):
 
     return render(request, 'accounts/register.html', {'form': form})
 
+def user_page(request):
+    return redirect(reverse('profile', args=[request.user.username]))
 
-# def login(request):
-#     if request.method == 'POST':
-#
-#         username = request.POST['username']
-#         password = request.POST['password']
-#         user = authenticate()
-#         if form.is_valid():
-#             form.save()
-#             messages.success(request, 'Login successful.')
-#
-#             #TODO change to actual profile page
-#             return redirect('')
-#     else:
-#         #TODO create login form
-#         form = UserCreationForm()
-#
-#     return render(request, 'accounts/login.html', {'form': form})
+@login_required
+def profile(request, username):
+    user = User.objects.get(username=username)
+    return render(request, 'accounts/profile.html', {'user': user})
 
-
+# TODO display user decks
+@login_required
 def profile_decks(request):
     return render(request, 'accounts/base.html')
 
+@login_required
+def password_change_done(request):
+    return render(request, 'accounts/change_password_done.html')
 
-def profile_settings(request):
-    return render(request, 'accounts/base.html')
+def remove_account(request, username):
+    try:
+        user = User.objects.get(username=username)
+        user.delete()
+        messages.success(request, 'User {username} has been deleted.')
 
+    except User.DoesNotExist:
+        messages.error(request, 'User {username} does not exist. Please try again')
 
-def change_username(request):
-    return render(request, 'accounts/base.html')
-
-
-def change_password(request):
-    return render(request, 'accounts/base.html')
-
-
-def remove_account(request):
     return render(request, 'accounts/base.html')
