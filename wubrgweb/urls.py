@@ -30,6 +30,4 @@ urlpatterns = [
     path('builder/', include('builder.urls')),
     path('tools/', include('information.urls')),
     path('', RedirectView.as_view(url='/home/', permanent=True)),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-# TODO Remove before migrating to a production environment
-# Serve static files for development
+]
