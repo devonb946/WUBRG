@@ -5,8 +5,10 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
+
 # profile views
 def index(request):
+
     username = None
     # redirect to user's actual profile page if they are logged in
     if request.user.is_authenticated:
