@@ -25,7 +25,7 @@ SECRET_KEY = 'ls5fl)!1v*prq4v43v&9%w7gezw02ozd5w&sfj@vbbqxe4to(o'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['wubrg-mtg.herokuapp.com']
 
 
 # Application definition
