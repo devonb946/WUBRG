@@ -1,1 +1,1 @@
-"web: gunicorn wubrgweb.wsgi:application --log-file -" 
+web: gunicorn wubrgweb.wsgi:application --log-file -
