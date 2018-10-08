@@ -14,6 +14,7 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project_name.settings.local")
 
 
 # Quick-start development settings - unsuitable for production
@@ -80,8 +81,11 @@ WSGI_APPLICATION = 'wubrgweb.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'djongo',
+        'NAME': 'cards',
+        'USER': 'AzureDiamond',
+        'PASSWORD': 'hunter2',
+        'HOST': 'mongodb+srv://AzureDiamond:hunter2@wubrg-db-qpgxr.mongodb.net',
     }
 }
 
