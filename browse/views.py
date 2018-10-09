@@ -13,7 +13,7 @@ def index(request):
     return render(request, 'browse/base.html', context)
 
 def details(request, set, collect_num):
-    card = Card.objects.get(set_abbr=set, collector_number=collect_num)
+    card = Card.objects.get(set=set, collector_number=collect_num)
 
     context = {
         'card': card,

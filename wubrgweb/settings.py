@@ -79,13 +79,14 @@ WSGI_APPLICATION = 'wubrgweb.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
+#TODO: obfuscate username/pw values
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'cards',
-        'USER': 'AzureDiamond',
+        'NAME': 'heroku_v5994ldl',
+        'USER': 'wubrgadmin',
         'PASSWORD': 'hunter2',
-        'HOST': 'mongodb+srv://AzureDiamond:hunter2@wubrg-db-qpgxr.mongodb.net',
+        'HOST': 'mongodb://wubrgadmin:hunter2@ds227053-a0.mlab.com:27053,ds227053-a1.mlab.com:27053/heroku_v5994ldl?replicaSet=rs-ds227053',
     }
 }
 
