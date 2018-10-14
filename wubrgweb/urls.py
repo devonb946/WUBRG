@@ -22,6 +22,8 @@ from django.views.generic import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
 
+import os
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('home/', include('wubrgapp.urls')),
@@ -30,6 +32,8 @@ urlpatterns = [
     path('builder/', include('builder.urls')),
     path('tools/', include('information.urls')),
     path('', RedirectView.as_view(url='/home/', permanent=True)),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-# TODO Remove before migrating to a production environment
+]
+
 # Serve static files for development
+if (os.environ.get('WUBRG_SERVE_STATIC')):
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
