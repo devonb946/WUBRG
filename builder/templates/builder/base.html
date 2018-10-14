@@ -1,46 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-{% load static %}
-<head>
-  {% block title %}<title>WUBRG</title>{% endblock %}
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <link rel="stylesheet" href="{% static 'css/builder.css' %}">
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-</head>
+{% extends 'wubrgapp/base.html' %}
 
-<body>
-  <div class="welcome-bar">
+{% block title %}
+Builder
+{% endblock %}
 
-    <h1 align="center">Builder</h1>
-
-    {% if user.is_authenticated %}
-      <h4 align="right"><a href="/profile/user_page">{{ user.username }}</a></h4>
-      <h4 align="right"><a href="/profile/logout">Logout</a></h4>
-    {% else %}
-      <h4 align="right"><a href="/profile/register">Register</a></h4>
-      <h4 align="right"><a href="/profile/login">Login</a></h4>
-    {% endif %}
-  </div>
-
-  <div>
-    <nav class="navbar navbar-dark bg-dark wubrgapp-navbar">
-      {% block sidebar %}
-        <h5><a class="navbar-link" href="/home">Home</a></h5>
-        <h5><a class="navbar-link" href="/browse">Browse Content</a></h5>
-        <h5><a class="navbar-link" href="/builder">Build</a></h5>
-        <h5><a class="navbar-link" href="/profile">Profile</a></h5>
-        <h5><a class="navbar-link" href="/tools">Informational Tools</a></h5>
-        <h5><a class="navbar-link" href="/admin">Admin Login</a></h5>
-      {% endblock %}
-    </nav>
-  </div>
-
-  <div class="container">
-    {% block content %}
-    {% endblock %}
-  </div>
-</body>
-
-</html>
+{% block blurb %}
+Use our cutting-edge card suggestions to make the next
+OP Bant Turbofog/Storm Hybrid deck and steamroll everyone at your LGS's FNM!
+{% endblock %}

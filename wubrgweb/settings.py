@@ -14,16 +14,17 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project_name.settings.local")
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('WUBRG_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get('WUBRG_DEBUG')
 
 ALLOWED_HOSTS = ['wubrg-mtg.herokuapp.com']
 
@@ -81,8 +82,12 @@ WSGI_APPLICATION = 'wubrgweb.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': os.environ.get('WUBRG_ENGINE'),
+        'NAME': os.environ.get('WUBRG_NAME'),
+        'USER': os.environ.get('WUBRG_USER'),
+        'PASSWORD': os.environ.get('WUBRG_PASSWORD'),
+        'HOST': os.environ.get('WUBRG_HOST'),
+        'PORT': os.environ.get('WUBRG_PORT'),
     }
 }
 

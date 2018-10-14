@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # home view
 def index(request):
-    return render(request, 'wubrgapp/base.html')
+    return render(request, 'wubrgapp/home.html')
 
 # header views
 def profile(request):
