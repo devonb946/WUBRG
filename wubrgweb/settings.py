@@ -82,11 +82,12 @@ WSGI_APPLICATION = 'wubrgweb.wsgi.application'
 #TODO: obfuscate username/pw values
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'heroku_v5994ldl',
-        'USER': 'wubrgadmin',
-        'PASSWORD': 'hunter2',
-        'HOST': 'mongodb://wubrgadmin:hunter2@ds227053-a0.mlab.com:27053,ds227053-a1.mlab.com:27053/heroku_v5994ldl?replicaSet=rs-ds227053',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'd6tt07mv68p5e3',
+        'USER': 'yolvyjabqqcslj',
+        'PASSWORD': 'f9956ff96e2f12f0c0cda3d0bf9a1e0af88820a88ddda88258310d213ab35634',
+        'HOST': 'ec2-50-17-225-140.compute-1.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
