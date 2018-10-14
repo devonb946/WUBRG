@@ -21,10 +21,17 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project_name.settings.local")
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+<<<<<<< HEAD
+SECRET_KEY = os.environ.get('SECRET_KEY')
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
+=======
 SECRET_KEY = os.environ.get('WUBRG_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('WUBRG_DEBUG')
+>>>>>>> dev
 
 ALLOWED_HOSTS = ['wubrg-mtg.herokuapp.com']
 
