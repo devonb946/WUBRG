@@ -13,7 +13,7 @@ and get ideas for the next deck you end up spending too much money on!
   <ul class="collection">
   {% for card in cards %}
   <!--<li class="collection-item"><a href="/browse/details/{{card.collector_number}}">{{card.name}}</a></li>-->
-  <li class="collection-item"><a href="/browse/details/{{card.set_abbr}}/{{card.collector_number}}">{{card.name}}</a></li>
+  <li class="collection-item"><a href="/browse/details/{{card.data.set}}/{{card.data.collector_number}}">{{card.data.name}}</a></li>
   {% endfor %}
 </ul>
 </div>
