@@ -1,12 +1,10 @@
-<!DOCTYPE html>
-<html lang='en'>
+{% extends 'wubrgapp\base.html' %}
+
+{% block title %}{{card.data.name}} - WUBRG{% endblock %}
+
+{% block content %}
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatable" content="ie-edge">
-  <!-- Compiled and minified CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-  <title>{{card.data.name}} - WUBRG</title>
+  <title>{{card.data.name}}</title>
 </head>
 <body>
   <header class="container center-align">
@@ -19,6 +17,4 @@
   <br />
     <a href="/browse">Back</a>
   </div>
-
-</body>
-</html>
+{% endblock %}
