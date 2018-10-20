@@ -6,8 +6,11 @@ name = "pypi"
 [packages]
 django = "*"
 gunicorn = "*"
-psycopg2 = "*"
+<<<<<<< HEAD
 whitenoise = "*"
+=======
+psycopg2 = "*"
+>>>>>>> dev
 
 [dev-packages]
 
