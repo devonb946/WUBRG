@@ -1,31 +1,37 @@
 from django.shortcuts import render
 from .models import Card
 from django.http import HttpResponse
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.shortcuts import render
 
 # Create your views here.
+
+
 def index(request):
-    cards = Card.objects.all()[:300]
+    all_cards = Card.objects.order_by('data__name').exclude(data__layout = 'token').exclude(data__layout = 'double_faced_token').filter(data__lang = 'en').filter(data__reprint = False)
+    paginator = Paginator(all_cards, 42)# Show 40 cards (not tokens) per page
+
+    page = request.GET.get('page')
+    cards = paginator.get_page(page)
 
     context = {
-        "cards": cards,
+        'cards': cards,
+        'page': page
     }
 
     return render(request, 'browse/base.html', context)
 
-def details(request, set, collect_num):
-    card = Card.objects.get(data__set=set, data__collector_number=collect_num)
+
+def details(request, id):
+    card = Card.objects.get(id=id)
+    page = request.GET.get('page')
 
     context = {
         'card': card,
+        'page': page
     }
 
     return render(request, 'browse/details.html', context)
-
-
-
-
-
-
 
 # TODO: Implement all of this
 def cards_search(request):

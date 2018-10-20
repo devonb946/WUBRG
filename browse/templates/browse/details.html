@@ -11,10 +11,19 @@
     <h1>{{card.data.name}}</h1>
   </header>
   <div class="container center-align">
-    <a href="{{card.data.image_uris.png}}"><img style="height:500px;" src="{{card.data.image_uris.png}}" /></a>
+    <a href="{{card.data.image_uris.png}}">
+      {% if card.data.layout == "transform"  %}
+        <img style="height:500px;" src="{{card.data.card_faces.0.image_uris.png}}" />
+      {% elif card.data.layout == "planar" or card.data.layout == "split"  %}
+        <img class="rotate" style="height:500px;" src="{{card.data.image_uris.png}}" />
+      {% else %}
+        <img style="height:500px;" src="{{card.data.image_uris.png}}" />
+      {% endif %}
+    </a>
   </br>
     {{card.data.oracle_text}}
   <br />
-    <a href="/browse">Back</a>
+    {{card.data}}
+    <a href="/browse?page={{page}}">Back</a>
   </div>
 {% endblock %}
