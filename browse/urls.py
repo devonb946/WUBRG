@@ -8,7 +8,7 @@ urlpatterns = [
     path('details/<str:id>', views.details, name='Card Details'),
 
     #TODO: Fully implement URLs
-    #url('browse/cards/search/', views.cards_search, name='cards_search'),
+    path('cards/search', views.cards_search, name='cards_search'),
     #url('browse/cards/suggested/', views.cards_suggested, name='cards_suggested'),
 
     # deck paths

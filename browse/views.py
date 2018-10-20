@@ -36,7 +36,9 @@ def details(request, id):
 # TODO: Implement all of this
 def cards_search(request):
 
-    return render(request, 'browse/index.html')
+    context = {}
+
+    return render(request, 'browse/card_search.html', context)
 
 def cards_suggested(request):
 
