@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'information.apps.InformationConfig',
 ]
 
+AUTH_USER_MODEL = 'accounts.WubrgUser'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
