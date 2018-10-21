@@ -13,6 +13,8 @@ cards = requests.get(results["permalink_uri"]).json()
 
 cur = conn.cursor()
 
+cur.execute("DROP TABLE IF EXISTS browse_card_2;")
+
 cur.execute("CREATE TABLE browse_card_2 (data jsonb not null, id uuid PRIMARY KEY);")
 conn.commit()
 
