@@ -1,19 +1,9 @@
 {% extends 'wubrgapp/base.html' %}
 
-{% block title %}Builder{% endblock %}
-
-
-{% block blurb %}
-Use our cutting-edge card suggestions to make the next
-OP Bant Turbofog/Storm Hybrid deck and steamroll everyone at your LGS's FNM!
-</br></br></br>
-{% endblock %}
+{% block title %}Browse{% endblock %}
 
 {% block content %}
 
-<a href="create"><h2>Create a deck</h2></a></br>
-
-<h2>Recently created decks</h2>
 {% for deck in decks %}
   {% if forloop.first %}
     <div class="row" style="padding-top:15px;">
@@ -35,6 +25,23 @@ OP Bant Turbofog/Storm Hybrid deck and steamroll everyone at your LGS's FNM!
     <div class="row" style="padding-top:15px;">
   {% endif %}
 {% if forloop.last %}</div>{% endif %}
-{% endfor %}
+
+<div class="text-center">
+    <span class="step-links">
+        {% if decks.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ decks.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ decks.number }} of {{ decks.paginator.num_pages }}
+        </span>
+
+        {% if decks.has_next %}
+            <a href="?page={{ decks.next_page_number }}">next</a>
+            <a href="?page={{ decks.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
 
 {% endblock %}

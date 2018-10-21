@@ -1,14 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
+User = get_user_model()
 
 # profile views
 def index(request):
-
     username = None
     # redirect to user's actual profile page if they are logged in
     if request.user.is_authenticated:
@@ -28,7 +28,11 @@ def register(request):
     else:
         form = UserCreationForm()
 
-    return render(request, 'accounts/register.html', {'form': form})
+    context = {
+        'form': form
+    }
+
+    return render(request, 'accounts/register.html', context)
 
 def user_page(request):
     return redirect(reverse('profile', args=[request.user.username]))

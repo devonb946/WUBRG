@@ -6,7 +6,7 @@
 
 
 {% block blurb %}
-Check out some of the most recent cards to be revelaed, or look at decks other players have created!
+Check out some of the most recent cards to be revealed, or look at decks other players have created!
 </br>
 <a href="/browse/cards/search">Search all cards here!</a>
 {% endblock %}
@@ -18,7 +18,7 @@ Check out some of the most recent cards to be revelaed, or look at decks other p
       {% if forloop.first %}
         <div class="row" style="padding-top:15px;">
         {% endif %}
-        <div class="col-sm-4" style="pading:50px;" >
+        <div class="col-sm-4" style="padding:50px;" >
             <a href="/browse/details/{{card.id}}?page={{page}}">
               {% if card.data.layout == "transform"  %}
                 <img style="height:200px;" src="{{card.data.card_faces.0.image_uris.png}}" />

@@ -2,7 +2,6 @@ from django.shortcuts import render
 from .models import Card
 from django.http import HttpResponse
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.shortcuts import render
 
 # Create your views here.
 
