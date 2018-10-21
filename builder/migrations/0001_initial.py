@@ -14,9 +14,15 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Card',
+            name='Deck',
             fields=[
+                ('name', models.CharField(max_length=100)),
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('format', models.CharField(max_length=50)),
+                ('is_draft', models.BooleanField(default=True)),
+                ('colors', models.CharField(max_length=25)),
+                ('creator', models.CharField(max_length=100)),
+                ('date_created', models.DateTimeField(auto_now_add=True)),
                 ('data', django.contrib.postgres.fields.jsonb.JSONField()),
             ],
         ),
