@@ -5,10 +5,10 @@ urlpatterns = [
     path('', views.index, name='index'),
 
     # card paths
-    path('details/<str:set>/<str:collect_num>', views.details, name='Card Details'),
+    path('details/<str:id>', views.details, name='Card Details'),
 
     #TODO: Fully implement URLs
-    #url('browse/cards/search/', views.cards_search, name='cards_search'),
+    path('cards/search', views.cards_search, name='cards_search'),
     #url('browse/cards/suggested/', views.cards_suggested, name='cards_suggested'),
 
     # deck paths

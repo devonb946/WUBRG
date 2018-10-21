@@ -1,27 +1,57 @@
 {% extends 'wubrgapp/base.html' %}
 
+
 {% block title %}Browse Content{% endblock %}
 
+
+
 {% block blurb %}
-Look at all the cool decks other players have built
-and get ideas for the next deck you end up spending too much money on!
+Check out some of the most recent cards to be revelaed, or look at decks other players have created!
+</br>
+<a href="/browse/cards/search">Search all cards here!</a>
 {% endblock %}
 
+
+
 {% block content %}
-<h2 class="center-align blue lighten-3">Browse Cards</h2>
-<div>
-  <ul class="collection">
   {% for card in cards %}
-  <!--<li class="collection-item"><a href="/browse/details/{{card.collector_number}}">{{card.name}}</a></li>-->
-  <li class="collection-item"><a href="/browse/details/{{card.data.set}}/{{card.data.collector_number}}">{{card.data.name}}</a></li>
-  {% endfor %}
-</ul>
-</div>
-<h2 class="center-align green lighten-3">Browse Decks</h2>
-<div>
-  <ul>
-    <li>Gishath 2: Less Dinosaurs</li>
-    <li>Life Total Abacus</li>
-  </ul>
+      {% if forloop.first %}
+        <div class="row" style="padding-top:15px;">
+        {% endif %}
+        <div class="col-sm-4" style="pading:50px;" >
+            <a href="/browse/details/{{card.id}}?page={{page}}">
+              {% if card.data.layout == "transform"  %}
+                <img style="height:200px;" src="{{card.data.card_faces.0.image_uris.png}}" />
+              {% elif card.data.layout == "planar" or card.data.layout == "split"  %}
+                <img class="rotate" style="height:200px;" src="{{card.data.image_uris.png}}" />
+              {% else %}
+                <img style="height:200px;" src="{{card.data.image_uris.png}}" />
+              {% endif %}
+            <li style="list-style:none" class="collection-item">{{card.data.name}}</li>
+          </a>
+        </div>
+      {% if forloop.counter|divisibleby:3 %}
+        </div>
+        <div class="row" style="padding-top:15px;">
+      {% endif %}
+    {% if forloop.last %}</div>{% endif %}
+{% endfor %}
+
+<div class="text-center">
+    <span class="step-links">
+        {% if cards.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ cards.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ cards.number }} of {{ cards.paginator.num_pages }}
+        </span>
+
+        {% if cards.has_next %}
+            <a href="?page={{ cards.next_page_number }}">next</a>
+            <a href="?page={{ cards.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
 </div>
 {% endblock %}

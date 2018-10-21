@@ -26,3 +26,8 @@ h1 a {
 .navbar-link {
     color: #ffff;
 }
+.rotate {
+    -webkit-transform: rotate(90deg);  /* to support Safari and Android browser */
+    -ms-transform: rotate(90deg);      /* to support IE 9 */
+    transform: rotate(90deg);
+}

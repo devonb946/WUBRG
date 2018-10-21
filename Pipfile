@@ -7,6 +7,9 @@ name = "pypi"
 django = "*"
 gunicorn = "*"
 psycopg2 = "*"
+whitenoise = "*"
+requests = "*"
+uuid = "*"
 
 [dev-packages]
 
