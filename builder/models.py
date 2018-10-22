@@ -13,4 +13,4 @@ class Deck(models.Model):
     colors = models.CharField(max_length=25, default='')
     creator = models.CharField(max_length=100, default='')
     date_created = models.DateTimeField(auto_now_add=True)
-    data = JSONField(null=False)
+    data = JSONField(null=False, default=list)

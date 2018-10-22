@@ -1,9 +1,10 @@
-from django.conf.urls import url
-from . import views
+from django.urls import path
+from builder import views
 
 urlpatterns = [
-    url('', views.index, name='index'),
+    path('', views.index, name='index'),
 
     # builder paths
-    url('builder/create/', views.create, name='create'),
+    path('create/', views.create, name='create'),
+    path('create/success', views.create_success, name='create_success'),
 ]
