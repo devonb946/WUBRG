@@ -1,5 +1,6 @@
 import json
 from .models import Deck
+from browse.models import Card
 from .forms import DeckCreationForm
 from django.utils import timezone
 from django.http import HttpResponse
@@ -41,7 +42,6 @@ def create(request):
 
             # adding deck to user's account
             user.decks.add(deck)
-
             messages.success(request, 'Deck has been created.')
 
             return redirect('create_success')
@@ -56,3 +56,55 @@ def create(request):
 
 def create_success(request):
     return render(request, 'builder/create_deck_success.html')
+
+@login_required
+def add_card(request, card_id):
+    if request.method == 'POST':
+        deck_id = request.POST.get('deck_id')
+        user = request.user
+        card = Card.objects.get(id=card_id)
+        deck = Deck.objects.get(id=deck_id)
+
+        deck.data['cards'].append(card)
+        messages.success(request, 'Deck has been added.')
+        return render(request, 'browse/add_card_success.html')
+
+    return HttpResponse(status=204)
+
+@login_required
+def remove_card(request, card_id):
+    if request.method == 'POST':
+        deck_id = request.POST.get('deck_id')
+        user = request.user
+        deck = Deck.objects.get(id=deck_id)
+
+        deck.data['cards'] = [x for x in deck.data['cards'] if x['id'] != card_id]
+        deck.save(update_fields=['data'])
+        messages.success(request, 'Card has been removed.')
+        return render(request, 'browse/remove_card_success.html')
+
+    return HttpResponse(status=204)
+
+@login_required
+def add_deck(request, deck_id):
+    if request.method == 'POST':
+        user = request.user
+        deck = Deck.objects.get(id=deck_id)
+
+        user.decks.add(deck)
+        messages.success(request, 'Deck has been added.')
+        return render(request, 'browse/add_deck_success.html')
+
+    return HttpResponse(status=204)
+
+@login_required
+def remove_deck(request, deck_id):
+    if request.method == 'POST':
+        user = request.user
+        deck = Deck.objects.get(id=deck_id)
+
+        user.decks.remove(deck)
+        messages.success(request, 'Deck has been removed.')
+        return render(request, 'browse/remove_deck_success.html')
+
+    return HttpResponse(status=204)

@@ -1,0 +1,46 @@
+{% extends 'accounts/profile.html' %}
+
+{% block content %}
+
+{% for deck in decks %}
+  {% if forloop.first %}
+    <div class="row" style="padding-top:15px;">
+    {% endif %}
+    <div class="col-sm-4" style="padding:50px;" >
+        <a href="/browse/details/{{deck.id}}?page={{page}}">
+          {% if deck.cards.0.data.layout == "transform"  %}
+            <img style="height:200px;" src="{{deck.cards.0.data.card_faces.0.image_uris.png}}" />
+          {% elif deck.cards.0.data.layout == "planar" or deck.cards.0.data.layout == "split"  %}
+            <img class="rotate" style="height:200px;" src="{{deck.cards.0.data.image_uris.png}}" />
+          {% else %}
+            <img style="height:200px;" src="{{deck.cards.0.data.image_uris.png}}" />
+          {% endif %}
+        <li style="list-style:none" class="collection-item">{{deck.name}}</li>
+      </a>
+    </div>
+  {% if forloop.counter|divisibleby:3 %}
+    </div>
+    <div class="row" style="padding-top:15px;">
+  {% endif %}
+{% if forloop.last %}</div>{% endif %}
+{% endfor %}
+
+<div class="text-center">
+    <span class="step-links">
+        {% if decks.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ decks.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ decks.number }} of {{ decks.paginator.num_pages }}
+        </span>
+
+        {% if decks.has_next %}
+            <a href="?page={{ decks.next_page_number }}">next</a>
+            <a href="?page={{ decks.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock %}

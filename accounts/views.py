@@ -40,7 +40,14 @@ def user_page(request):
 @login_required
 def profile(request, username):
     user = User.objects.get(username=username)
-    return render(request, 'accounts/profile.html', {'user': user})
+    decks = user.decks.all()
+
+    context = {
+        'user': user,
+        'decks' : decks,
+    }
+
+    return render(request, 'accounts/profile.html', context)
 
 # TODO display user decks
 @login_required

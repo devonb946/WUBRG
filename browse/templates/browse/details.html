@@ -24,6 +24,30 @@
     {{card.data.oracle_text}}
   <br />
     {{card.data}}
+
     <a href="/browse?page={{page}}">Back</a>
   </div>
+
+
+</br></br>
+
+
+  {% if user.is_authenticated %}
+    <div class="container center-align">
+      <form action="/builder/add/card/{{card.id}}" method="POST" id="add_card_form">
+        {% csrf_token %}
+        <select name="deck_id" form="add_card_form">
+          {% for deck in user.decks.all %}
+            <option value="{{deck.id}}" label="{{deck.name}}"></option>
+          {% endfor %}
+        </select>
+        <input type="submit" name="submit" value="Add card to deck"/>
+      </form>
+    </div>
+  {% else %}
+    <div class="container center-align">
+      <p><a href="/profile/login">Log in</a> to add this card to a deck.</p>
+    </div>
+  {% endif %}
+
 {% endblock %}

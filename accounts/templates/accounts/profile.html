@@ -8,11 +8,34 @@
 
     <br>
 
-    <h2> Decks </h2>
+    <h2> Decks </h2></br>
+    {% for deck in decks %}
+        {% if forloop.first %}
+        <div class="row" style="padding-top:15px;">
+        {% endif %}
+        <div class="col-sm-4" style="padding:50px;" >
+            <a href="/browse/details/{{deck.id}}?page={{page}}">
+              {% if deck.cards.0.data.layout == "transform"  %}
+                <img style="height:200px;" src="{{deck.cards.0.data.card_faces.0.image_uris.png}}" />
+              {% elif deck.cards.0.data.layout == "planar" or deck.cards.0.data.layout == "split"  %}
+                <img class="rotate" style="height:200px;" src="{{deck.cards.0.data.image_uris.png}}" />
+              {% else %}
+                <img style="height:200px;" src="{{deck.cards.0.data.image_uris.png}}" />
+              {% endif %}
+            <li style="list-style:none" class="collection-item">{{deck.name}}</li>
+          </a>
+        </div>
+      {% if forloop.counter|divisibleby:3 %}
+        </div>
+        <div class="row" style="padding-top:15px;">
+      {% endif %}
+    {% if forloop.last %}</div>{% endif %}
+    {% endfor %}
 
-    <br>
+  </br>
 
-    <h2> Options </h2>
+    <h2> Options </h2></br>
+    <h5><a href="{% url 'logout' %}">Logout</a></h5>
     <h5><a href="{% url 'change_password' %}">Change password</a></h5>
     <h5><a href="{% url 'remove_account' %}">Remove account</a></h5>
 
