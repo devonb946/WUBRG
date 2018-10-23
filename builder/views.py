@@ -65,9 +65,19 @@ def add_card(request, card_id):
         card = Card.objects.get(id=card_id)
         deck = Deck.objects.get(id=deck_id)
 
-        deck.data['cards'].append(card)
-        messages.success(request, 'Deck has been added.')
-        return render(request, 'browse/add_card_success.html')
+        deck.cards.add(card)
+        deck.card_count = deck.card_count + 1
+        deck.save()
+        messages.success(request, 'Card has been added.')
+
+        page = request.GET.get('page')
+
+        context = {
+            'card': card,
+            'page': page
+        }
+
+        return render(request, 'browse/details.html', context)
 
     return HttpResponse(status=204)
 
@@ -78,8 +88,9 @@ def remove_card(request, card_id):
         user = request.user
         deck = Deck.objects.get(id=deck_id)
 
-        deck.data['cards'] = [x for x in deck.data['cards'] if x['id'] != card_id]
-        deck.save(update_fields=['data'])
+        deck.cards.remove(card)
+        deck.card_count = deck.card_count - 1
+        deck.save()
         messages.success(request, 'Card has been removed.')
         return render(request, 'browse/remove_card_success.html')
 

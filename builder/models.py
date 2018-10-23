@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from django.contrib.postgres.fields import JSONField
+from browse.models import Card
 
 # Create your models here.
 class Deck(models.Model):
@@ -13,4 +14,8 @@ class Deck(models.Model):
     colors = models.CharField(max_length=25, default='')
     creator = models.CharField(max_length=100, default='')
     date_created = models.DateTimeField(auto_now_add=True)
-    data = JSONField(null=False, default=list)
+    cards = models.ManyToManyField(Card)
+
+# class DeckCard(models.Model):
+#     deck = models.ForeignKey(Deck)
+#     card = models.ForeignKey(Card)
