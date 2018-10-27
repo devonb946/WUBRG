@@ -1,5 +1,5 @@
 import json
-from .models import Deck
+from .models import Deck, DeckCard
 from browse.models import Card
 from .forms import DeckCreationForm
 from django.utils import timezone
@@ -65,16 +65,28 @@ def add_card(request, card_id):
         card = Card.objects.get(id=card_id)
         deck = Deck.objects.get(id=deck_id)
 
-        deck.cards.add(card)
-        deck.card_count = deck.card_count + 1
+        try:
+            dc_relationship = DeckCard.objects.get(deck=deck, card=card)
+        except DeckCard.DoesNotExist:
+            dc_relationship = DeckCard(deck=deck, card=card, count=0)
+
+        if deck.card_count == 0:
+            deck.art_card = card
+
+        dc_relationship.count += 1
+        deck.card_count += 1
+
+        # add a card by udpating the relationship model
+        dc_relationship.save()
         deck.save()
+
         messages.success(request, 'Card has been added.')
 
         page = request.GET.get('page')
 
         context = {
             'card': card,
-            'page': page
+            'page': page,
         }
 
         return render(request, 'browse/details.html', context)
@@ -83,16 +95,15 @@ def add_card(request, card_id):
 
 @login_required
 def remove_card(request, card_id):
-    if request.method == 'POST':
-        deck_id = request.POST.get('deck_id')
-        user = request.user
-        deck = Deck.objects.get(id=deck_id)
+    deck_id = request.POST.get('deck_id')
+    user = request.user
+    deck = Deck.objects.get(id=deck_id)
 
-        deck.cards.remove(card)
-        deck.card_count = deck.card_count - 1
-        deck.save()
-        messages.success(request, 'Card has been removed.')
-        return render(request, 'browse/remove_card_success.html')
+    deck.cards.remove(card)
+    deck.card_count = deck.card_count - 1
+    deck.save()
+    messages.success(request, 'Card has been removed.')
+    return render(request, 'builder/remove_card_success.html')
 
     return HttpResponse(status=204)
 
@@ -110,12 +121,9 @@ def add_deck(request, deck_id):
 
 @login_required
 def remove_deck(request, deck_id):
-    if request.method == 'POST':
-        user = request.user
-        deck = Deck.objects.get(id=deck_id)
+    user = request.user
+    deck = Deck.objects.get(id=deck_id)
 
-        user.decks.remove(deck)
-        messages.success(request, 'Deck has been removed.')
-        return render(request, 'browse/remove_deck_success.html')
-
-    return HttpResponse(status=204)
+    user.decks.remove(deck)
+    messages.success(request, 'Deck has been removed.')
+    return render(request, 'browse/remove_deck_success.html')
