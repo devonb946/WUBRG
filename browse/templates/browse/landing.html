@@ -1,0 +1,44 @@
+{% extends 'wubrgapp/base.html' %}
+
+{% block title %}WUBRG Content{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-sm-3">
+      <a href="/browse/cards/all"><h1>Browse All Cards</h1></a>
+    </div>
+    <div class="col-sm-3">
+      <a href="/browse/cards/search"><h1>Search For Cards</h1></a>
+    </div>
+    <div class="col-sm-3">
+      <a><h1>Browse All Decks</h1></a>
+    </div>
+    <div class="col-sm-3">
+      <a><h1>Search For Decks</h1></a>
+    </div>
+  </div>
+
+<br >
+<br >
+<br >
+<div class="text-center">
+  <h3>Cards you might not have seen before:</h3>
+</div>
+<div class="row">
+  {% for card in cards %}
+    <div class="col-sm-2" style="margin:15px !important;">
+        <a href="/browse/details/{{card.id}}?page={{page}}">
+          {% if card.data.layout == "transform"  %}
+            <img style="height:200px;" src="{{card.data.card_faces.0.image_uris.small}}" />
+          {% elif card.data.layout == "planar" or card.data.layout == "split"  %}
+            <img class="rotate" style="height:200px;" src="{{card.data.image_uris.small}}" />
+          {% else %}
+            <img style="height:200px;" src="{{card.data.image_uris.small}}" />
+          {% endif %}
+        <li style="list-style:none" class="collection-item">{{card.data.name}}</li>
+      </a>
+    </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
