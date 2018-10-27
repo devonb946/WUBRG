@@ -8,7 +8,7 @@ urlpatterns = [
     path('cards/all', views.cards_all, name="All Cards"),
     path('details/<str:id>', views.details, name='Card Details'),
     path('cards/search', views.cards_search, name='Search Cards'),
-
+    path('cards/results', views.cards_results, name='Search Results'),
     # deck paths
     #url('browse/decks/search/', views.decks_search, name='decks_search'),
     ##url('browse/decks/featured/', views.decks_featured, name='decks_featured'),
