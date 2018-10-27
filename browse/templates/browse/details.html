@@ -12,7 +12,7 @@
   </header>
   <div class="container center-align">
     <a href="{{card.data.image_uris.png}}">
-      {% if card.data.layout == "transform"  %}
+      {% if card.data.layout == "transform" or card.data.layout == "double_faced_token" %}
         <img style="height:500px;" src="{{card.data.card_faces.0.image_uris.png}}" />
         <img style="height:500px;" src="{{card.data.card_faces.1.image_uris.png}}" />
       {% elif card.data.layout == "planar" or card.data.layout == "split"  %}
@@ -21,16 +21,16 @@
         <img style="height:500px;" src="{{card.data.image_uris.png}}" />
       {% endif %}
     </a>
-  </br>
+  <br>
     {{card.data.oracle_text}}
-  </br>
+  <br>
     {{card.data}}
 
     <a href="/browse?page={{page}}">Back</a>
   </div>
 
 
-</br></br>
+<br><br>
 
 
   {% if user.is_authenticated %}
