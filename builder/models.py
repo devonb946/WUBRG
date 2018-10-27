@@ -14,8 +14,10 @@ class Deck(models.Model):
     colors = models.CharField(max_length=25, default='')
     creator = models.CharField(max_length=100, default='')
     date_created = models.DateTimeField(auto_now_add=True)
-    cards = models.ManyToManyField(Card)
+    cards = models.ManyToManyField(Card, through='DeckCard')
+    art_card = models.ForeignKey(Card, related_name='art_card', on_delete=models.CASCADE, null=True)
 
-# class DeckCard(models.Model):
-#     deck = models.ForeignKey(Deck)
-#     card = models.ForeignKey(Card)
+class DeckCard(models.Model):
+    deck = models.ForeignKey(Deck, on_delete=models.CASCADE)
+    card = models.ForeignKey(Card, on_delete=models.CASCADE)
+    count = models.IntegerField(default=0)

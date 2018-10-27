@@ -19,7 +19,7 @@ OP Bant Turbofog/Storm Hybrid deck and steamroll everyone at your LGS's FNM!
     <div class="row" style="padding-top:15px;">
     {% endif %}
     <div class="col-sm-4" style="padding:50px;" >
-        <a href="/browse/details/{{deck.id}}?page={{page}}">
+        <a href="/browse/deck_details/{{deck.id}}">
           {% if deck.cards.0.data.layout == "transform"  %}
             <img style="height:200px;" src="{{deck.cards.0.data.card_faces.0.image_uris.png}}" />
           {% elif deck.cards.0.data.layout == "planar" or deck.cards.0.data.layout == "split"  %}

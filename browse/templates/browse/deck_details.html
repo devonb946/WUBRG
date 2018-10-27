@@ -4,44 +4,33 @@
 
 {% block content %}
 
-{% for deck in decks %}
-  {% if forloop.first %}
-    <div class="row" style="padding-top:15px;">
-    {% endif %}
-    <div class="col-sm-4" style="padding:50px;" >
-        <a href="/browse/details/{{deck.id}}?page={{page}}">
-          {% if deck.cards.0.data.layout == "transform"  %}
-            <img style="height:200px;" src="{{deck.cards.0.data.card_faces.0.image_uris.png}}" />
-          {% elif deck.cards.0.data.layout == "planar" or deck.cards.0.data.layout == "split"  %}
-            <img class="rotate" style="height:200px;" src="{{deck.cards.0.data.image_uris.png}}" />
-          {% else %}
-            <img style="height:200px;" src="{{deck.cards.0.data.image_uris.png}}" />
-          {% endif %}
-        <li style="list-style:none" class="collection-item">{{deck.name}}</li>
-      </a>
-    </div>
-  {% if forloop.counter|divisibleby:3 %}
-    </div>
-    <div class="row" style="padding-top:15px;">
+  <div class="container center-align">
+    <h2>Deck Name: {{deck.name}}</h2>
+  </br>
+    <a href="{{art_card.data.image_uris.art_crop}}">
+      {% if art_card.data.layout == "transform"  %}
+        <img class="details-deck-image" src="{{art_card.data.card_faces.0.image_uris.art_crop}}" />
+      {% elif art_card.data.layout == "planar" or art_card.data.layout == "split"  %}
+        <img class="rotate details-deck-image" src="{{art_card.data.image_uris.art_crop}}" />
+      {% else %}
+        <img class="details-deck-image" src="{{art_card.data.image_uris.art_crop}}" />
+      {% endif %}
+    </a>
+    <p>{{deck.description}}</p>
+  </br>
+  <p>Unfinished deck: {{deck.is_draft}}</p>
+  <p>Creator: {{deck.creator}}</p>
+  <p>Format: {{deck.format}}</p>
+  <p>Colors: {{deck.colors}}</p>
+  <p>Date Created: {{deck.date_created}}</p>
+  <p>Number of cards in deck: {{deck.card_count}}</p>
+    <a href="/browse?page={{page}}">Back</a>
+  </div>
+
+  {% if has_deck %}
+    <a href="/builder/remove/deck/{{deck.id}}">Remove this deck from your account</a>
+  {% else %}
+    <a href="/builder/add/deck/{{deck.id}}">Add this deck to your account</a>
   {% endif %}
-{% if forloop.last %}</div>{% endif %}
-
-<div class="text-center">
-    <span class="step-links">
-        {% if decks.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ decks.previous_page_number }}">previous</a>
-        {% endif %}
-
-        <span class="current">
-            Page {{ decks.number }} of {{ decks.paginator.num_pages }}
-        </span>
-
-        {% if decks.has_next %}
-            <a href="?page={{ decks.next_page_number }}">next</a>
-            <a href="?page={{ decks.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-    </span>
-</div>
 
 {% endblock %}

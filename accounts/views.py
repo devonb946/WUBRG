@@ -44,7 +44,7 @@ def profile(request, username):
 
     context = {
         'user': user,
-        'decks' : decks,
+        'decks' : decks,        
     }
 
     return render(request, 'accounts/profile.html', context)
