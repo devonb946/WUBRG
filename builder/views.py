@@ -95,7 +95,7 @@ def add_card(request, card_id):
 
 @login_required
 def remove_card(request, card_id):
-    deck_id = request.POST.get('deck_id')
+    deck_id = request.get('deck_id')
     user = request.user
     deck = Deck.objects.get(id=deck_id)
 
