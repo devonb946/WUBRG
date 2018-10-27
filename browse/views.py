@@ -5,10 +5,16 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 # Create your views here.
 
-
 def index(request):
-    all_cards = Card.objects.order_by('data__name').exclude(data__layout = 'token').exclude(data__layout = 'double_faced_token').filter(data__lang = 'en').filter(data__reprint = False)
-    paginator = Paginator(all_cards, 42)# Show 40 cards (not tokens) per page
+    cards = Card.objects.all().exclude(data__layout = 'token').exclude(data__layout = 'double_faced_token').exclude(data__layout = 'emblem').filter(data__lang = 'en').order_by('?')[:5]
+    context = {
+        'cards': cards
+    }
+    return render(request, "browse/landing.html", context)
+
+def cards_all(request):
+    all_cards = Card.objects.order_by('data__name').exclude(data__layout = 'token').exclude(data__layout = 'double_faced_token').exclude(data__layout = 'emblem').filter(data__lang = 'en').filter(data__reprint = False)
+    paginator = Paginator(all_cards, 42)# Show 42 cards (not tokens) per page
 
     page = request.GET.get('page')
     cards = paginator.get_page(page)
@@ -18,7 +24,7 @@ def index(request):
         'page': page
     }
 
-    return render(request, 'browse/base.html', context)
+    return render(request, 'browse/all_cards.html', context)
 
 
 def details(request, id):

@@ -14,6 +14,7 @@
     <a href="{{card.data.image_uris.png}}">
       {% if card.data.layout == "transform"  %}
         <img style="height:500px;" src="{{card.data.card_faces.0.image_uris.png}}" />
+        <img style="height:500px;" src="{{card.data.card_faces.1.image_uris.png}}" />
       {% elif card.data.layout == "planar" or card.data.layout == "split"  %}
         <img class="rotate" style="height:500px;" src="{{card.data.image_uris.png}}" />
       {% else %}
