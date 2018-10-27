@@ -6,7 +6,7 @@
 
   <div class="container center-align">
     <h2>Deck Name: {{deck.name}}</h2>
-  </br>
+  <br>
     <a href="{{art_card.data.image_uris.art_crop}}">
       {% if art_card.data.layout == "transform"  %}
         <img class="details-deck-image" src="{{art_card.data.card_faces.0.image_uris.art_crop}}" />
@@ -17,7 +17,7 @@
       {% endif %}
     </a>
     <p>{{deck.description}}</p>
-  </br>
+  <br>
   <p>Unfinished deck: {{deck.is_draft}}</p>
   <p>Creator: {{deck.creator}}</p>
   <p>Format: {{deck.format}}</p>

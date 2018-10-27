@@ -32,7 +32,7 @@ def cards_results(request):
     name = request.GET.get('name')
     page = request.GET.get('page')
 
-    result_cards = Card.objects.filter(data__name__icontains=name)
+    result_cards = Card.objects.filter(data__name__icontains=name).order_by('data__name')
 
     if page == None:
         page = 1
@@ -43,7 +43,8 @@ def cards_results(request):
     context = {
         'cards': cards,
         'page': page,
-        'title': 'Search results for "{}"'.format(name)
+        'title': 'Search results for "{}"'.format(name),
+        'name': name
     }
 
     return render(request, 'browse/results.html', context)
