@@ -3,7 +3,7 @@ from .models import Deck, DeckCard
 from browse.models import Card
 from .forms import DeckCreationForm
 from django.utils import timezone
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -95,17 +95,27 @@ def add_card(request, card_id):
 
 @login_required
 def remove_card(request, card_id):
-    deck_id = request.get('deck_id')
     user = request.user
+    deck_id = request.POST.get('deck_id')
     deck = Deck.objects.get(id=deck_id)
+    card = Card.objects.get(id=card_id)
 
-    deck.cards.remove(card)
+    dc_relationship = DeckCard.objects.get(deck=deck, card=card)
+
+    dc_relationship.count = dc_relationship.count - 1
     deck.card_count = deck.card_count - 1
-    deck.save()
-    messages.success(request, 'Card has been removed.')
-    return render(request, 'builder/remove_card_success.html')
 
-    return HttpResponse(status=204)
+    if dc_relationship.count <= 0:
+        dc_relationship.delete()
+    else:
+        dc_relationship.save()
+
+    deck.save()
+
+    page = request.GET.get('page')
+
+    messages.success(request, 'Card has been removed.')
+    return HttpResponseRedirect(request.path_info)
 
 @login_required
 def add_deck(request, deck_id):

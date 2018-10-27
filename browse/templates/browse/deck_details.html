@@ -30,12 +30,13 @@
   <ul class="list-group">
   {% for card, deck_card in cards_data %}
       <li class="list-group-item">
-        <a href="/builder/remove/card/{{card.id}}" style="float:left;">
-          <button type="button" class="close" aria-label="Close">
+        <form method="POST" action="/builder/remove/card/{{card.id}}" style="float:left;">
+          {% csrf_token %}
+          <input type="hidden" name="deck_id" value="{{deck.id}}" />
+          <button type="submit" class="close" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-        </a>
-
+        </form>
         <a href="/browse/details/{{card.id}}">{{card.data.name}}</a>
         x{{deck_card.count}}
       </li>
