@@ -5,15 +5,15 @@
 {% block content %}
 
   <div class="container center-align">
-    <h2>Deck Name: {{deck.name}}</h2>
+    <h2>{{deck.name}}</h2>
   </br>
     <a href="{{art_card.data.image_uris.art_crop}}">
       {% if art_card.data.layout == "transform"  %}
-        <img class="details-deck-image" src="{{art_card.data.card_faces.0.image_uris.art_crop}}" />
+        <img class="details-deck-image" style="height:300px;" src="{{art_card.data.card_faces.0.image_uris.art_crop}}" />
       {% elif art_card.data.layout == "planar" or art_card.data.layout == "split"  %}
-        <img class="rotate details-deck-image" src="{{art_card.data.image_uris.art_crop}}" />
+        <img class="rotate details-deck-image" style="height:300px;" src="{{art_card.data.image_uris.art_crop}}" />
       {% else %}
-        <img class="details-deck-image" src="{{art_card.data.image_uris.art_crop}}" />
+        <img class="details-deck-image" style="height:300px;" src="{{art_card.data.image_uris.art_crop}}" />
       {% endif %}
     </a>
     <p>{{deck.description}}</p>
@@ -26,6 +26,21 @@
   <p>Number of cards in deck: {{deck.card_count}}</p>
     <a href="/browse?page={{page}}">Back</a>
   </div>
+
+  <ul class="list-group">
+  {% for card, deck_card in cards_data %}
+      <li class="list-group-item">
+        <a href="/builder/remove/card/{{card.id}}" style="float:left;">
+          <button type="button" class="close" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </a>
+
+        <a href="/browse/details/{{card.id}}">{{card.data.name}}</a>
+        x{{deck_card.count}}
+      </li>
+  {% endfor %}
+  </ul>
 
   {% if has_deck %}
     <a href="/builder/remove/deck/{{deck.id}}">Remove this deck from your account</a>

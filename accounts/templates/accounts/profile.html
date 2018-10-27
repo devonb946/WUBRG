@@ -20,7 +20,7 @@
               {% elif deck.cards.0.data.layout == "planar" or deck.cards.0.data.layout == "split"  %}
                 <img class="rotate" style="height:200px;" src="{{deck.art_card.data.image_uris.art_crop}}" />
               {% else %}
-                <img style="height:200px;" src="{{deck.art_card.data.image_uris.art_crop}}" />
+                <img style="height:150px;" src="{{deck.art_card.data.image_uris.art_crop}}" />
               {% endif %}
             <li style="list-style:none" class="collection-item">{{deck.name}}</li>
           </a>

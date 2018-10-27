@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Card
-from builder.models import Deck
+from builder.models import Deck, DeckCard
 from django.http import HttpResponse
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
@@ -46,15 +46,30 @@ def cards_search(request):
 
     return render(request, 'browse/card_search.html', context)
 
-def cards_suggested(request):
-
-    return render(request, 'browse/index.html')
-
 
 # deck views
+def decks_all(request):
+    all_decks = Deck.objects.order_by('date_created')
+    paginator = Paginator(all_decks, 42)
+
+    page = request.GET.get('page')
+    decks = paginator.get_page(page)
+
+    context = {
+        'decks': decks,
+        'page': page
+    }
+
+    return render(request, 'browse/all_decks.html', context)
+
 def deck_details(request, id):
 
     deck = Deck.objects.get(id=id)
+
+    cards = deck.cards.all()
+    deck_cards = DeckCard.objects.filter(deck=deck)
+    cards_data = zip(cards, deck_cards)
+
     art_card = deck.art_card
     page = request.GET.get('page')
 
@@ -71,6 +86,7 @@ def deck_details(request, id):
 
     context = {
         'deck': deck,
+        'cards_data': cards_data,
         'art_card': art_card,
         'has_deck': has_deck,
         'page': page,
@@ -79,7 +95,4 @@ def deck_details(request, id):
     return render(request, 'browse/deck_details.html', context)
 
 def decks_search(request):
-    return render(request, 'browse/index.html')
-
-def decks_featured(request):
     return render(request, 'browse/index.html')
