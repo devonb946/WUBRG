@@ -1,16 +1,18 @@
 {% extends 'wubrgapp/base.html' %}
 
-{% block title %}Search Cards{% endblock %}
-
-{% block content %}
 <head>
   <title>WUBRG - Search Cards</title>
 </head>
-<body>
-  <header class="container center-align">
-    <h1>Search Cards</h1>
-  </header>
-  <div>
-    Search for cards.
-  </div>
+
+{% block title %}Search Cards{% endblock %}
+
+{% block content %}
+<header class="container center-align">
+  <h1>Search Cards</h1>
+</header>
+
+<form method="get" action="results">
+  Search Cards: <input type="text" name="name" placeholder="Lightning Bolt"/>
+  <input type="submit" value="Search" />
+</form>
 {% endblock %}

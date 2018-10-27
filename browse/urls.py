@@ -8,7 +8,7 @@ urlpatterns = [
     path('cards/all', views.cards_all, name="All Cards"),
     path('details/<uuid:id>', views.details, name='Card Details'),
     path('cards/search', views.cards_search, name='Search Cards'),
-
+    path('cards/results', views.cards_results, name='Search Results'),
     # deck paths
     path('decks/all', views.decks_all, name="all_decks"),
     path('deck_details/<uuid:id>', views.deck_details, name='deck_details'),

@@ -22,10 +22,31 @@ def cards_all(request):
 
     context = {
         'cards': cards,
-        'page': page
+        'page': page,
+        'title': 'All Cards',
     }
 
-    return render(request, 'browse/all_cards.html', context)
+    return render(request, 'browse/results.html', context)
+
+def cards_results(request):
+    name = request.GET.get('name')
+    page = request.GET.get('page')
+
+    result_cards = Card.objects.filter(data__name__icontains=name)
+
+    if page == None:
+        page = 1
+
+    paginator = Paginator(result_cards, 42)
+    cards = paginator.get_page(page)
+
+    context = {
+        'cards': cards,
+        'page': page,
+        'title': 'Search results for "{}"'.format(name)
+    }
+
+    return render(request, 'browse/results.html', context)
 
 
 def details(request, id):
