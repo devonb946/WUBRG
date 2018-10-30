@@ -12,25 +12,30 @@ cards = requests.get(url).json()
 
 cur = conn.cursor()
 
-cur.execute("DROP TABLE IF EXISTS browse_card_2;")
-
-cur.execute("CREATE TABLE browse_card_2 (data jsonb not null, id uuid PRIMARY KEY);")
-conn.commit()
+#cur.execute("DROP TABLE IF EXISTS browse_card_2;")
+#cur.execute("CREATE TABLE browse_card_2 (data jsonb not null, id uuid PRIMARY KEY);")
+#conn.commit()
 
 total_cards = len(cards)
 count = 0
 
-query_string = "INSERT INTO browse_card_2(data, id) VALUES "
+query_string = "INSERT INTO browse_card(data, id) VALUES\n"
 for item in cards:
 
 
     values_to_add = "(\'%s\', \'%s\'), " % (json.dumps(item).replace("'", "''"), item.get("id"))
-    query_string += values_to_add
+    query_string += values_to_add + "\n\n"
 
     if (count != 0) and (count % 20 == 0 or count == total_cards-1):
-        query_string = query_string[:-2] + ';'
+        query_string = query_string[:-4]
+
+        # implementing UPSERT functionality (insert if new id, update if existing)
+        query_string = query_string + "ON CONFLICT (id) DO UPDATE\n  SET "
+        query_string = query_string + "data = \'" + json.dumps(item).replace("'", "''") + "\';"
+
         cur.execute(query_string)
-        query_string = "INSERT INTO browse_card_2(data, id) VALUES "
+
+        query_string = "INSERT INTO browse_card(data, id) VALUES\n"
 
     count += 1
     print(count, "/", total_cards, " cards inserted")
@@ -39,9 +44,9 @@ for item in cards:
 
 conn.commit()
 
-cur.execute("DROP TABLE browse_card;")
-cur.execute("ALTER TABLE browse_card_2 RENAME TO browse_card;")
-conn.commit()
+#cur.execute("DROP TABLE browse_card;")
+#cur.execute("ALTER TABLE browse_card_2 RENAME TO browse_card;")
+#conn.commit()
 
 cur.close()
 conn.close()
