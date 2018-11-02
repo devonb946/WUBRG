@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm
+from .forms import WubrgUserCreationForm, WubrgUserChangeForm
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
@@ -18,15 +18,15 @@ def index(request):
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = WubrgUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Account has been created.')
 
             #TODO change to actual profile page
-            return redirect('register')
+            return redirect('login')
     else:
-        form = UserCreationForm()
+        form = WubrgUserCreationForm()
 
     context = {
         'form': form
@@ -44,7 +44,7 @@ def profile(request, username):
 
     context = {
         'user': user,
-        'decks' : decks,        
+        'decks' : decks,
     }
 
     return render(request, 'accounts/profile.html', context)
