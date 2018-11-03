@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, logout
 from .forms import WubrgUserCreationForm, WubrgUserChangeForm
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -58,13 +58,14 @@ def profile_decks(request):
 def password_change_done(request):
     return render(request, 'accounts/change_password_done.html')
 
+@login_required
 def remove_account(request, username):
     try:
         user = User.objects.get(username=username)
-        user.delete()
+        user.is_active = False
+        user.save()
         messages.success(request, 'User {username} has been deleted.')
 
     except User.DoesNotExist:
         messages.error(request, 'User {username} does not exist. Please try again')
-
-    return render(request, 'accounts/base.html')
+    return redirect('logout')

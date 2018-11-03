@@ -6,6 +6,7 @@
 
   <div class="container center-align">
     <h2>{{deck.name}}</h2>
+    <h3>{{deck.id}}</h3>
   <br>
     <a href="{{art_card.data.image_uris.art_crop}}">
       {% if art_card.data.layout == "transform"  %}
@@ -30,15 +31,26 @@
   <ul class="list-group">
   {% for card, deck_card in cards_data %}
       <li class="list-group-item">
+        <a href="/browse/details/{{card.id}}">{{card.data.name}}</a>
+        {% if deck_card.count > 1 %}
         <form method="POST" action="/builder/remove/card/{{card.id}}" style="float:left;">
           {% csrf_token %}
           <input type="hidden" name="deck_id" value="{{deck.id}}" />
-          <button type="submit" class="close" aria-label="Close">
+          <input type="number" style="width:50px" name="remove_count" min="1" max="{{deck_card.count}}" />
+          <button type="submit" style="float:left;" class="close" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </form>
-        <a href="/browse/details/{{card.id}}">{{card.data.name}}</a>
-        x{{deck_card.count}}
+          x{{deck_card.count}}
+        {% else %}
+          <form method="POST" action="/builder/remove/card/{{card.id}}" style="float:left;">
+            {% csrf_token %}
+            <input type="hidden" name="deck_id" value="{{deck.id}}" />
+            <button type="submit" class="close" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </form>
+        {% endif %}
       </li>
   {% endfor %}
   </ul>

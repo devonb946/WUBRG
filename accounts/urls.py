@@ -14,7 +14,7 @@ urlpatterns = [
     path('settings/changepass/', auth_views.PasswordChangeView.as_view(template_name='accounts/change_password.html'), name='change_password'),
     path('settings/changepass/done', views.password_change_done, name='password_change_done'),
     path('user_page/', views.user_page, name='user_page'),
-    re_path('(?P<username>\w+)/', views.profile, name='profile'),
     path('decks/', views.profile_decks, name='profile_decks'),
-    path('settings/remove/', views.remove_account, name='remove_account'),
+    path('settings/remove/<str:username>', views.remove_account, name='remove_account'),
+    re_path('(?P<username>\w+)/', views.profile, name='profile'),    
 ]

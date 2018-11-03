@@ -97,13 +97,17 @@ def add_card(request, card_id):
 def remove_card(request, card_id):
     user = request.user
     deck_id = request.POST.get('deck_id')
+
     deck = Deck.objects.get(id=deck_id)
     card = Card.objects.get(id=card_id)
 
+
+    remove_count = int(request.POST.get('remove_count', 1))
+
     dc_relationship = DeckCard.objects.get(deck=deck, card=card)
 
-    dc_relationship.count = dc_relationship.count - 1
-    deck.card_count = deck.card_count - 1
+    dc_relationship.count = dc_relationship.count - remove_count
+    deck.card_count = deck.card_count - remove_count
 
     if dc_relationship.count <= 0:
         dc_relationship.delete()
@@ -115,7 +119,8 @@ def remove_card(request, card_id):
     page = request.GET.get('page')
 
     messages.success(request, 'Card has been removed.')
-    return HttpResponseRedirect(request.path_info)
+
+    return HttpResponseRedirect('/browse/deck_details/' + deck_id)
 
 @login_required
 def add_deck(request, deck_id):
