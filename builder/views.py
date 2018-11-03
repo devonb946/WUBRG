@@ -38,6 +38,7 @@ def create(request):
             deck.data = json.dumps({ "cards" : [] })
             deck.creator = user.username
             deck.date_created = timezone.now()
+            deck.colors = update_deck_colors(deck)
             deck.save()
 
             # adding deck to user's account
@@ -76,8 +77,11 @@ def add_card(request, card_id):
         dc_relationship.count += 1
         deck.card_count += 1
 
+        deck.colors = update_deck_colors(deck)
+
         # add a card by udpating the relationship model
         dc_relationship.save()
+
         deck.save()
 
         messages.success(request, 'Card has been added.')
@@ -102,7 +106,7 @@ def remove_card(request, card_id):
     card = Card.objects.get(id=card_id)
 
 
-    remove_count = int(request.POST.get('remove_count', 1))
+    remove_count = parse_remove_count(request.POST.get('remove_count'))
 
     dc_relationship = DeckCard.objects.get(deck=deck, card=card)
 
@@ -114,6 +118,8 @@ def remove_card(request, card_id):
     else:
         dc_relationship.save()
 
+    deck.colors = update_deck_colors(deck)
+
     deck.save()
 
     page = request.GET.get('page')
@@ -121,6 +127,21 @@ def remove_card(request, card_id):
     messages.success(request, 'Card has been removed.')
 
     return HttpResponseRedirect('/browse/deck_details/' + deck_id)
+
+def update_deck_colors(deck):
+    colors = set()
+
+    for card in deck.cards.all():
+        colors = colors.union(card.data['colors'])
+
+    return ''.join(colors)
+
+def parse_remove_count(count):
+    if not count is None:
+        count = count.strip()
+        return int(count) if count else 1
+    else:
+        return 1
 
 @login_required
 def add_deck(request, deck_id):
@@ -142,3 +163,51 @@ def remove_deck(request, deck_id):
     user.decks.remove(deck)
     messages.success(request, 'Deck has been removed.')
     return render(request, 'browse/remove_deck_success.html')
+
+def validate_deck(request, deck_id):
+    user = request.user
+    deck = Deck.objects.get(id=deck_id)
+    format = deck.format
+
+    # logic bucket for various deck formats
+    if format == 'Standard':
+        is_valid = validate_standard(deck)
+    elif format == 'Modern':
+        is_valid = validate_modern(deck)
+    elif format == 'Commander/EDH':
+        is_valid = validate_commander(deck)
+    elif format == 'Legacy':
+        is_valid = validate_legacy(deck)
+    elif format == 'Vintage':
+        is_valid = validate_vintage(deck)
+    elif format == 'Brawl':
+        is_valid = validate_brawl(deck)
+    else:
+        is_valid = False
+
+    if is_valid:
+        deck.is_draft = False
+        deck.save()
+
+    return HttpResponse(status=204)
+
+# -------------------------
+# Deck validator functions
+# -------------------------
+def validate_standard(deck):
+    return False
+
+def validate_modern(deck):
+    return False
+
+def validate_commander(deck):
+    return False
+
+def validate_legacy(deck):
+    return False
+
+def validate_vintage(deck):
+    return False
+
+def validate_brawl(deck):
+    return False

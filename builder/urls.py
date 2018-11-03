@@ -11,4 +11,5 @@ urlpatterns = [
     path('remove/card/<uuid:card_id>', views.remove_card, name='remove_card'),
     path('add/deck/<uuid:deck_id>', views.add_deck, name='add_deck'),
     path('remove/deck/<uuid:deck_id>', views.remove_deck, name='remove_deck'),
+    path('validate/deck/<uuid:deck_id>', views.validate_deck, name='validate_deck')
 ]

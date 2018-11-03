@@ -6,7 +6,6 @@
 
   <div class="container center-align">
     <h2>{{deck.name}}</h2>
-    <h3>{{deck.id}}</h3>
   <br>
     <a href="{{art_card.data.image_uris.art_crop}}">
       {% if art_card.data.layout == "transform"  %}
@@ -25,7 +24,6 @@
   <p>Colors: {{deck.colors}}</p>
   <p>Date Created: {{deck.date_created}}</p>
   <p>Number of cards in deck: {{deck.card_count}}</p>
-    <a href="/browse?page={{page}}">Back</a>
   </div>
 
   <ul class="list-group">
@@ -55,7 +53,12 @@
   {% endfor %}
   </ul>
 
+  </br>
+
+  <a href="/browse?page={{page}}">Back</a></br></br>
+
   {% if has_deck %}
+    </br><a href="/builder/validate/deck/{{deck.id}}">Validate deck</a></br></br></br>
     <a href="/builder/remove/deck/{{deck.id}}">Remove this deck from your account</a>
   {% else %}
     <a href="/builder/add/deck/{{deck.id}}">Add this deck to your account</a>
