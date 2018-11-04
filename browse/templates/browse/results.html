@@ -51,11 +51,15 @@
         <div class="row" style="padding-top:15px;">
         {% endif %}
         <div class="col-sm-4" style="padding:50px;" >
-            <a href="/browse/details/{{card.id}}?page={{page}}">
+            <a href="/browse/details/{{card.id}}?page={{page}}&name={{name}}">
               {% if card.data.layout == "transform" or card.data.layout == "double_faced_token"  %}
                 <img style="height:200px;" src="{{card.data.card_faces.0.image_uris.small}}" />
               {% elif card.data.layout == "planar" or card.data.layout == "split"  %}
-                <img class="rotate" style="height:200px;" src="{{card.data.image_uris.small}}" />
+                {% if card.data.set_name == "Amonkhet" or card.data.set_name == "Hour of Devastation"  %}
+                  <img style="height:200px;" src="{{card.data.image_uris.small}}" />
+                {% else %}
+                  <img class="rotate" style="height:200px;" src="{{card.data.image_uris.small}}" />
+                {% endif %}
               {% else %}
                 <img style="height:200px;" src="{{card.data.image_uris.small}}" />
               {% endif %}

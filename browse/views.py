@@ -53,10 +53,12 @@ def cards_results(request):
 def details(request, id):
     card = Card.objects.get(id=id)
     page = request.GET.get('page')
+    name = request.GET.get('name')
 
     context = {
         'card': card,
-        'page': page
+        'page': page,
+        'name': name
     }
 
     return render(request, 'browse/details.html', context)

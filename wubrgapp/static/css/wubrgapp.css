@@ -33,6 +33,18 @@ h1 a {
     transform: rotate(90deg);
 }
 
+.rotate_d{
+    -webkit-transform: rotate(180deg);  /* to support Safari and Android browser */
+    -ms-transform: rotate(180deg);      /* to support IE 9 */
+    transform: rotate(180deg);
+}
+
+.rotate_l{
+    -webkit-transform: rotate(270deg);  /* to support Safari and Android browser */
+    -ms-transform: rotate(270deg);      /* to support IE 9 */
+    transform: rotate(270deg);
+}
+
 .profile-deck-image {
     width: 200px;
 }
