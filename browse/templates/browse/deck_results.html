@@ -1,0 +1,115 @@
+{% extends 'wubrgapp/base.html' %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block blurb %}
+<!--This blurb is intentionally blank -->
+{% endblock %}
+
+{% block content %}
+<br>
+
+<div class="text-center">
+    <span class="step-links">
+      {% if name %}
+          {% if decks.has_previous %}
+              <a href="?page=1">&laquo; first</a>
+              <a href="?page={{ decks.previous_page_number }}">previous</a>
+          {% endif %}
+
+          <span class="current">
+              Page {{ decks.number }} of {{ decks.paginator.num_pages }}
+          </span>
+
+          {% if decks.has_next %}
+              <a href="?page={{ decks.next_page_number }}">next</a>
+              <a href="?page={{ decks.paginator.num_pages }}">last &raquo;</a>
+          {% endif %}
+
+      {% else %}
+
+              {% if cards.has_previous %}
+                  <a href="?page=1">&laquo; first</a>
+                  <a href="?page={{ decks.previous_page_number }}">previous</a>
+              {% endif %}
+
+              <span class="current">
+                  Page {{ cards.number }} of {{ cards.paginator.num_pages }}
+              </span>
+
+              {% if cards.has_next %}
+                  <a href="?page={{ decks.next_page_number }}">next</a>
+                  <a href="?page={{ decks.paginator.num_pages }}">last &raquo;</a>
+              {% endif %}
+
+          {% endif %}
+    </span>
+</div>
+
+{% for deck in decks %}
+    {% if forloop.first %}
+      <div class="row" style="padding-top:15px;">
+      {% endif %}
+      <div class="col-sm-4" style="padding:50px;" >
+          <a href="/browse/deck_details/{{deck.id}}?page={{page}}&name={{name}}">
+            {% if card.data.layout == "transform" or card.data.layout == "double_faced_token"  %}
+              <img style="height:200px;" src="{{deck.art_card.data.card_faces.0.image_uris.art_crop}}" />
+            {% elif card.data.layout == "planar" or card.data.layout == "split"  %}
+              {% if card.data.set_name == "Amonkhet" or card.data.set_name == "Hour of Devastation"  %}
+                <img style="height:200px;" src="{{deck.art_card.data.image_uris.srt_crop}}" />
+              {% else %}
+                <img class="rotate" style="height:200px;" src="{{deck.art_card.data.image_uris.art_crop}}" />
+              {% endif %}
+            {% else %}
+              <img style="height:200px;" src="{{deck.art_card.data.image_uris.art_crop}}" />
+            {% endif %}
+          <li style="list-style:none" class="collection-item">{{deck.name}}</li>
+        </a>
+      </div>
+    {% if forloop.counter|divisibleby:3 %}
+      </div>
+      <div class="row" style="padding-top:15px;">
+    {% endif %}
+  {% if forloop.last %}</div>{% endif %}
+{% endfor %}
+
+
+
+<div class="text-center">
+    <span class="step-links">
+      {% if name %}
+          {% if decks.has_previous %}
+              <a href="?page=1">&laquo; first</a>
+              <a href="?page={{ decks.previous_page_number }}">previous</a>
+          {% endif %}
+
+          <span class="current">
+              Page {{ decks.number }} of {{ decks.paginator.num_pages }}
+          </span>
+
+          {% if decks.has_next %}
+              <a href="?page={{ decks.next_page_number }}">next</a>
+              <a href="?page={{ decks.paginator.num_pages }}">last &raquo;</a>
+          {% endif %}
+
+      {% else %}
+
+              {% if cards.has_previous %}
+                  <a href="?page=1">&laquo; first</a>
+                  <a href="?page={{ decks.previous_page_number }}">previous</a>
+              {% endif %}
+
+              <span class="current">
+                  Page {{ cards.number }} of {{ cards.paginator.num_pages }}
+              </span>
+
+              {% if cards.has_next %}
+                  <a href="?page={{ decks.next_page_number }}">next</a>
+                  <a href="?page={{ decks.paginator.num_pages }}">last &raquo;</a>
+              {% endif %}
+
+          {% endif %}
+    </span>
+</div>
+
+{% endblock %}

@@ -51,7 +51,7 @@
         <div class="row" style="padding-top:15px;">
         {% endif %}
         <div class="col-sm-4" style="padding:50px;" >
-            <a href="/browse/details/{{card.id}}?page={{page}}&name={{name}}">
+            <a href="/browse/card_details/{{card.id}}?page={{page}}&name={{name}}">
               {% if card.data.layout == "transform" or card.data.layout == "double_faced_token"  %}
                 <img style="height:200px;" src="{{card.data.card_faces.0.image_uris.small}}" />
               {% elif card.data.layout == "planar" or card.data.layout == "split"  %}

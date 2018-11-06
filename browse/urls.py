@@ -5,12 +5,13 @@ urlpatterns = [
     path('', views.index, name='index'),
 
     # card paths
-    path('cards/all', views.cards_all, name="All Cards"),
-    path('details/<uuid:id>', views.details, name='Card Details'),
+    path('cards/all', views.cards_all, name='All Cards'),
+    path('card_details/<uuid:id>', views.card_details, name='Card Details'),
     path('cards/search', views.cards_search, name='Search Cards'),
-    path('cards/results', views.cards_results, name='Search Results'),
+    path('cards/results', views.cards_results, name='Card Results'),
     # deck paths
-    path('decks/all', views.decks_all, name="all_decks"),
-    path('deck_details/<uuid:id>', views.deck_details, name='deck_details'),
-    #path('decks/search/', views.decks_search, name='decks_search'),
+    path('decks/all', views.decks_all, name='All Decks'),
+    path('deck_details/<uuid:id>', views.deck_details, name='Deck Details'),
+    path('decks/search', views.decks_search, name='Search Decks'),
+    path('decks/results', views.decks_results, name='Deck Results'),
 ]

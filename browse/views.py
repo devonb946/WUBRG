@@ -26,7 +26,7 @@ def cards_all(request):
         'title': 'All Cards',
     }
 
-    return render(request, 'browse/results.html', context)
+    return render(request, 'browse/card_results.html', context)
 
 def cards_results(request):
     name = request.GET.get('name')
@@ -47,10 +47,10 @@ def cards_results(request):
         'name': name
     }
 
-    return render(request, 'browse/results.html', context)
+    return render(request, 'browse/card_results.html', context)
 
 
-def details(request, id):
+def card_details(request, id):
     card = Card.objects.get(id=id)
     page = request.GET.get('page')
     name = request.GET.get('name')
@@ -61,7 +61,7 @@ def details(request, id):
         'name': name
     }
 
-    return render(request, 'browse/details.html', context)
+    return render(request, 'browse/card_details.html', context)
 
 # TODO: Implement all of this
 def cards_search(request):
@@ -81,10 +81,11 @@ def decks_all(request):
 
     context = {
         'decks': decks,
-        'page': page
+        'page': page,
+        'title': 'All Decks'
     }
 
-    return render(request, 'browse/all_decks.html', context)
+    return render(request, 'browse/deck_results.html', context)
 
 def deck_details(request, id):
 
@@ -119,4 +120,26 @@ def deck_details(request, id):
     return render(request, 'browse/deck_details.html', context)
 
 def decks_search(request):
-    return render(request, 'browse/index.html')
+    context = {}
+    return render(request, 'browse/deck_search.html', context)
+
+def decks_results(request):
+    name = request.GET.get('name')
+    page = request.GET.get('page')
+
+    result_decks = Deck.objects.filter(name__icontains=name).order_by('date_created')
+
+    if page == None:
+        page = 1
+
+    paginator = Paginator(result_decks, 42)
+    decks = paginator.get_page(page)
+
+    context = {
+        'decks': decks,
+        'page': page,
+        'title': 'Search results for "{}"'.format(name),
+        'name': name
+    }
+
+    return render(request, 'browse/deck_results.html', context)

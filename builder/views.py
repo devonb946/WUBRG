@@ -93,7 +93,7 @@ def add_card(request, card_id):
             'page': page,
         }
 
-        return render(request, 'browse/details.html', context)
+        return render(request, 'builder/card_details.html', context)
 
     return HttpResponse(status=204)
 
@@ -126,7 +126,7 @@ def remove_card(request, card_id):
 
     messages.success(request, 'Card has been removed.')
 
-    return HttpResponseRedirect('/browse/deck_details/' + deck_id)
+    return HttpResponseRedirect('/builder/deck_details/' + deck_id)
 
 def update_deck_colors(deck):
     colors = set()
@@ -151,7 +151,7 @@ def add_deck(request, deck_id):
 
         user.decks.add(deck)
         messages.success(request, 'Deck has been added.')
-        return render(request, 'browse/add_deck_success.html')
+        return render(request, 'builder/add_deck_success.html')
 
     return HttpResponse(status=204)
 
@@ -162,7 +162,7 @@ def remove_deck(request, deck_id):
 
     user.decks.remove(deck)
     messages.success(request, 'Deck has been removed.')
-    return render(request, 'browse/remove_deck_success.html')
+    return render(request, 'builder/remove_deck_success.html')
 
 def validate_deck(request, deck_id):
     user = request.user

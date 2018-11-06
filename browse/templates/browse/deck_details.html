@@ -29,7 +29,7 @@
   <ul class="list-group">
   {% for card, deck_card in cards_data %}
       <li class="list-group-item">
-        <a href="/browse/details/{{card.id}}">{{card.data.name}}</a>
+        <a href="/browse/card_details/{{card.id}}">{{card.data.name}}</a>
         {% if deck_card.count > 1 %}
         <form method="POST" action="/builder/remove/card/{{card.id}}" style="float:left;">
           {% csrf_token %}

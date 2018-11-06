@@ -14,7 +14,7 @@
       <a href="/browse/decks/all"><h1>Browse All Decks</h1></a>
     </div>
     <div class="col-sm-3">
-      <a><h1>Search For Decks</h1></a>
+      <a href="/browse/decks/search"><h1>Search For Decks</h1></a>
     </div>
   </div>
 <br>
@@ -26,7 +26,7 @@
 <div class="row">
   {% for card in cards %}
     <div class="col-sm-2" style="margin:15px !important;">
-        <a href="/browse/details/{{card.id}}">
+        <a href="/browse/card_details/{{card.id}}">
           {% if card.data.layout == "transform"  %}
             <img style="height:200px;" src="{{card.data.card_faces.0.image_uris.small}}" />
           {% elif card.data.layout == "planar" or card.data.layout == "split"  %}

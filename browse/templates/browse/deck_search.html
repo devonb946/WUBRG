@@ -1,0 +1,18 @@
+{% extends 'wubrgapp/base.html' %}
+
+<head>
+  <title>WUBRG - Search Decks</title>
+</head>
+
+{% block title %}Search Decks{% endblock %}
+
+{% block content %}
+<header class="container center-align">
+  <h1>Search Decks</h1>
+</header>
+
+<form method="get" action="results">
+  Search Decks: <input type="text" name="name" placeholder="Devon's First Deck"/>
+  <input type="submit" value="Search" />
+</form>
+{% endblock %}
