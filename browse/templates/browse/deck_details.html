@@ -55,13 +55,19 @@
 
   </br>
 
+  <a class="btn btn-secondary" href="https://store.tcgplayer.com/massentry?c={{mass_entry_string}}" target="_blank" role="button">Buy this deck on TCGplayer</a>
+
+  </br>
+  </br>
+
   <a href="/browse?page={{page}}">Back</a></br></br>
 
   {% if has_deck %}
     </br><a href="/builder/validate/deck/{{deck.id}}">Validate deck</a></br></br></br>
     <a href="/builder/remove/deck/{{deck.id}}">Remove this deck from your account</a>
   {% else %}
-    <a href="/builder/add/deck/{{deck.id}}">Add this deck to your account</a>
+    <a href="/builder/add/deck/{{deck.id}}">Make a copy of this deck</a>
+    <a href="/builder/follow/deck/{{deck.id}}">Follow this deck</a>
   {% endif %}
 
 {% endblock %}

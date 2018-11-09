@@ -109,11 +109,14 @@ def deck_details(request, id):
     else:
         has_deck = False
 
+    mass_entry_string = build_mass_entry(deck_cards)
+
     context = {
         'deck': deck,
         'cards_data': cards_data,
         'art_card': art_card,
         'has_deck': has_deck,
+        'mass_entry_string': mass_entry_string,
         'page': page,
     }
 
@@ -143,3 +146,19 @@ def decks_results(request):
     }
 
     return render(request, 'browse/deck_results.html', context)
+
+def build_mass_entry(deck_cards):
+
+    me_string = ""
+
+    for deck_card in deck_cards:
+        me_string += str(deck_card.count)
+
+        name_words = deck_card.card.data['name'].split()
+        for word in name_words:
+            me_string += "%20"  # query string space
+            me_string += word
+
+        me_string += "||"
+
+    return me_string

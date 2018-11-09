@@ -53,14 +53,18 @@
             <option value="{{deck.id}}" label="{{deck.name}}"></option>
           {% endfor %}
         </select>
-        <input type="submit" name="submit" value="Add card to deck"/>
+        <input class="btn btn-secondary" role="button" type="submit" name="submit" value="Add card to deck"/>
       </form>
     </div>
   {% else %}
     <div class="container center-align">
-      <p><a href="/profile/login">Log in</a> to add this card to a deck.</p>
+      <p><a class="btn btn-secondary" href="/profile/login" role="button">Log in</a> to add this card to a deck.</p>
     </div>
   {% endif %}
+
+  <br><br>
+
+  <a class="btn btn-secondary" href="https://shop.tcgplayer.com/magic/product/show?ProductName={{card.data.name}}&Price_Condition=Less+Than" target="_blank" role="button">Buy on TCGplayer</a>
 
   {% if messages %}
     {% for message in messages %}
