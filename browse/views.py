@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.shortcuts import render
 from .models import Card
 from builder.models import Deck, DeckCard
@@ -31,8 +32,15 @@ def cards_all(request):
 def cards_results(request):
     name = request.GET.get('name')
     page = request.GET.get('page')
+    is_advanced = request.GET.get('is_advanced')
 
-    result_cards = Card.objects.filter(data__name__icontains=name).order_by('data__name')
+    if is_advanced:
+        result_cards = Card.objects.filter(
+            data__name__icontains=name,
+
+        ).order_by('data__name')
+    else:
+        result_cards = Card.objects.filter(data__name__icontains=name)
 
     if page == None:
         page = 1
@@ -48,7 +56,6 @@ def cards_results(request):
     }
 
     return render(request, 'browse/card_results.html', context)
-
 
 def card_details(request, id):
     card = Card.objects.get(id=id)
@@ -68,7 +75,6 @@ def card_details(request, id):
 
     return render(request, 'browse/card_details.html', context)
 
-# TODO: Implement all of this
 def cards_search(request):
 
     context = {}
@@ -141,8 +147,23 @@ def decks_search(request):
 def decks_results(request):
     name = request.GET.get('name')
     page = request.GET.get('page')
+    is_advanced = request.GET.get('is_advanced')
 
-    result_decks = Deck.objects.filter(name__icontains=name).order_by('date_created')
+    if is_advanced:
+        format = request.GET.get('format')
+        is_draft = request.GET.get('is_draft')
+        date_created = request.GET.get('date_created')
+
+        result_decks = Deck.objects.filter(
+            name__icontains=name,
+            format__iexact=format,
+            is_draft__iexact=is_draft,
+            colors__icontains=colors,
+            creator__icontains=creator,
+            date_created__gte=date_created,
+        ).order_by('date_created')
+    else:
+        result_decks = Deck.objects.filter(name__icontains=name).order_by('date_created')
 
     if page == None:
         page = 1

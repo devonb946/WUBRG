@@ -2,7 +2,6 @@ import uuid
 from django.forms import ModelForm, Textarea, Select
 from builder.models import Deck
 
-
 class DeckCreationForm(ModelForm):
     class Meta:
         FORMATS = (
