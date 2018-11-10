@@ -30,23 +30,30 @@
   {% for card, deck_card in cards_data %}
       <li class="list-group-item">
         <a href="/browse/card_details/{{card.id}}">{{card.data.name}}</a>
-        {% if deck_card.count > 1 %}
-        <form method="POST" action="/builder/remove/card/{{card.id}}" style="float:left;">
-          {% csrf_token %}
-          <input type="hidden" name="deck_id" value="{{deck.id}}" />
-          <input type="number" style="width:50px" name="remove_count" min="1" max="{{deck_card.count}}" />
-          <button type="submit" style="float:left;" class="close" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </form>
-          x{{deck_card.count}}
-        {% else %}
+        {% if can_edit %}
+          {% if deck_card.count > 1 %}
           <form method="POST" action="/builder/remove/card/{{card.id}}" style="float:left;">
             {% csrf_token %}
             <input type="hidden" name="deck_id" value="{{deck.id}}" />
-            <button type="submit" class="close" aria-label="Close">
+            <input type="number" style="width:50px" name="remove_count" min="1" max="{{deck_card.count}}" />
+            <button type="submit" style="float:left;" class="close" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
+          </form>
+            x{{deck_card.count}}
+          {% else %}
+            <form method="POST" action="/builder/remove/card/{{card.id}}" style="float:left;">
+              {% csrf_token %}
+              <input type="hidden" name="deck_id" value="{{deck.id}}" />
+              <button type="submit" class="close" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </form>
+          {% endif %}
+          <form method="POST" action="/builder/update/art/{{card.id}}" style="float:right;">
+            {% csrf_token %}
+            <input type="hidden" name="deck_id" value="{{deck.id}}" />
+            <button class="btn btn-secondary" type="submit" role="button">Make art card</button>
           </form>
         {% endif %}
       </li>
@@ -62,11 +69,17 @@
 
   <a href="/browse?page={{page}}">Back</a></br></br>
 
-  {% if has_deck %}
-    </br><a href="/builder/validate/deck/{{deck.id}}">Validate deck</a></br></br></br>
+  {% if has_deck and can_edit %}
+    </br><a href="/builder/validate/deck/{{deck.id}}">Validate deck</a></br>
+    </br></br>
     <a href="/builder/remove/deck/{{deck.id}}">Remove this deck from your account</a>
+  {% elif has_deck and not can_edit %}
+    <a href="/builder/add/deck/{{deck.id}}">Make a copy of this deck</a>
+    <br>
+    <a href="/builder/unfollow/deck/{{deck.id}}">Unfollow this deck</a>
   {% else %}
     <a href="/builder/add/deck/{{deck.id}}">Make a copy of this deck</a>
+    <br>
     <a href="/builder/follow/deck/{{deck.id}}">Follow this deck</a>
   {% endif %}
 

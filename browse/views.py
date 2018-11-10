@@ -55,8 +55,13 @@ def card_details(request, id):
     page = request.GET.get('page')
     name = request.GET.get('name')
 
+    # filter decks to add the card to by editable decks only
+    if request.user.is_authenticated:
+        decks = request.user.decks.filter(creator=request.user.username)
+
     context = {
         'card': card,
+        'decks': decks,
         'page': page,
         'name': name
     }
@@ -109,6 +114,12 @@ def deck_details(request, id):
     else:
         has_deck = False
 
+    # limit some functionality for followed decks
+    if user.username == deck.creator:
+        can_edit = True
+    else:
+        can_edit = False
+
     mass_entry_string = build_mass_entry(deck_cards)
 
     context = {
@@ -116,6 +127,7 @@ def deck_details(request, id):
         'cards_data': cards_data,
         'art_card': art_card,
         'has_deck': has_deck,
+        'can_edit': can_edit,
         'mass_entry_string': mass_entry_string,
         'page': page,
     }

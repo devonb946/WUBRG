@@ -49,7 +49,7 @@
       <form action="/builder/add/card/{{card.id}}" method="POST" id="add_card_form">
         {% csrf_token %}
         <select name="deck_id" form="add_card_form">
-          {% for deck in user.decks.all %}
+          {% for deck in decks %}
             <option value="{{deck.id}}" label="{{deck.name}}"></option>
           {% endfor %}
         </select>

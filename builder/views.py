@@ -1,4 +1,5 @@
 import json
+import uuid
 from .models import Deck, DeckCard
 from browse.models import Card
 from .forms import DeckCreationForm
@@ -36,7 +37,6 @@ def create(request):
             deck = form.save()
 
             # adding some implicit fields
-            deck.data = json.dumps({ "cards" : [] })
             deck.creator = user.username
             deck.date_created = timezone.now()
             deck.colors = update_deck_colors(deck)
@@ -67,36 +67,40 @@ def add_card(request, card_id):
         card = Card.objects.get(id=card_id)
         deck = Deck.objects.get(id=deck_id)
 
-        try:
-            dc_relationship = DeckCard.objects.get(deck=deck, card=card)
-        except DeckCard.DoesNotExist:
-            dc_relationship = DeckCard(deck=deck, card=card, count=0)
+        # prevent followers from editing decks
+        if user.username == deck.creator:
+            try:
+                dc_relationship = DeckCard.objects.get(deck=deck, card=card)
+            except DeckCard.DoesNotExist:
+                dc_relationship = DeckCard(deck=deck, card=card, count=0)
 
-        dc_relationship.count += 1
+            dc_relationship.count += 1
 
-        # add a card by udpating the relationship model
-        dc_relationship.save()
+            # add a card by udpating the relationship model
+            dc_relationship.save()
 
-        if deck.card_count == 0:
-            deck.art_card = card
-        deck_cards = DeckCard.objects.filter(deck=deck)
-        deck.card_count = deck_cards.aggregate(Sum('count'))['count__sum']
-        deck.colors = update_deck_colors(deck)
+            if deck.card_count == 0:
+                deck.art_card = card
+            deck_cards = DeckCard.objects.filter(deck=deck)
+            deck.card_count = deck_cards.aggregate(Sum('count'))['count__sum']
+            deck.colors = update_deck_colors(deck)
 
-        deck.save()
+            deck.save()
 
-        messages.success(request, 'Card has been added.')
+            messages.success(request, 'Card has been added.')
 
-        page = request.GET.get('page')
+            page = request.GET.get('page')
 
-        context = {
-            'card': card,
-            'page': page,
-        }
+            context = {
+                'card': card,
+                'page': page,
+            }
 
-        return render(request, 'browse/card_details.html', context)
-
-    return HttpResponse(status=204)
+            return render(request, 'browse/card_details.html', context)
+        else:
+            return HttpResponse(status=204)
+    else:
+        return HttpResponse(status=204)
 
 @login_required
 def remove_card(request, card_id):
@@ -106,31 +110,35 @@ def remove_card(request, card_id):
     deck = Deck.objects.get(id=deck_id)
     card = Card.objects.get(id=card_id)
 
-    remove_count = parse_remove_count(request.POST.get('remove_count'))
+    #prevent followers from editing decks
+    if user.username == deck.creator:
+        remove_count = parse_remove_count(request.POST.get('remove_count'))
 
-    dc_relationship = DeckCard.objects.get(deck=deck, card=card)
+        dc_relationship = DeckCard.objects.get(deck=deck, card=card)
 
-    dc_relationship.count = dc_relationship.count - remove_count
+        dc_relationship.count = dc_relationship.count - remove_count
 
-    if dc_relationship.count <= 0:
-        dc_relationship.delete()
+        if dc_relationship.count <= 0:
+            dc_relationship.delete()
+        else:
+            dc_relationship.save()
+
+        deck_cards = DeckCard.objects.filter(deck=deck)
+        if not deck_cards:
+            deck.card_count = 0
+        else:
+            deck.card_count = deck_cards.aggregate(Sum('count'))['count__sum']
+        deck.colors = update_deck_colors(deck)
+
+        deck.save()
+
+        page = request.GET.get('page')
+
+        messages.success(request, 'Card has been removed.')
+
+        return HttpResponseRedirect('/browse/deck_details/' + deck_id)
     else:
-        dc_relationship.save()
-
-    deck_cards = DeckCard.objects.filter(deck=deck)
-    if not deck_cards:
-        deck.card_count = 0
-    else:
-        deck.card_count = deck_cards.aggregate(Sum('count'))['count__sum']
-    deck.colors = update_deck_colors(deck)
-
-    deck.save()
-
-    page = request.GET.get('page')
-
-    messages.success(request, 'Card has been removed.')
-
-    return HttpResponseRedirect('/browse/deck_details/' + deck_id)
+        return HttpResponse(status=204)
 
 def update_deck_colors(deck):
     colors = set()
@@ -148,28 +156,38 @@ def parse_remove_count(count):
         return 1
 
 @login_required
-def add_deck(request, deck_id):
-    if request.method == 'POST':
-        user = request.user
-        deck = Deck.objects.get(id=deck_id)
+def copy_deck(request, deck_id):
+    user = request.user
+    deck = Deck.objects.get(id=deck_id)
 
-        user.decks.add(deck)
-        messages.success(request, 'Deck has been added.')
-        return render(request, 'builder/add_deck_success.html')
+    # create new copy of deck
+    new_deck_name = "{} ({}\'s copy)".format(deck.name, user.username)
+    new_deck = Deck.objects.create_deck(
+        new_deck_name,
+        deck.description,
+        deck.format,
+        deck.card_count,
+        deck.sideboard_card_count,
+        deck.colors,
+        user.username,
+        timezone.now(),
+        deck.cards.all(),
+        deck.sideboard_cards.all(),
+        deck.art_card
+    )
 
-    return HttpResponse(status=204)
+    user.decks.add(new_deck)
+    messages.success(request, 'Deck has been successfully copied.')
+    return render(request, 'builder/copy_deck_success.html')
 
 @login_required
 def follow_deck(request, deck_id):
-    if request.method == 'POST':
-        user = request.user
-        deck = Deck.objects.get(id=deck_id)
+    user = request.user
+    deck = Deck.objects.get(id=deck_id)
 
-        user.decks.add(deck)
-        messages.success(request, 'Deck has been added.')
-        return render(request, 'builder/add_deck_success.html')
-
-    return HttpResponse(status=204)
+    user.decks.add(deck)
+    messages.success(request, 'Deck has been successfully followed.')
+    return render(request, 'builder/follow_deck_success.html')
 
 @login_required
 def remove_deck(request, deck_id):
@@ -194,10 +212,12 @@ def unfollow_deck(request, deck_id):
     return render(request, 'builder/unfollow_deck_success.html')
 
 @login_required
-def change_art_card(request, deck_id):
+def update_art_card(request, card_id):
     user = request.user
-    deck = Deck.objects.get(id=deck_id)
+    deck_id = request.POST.get('deck_id')
 
+    deck = Deck.objects.get(id=deck_id)
+    card = Card.objects.get(id=card_id)
 
     deck.art_card = card
     deck.save()
