@@ -225,50 +225,36 @@ def update_art_card(request, card_id):
     messages.success(request, 'Art card has been successfully changed.')
     return HttpResponseRedirect('/browse/deck_details/' + deck_id)
 
+@login_required
 def validate_deck(request, deck_id):
     user = request.user
     deck = Deck.objects.get(id=deck_id)
-    format = deck.format
+    format = deck.format.lower()
 
-    # logic bucket for various deck formats
-    if format == 'Standard':
-        is_valid = validate_standard(deck)
-    elif format == 'Modern':
-        is_valid = validate_modern(deck)
-    elif format == 'Commander/EDH':
-        is_valid = validate_commander(deck)
-    elif format == 'Legacy':
-        is_valid = validate_legacy(deck)
-    elif format == 'Vintage':
-        is_valid = validate_vintage(deck)
-    elif format == 'Brawl':
-        is_valid = validate_brawl(deck)
-    else:
-        is_valid = False
-
+    is_valid = validate(deck)
     if is_valid:
         deck.is_draft = False
         deck.save()
 
     return HttpResponse(status=204)
 
-# -------------------------
-# Deck validator functions
-# -------------------------
-def validate_standard(deck):
-    return False
+def validate(deck, format):
+    if format in ['standard', 'modern', 'legacy', 'vintage', 'brawl']:
+        if deck.card_count < 60:
+            return False
+        if format not "brawl" and deck.sideboard_card_count > 15:
+            return False
 
-def validate_modern(deck):
-    return False
+    for card in deck.cards.all():
+        is_legal = check_card_legality(card, format)
+        if not is_legal:
+            is_valid = False
+            break
+    return True
 
-def validate_commander(deck):
-    return False
-
-def validate_legacy(deck):
-    return False
-
-def validate_vintage(deck):
-    return False
-
-def validate_brawl(deck):
-    return False
+def check_card_legality(card, format):
+    for card in deck.cards.all()
+        legality = card.data['legalities']['standard']
+        if legality not "legal":
+            return False
+    return True

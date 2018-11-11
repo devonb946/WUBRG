@@ -7,7 +7,7 @@ class DeckCreationForm(ModelForm):
         FORMATS = (
             ('Standard', 'Standard'),
             ('Modern', 'Modern'),
-            ('Commander/EDH', 'Commander/EDH'),
+            ('Commander', 'Commander'),
             ('Legacy', 'Legacy'),
             ('Vintage', 'Vintage'),
             ('Brawl', 'Brawl'),
