@@ -242,7 +242,7 @@ def validate(deck, format):
 
 def check_card_legality(card, format):
     for card in deck.cards.all():
-        legality = card.data['legalities']['standard']
+        legality = card.data['legalities'][format]
         if legality != 'legal':
             return False
     return True

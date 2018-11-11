@@ -19,9 +19,82 @@
 <hr>
 
 <h3>Advanced Search</h3>
-<form method="get" action="results">
-  <input type="text" name="name" placeholder="Lightning Bolt"/>
-  <input type="hidden" name="is_advanced" value="True">
+<form method="get" action="adv_results">
+  <label>Card Name:  </label><input type="text" name="name" placeholder="Zacama, Primal Calamity"/><br />
+  <label>Rules Text:  </label><input type="text" name="text" placeholder="Vigilance, reach, trample"/><br />
+  <label>Typeline:  </label><input type="text" name="type" placeholder="Legendary Creature — Elder Dinosaur "/><br /><br />
+
+  <label>Card Colors:  </label><br />
+  <input type="checkbox" name="W" value="True">White
+  <input type="checkbox" name="U" value="True">Blue
+  <input type="checkbox" name="B" value="True">Black
+  <input type="checkbox" name="R" value="True">Red
+  <input type="checkbox" name="G" value="True">Green
+  <input type="checkbox" name="C" value="True">Colorless<br />
+  <input type="radio" name="colors" value="e">Exactly these colors
+  <input type="radio" name="colors" value="g">These and more colors
+  <input type="radio" name="colors" value="l">Subsets of these colors<br />
+
+  <label>Color Identity (Commander): </label><br />
+  <input type="checkbox" name="CW" value="True">White
+  <input type="checkbox" name="CU" value="True">Blue
+  <input type="checkbox" name="CB" value="True">Black
+  <input type="checkbox" name="CR" value="True">Red
+  <input type="checkbox" name="CG" value="True">Green
+  <input type="checkbox" name="CC" value="True">Colorless<br /><br />
+
+<label>Stats: </label>
+  <select name="attribute">
+    <option></option>
+    <option value="cmc">CMC</option>
+    <option value="power">Power</option>
+    <option value="toughness">Toughness</option>
+    <option value="loyalty">Loyalty</option>
+  </select>
+  <select name="relation">
+    <option></option>
+    <option value="eq">Equal to</option>
+    <option value="gt">Greater than</option>
+    <option value="lt">Less than</option>
+    <option value="gte">Greater than or equal to</option>
+    <option value="lte">Less than or equal to</option>
+    <option value="ne">Not equal to</option>
+  </select>
+  <input type="text" name="value" placeholder="Some Value"/><br />
+
+  <label>Legalities: </label>
+    <select name="status">
+      <option></option>
+      <option value="legal">Legal</option>
+      <option value="illegal">Illegal</option>
+      <option value="banned">Banned</option>
+      <option value="restricted">Restricted</option>
+    </select>
+     in
+    <select name="format">
+      <option></option>
+      <option value="standard">Standard</option>
+      <option value="modern">Modern</option>
+      <option value="commander">Commander</option>
+      <option value="legacy">Legacy</option>
+      <option value="vintage">Vintage</option>
+      <option value="brawl">Brawl</option>
+    </select><br />
+
+    <label>Rarity: </label>
+      <select name="rarity">
+        <option></option>
+        <option value="common">Common</option>
+        <option value="uncommon">Uncommon</option>
+        <option value="rare">Rare</option>
+        <option value="mythic">Mythic</option>
+      </select><br />
+
+  <label>Artist:  </label><input type="text" name="artist" placeholder="Noah Bradley"/><br />
+
+  <label>Flavor Text:  </label><input type="text" name="flavor" placeholder="Fblthp"/><br />
+
+
   <input type="submit" value="Search" />
 </form>
 
