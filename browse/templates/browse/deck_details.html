@@ -18,6 +18,10 @@
     </a>
     <p>{{deck.description}}</p>
   <br>
+  {% if parent_deck %}
+    <p>Based on: <a href="/browse/deck_details/{{parent_deck.id}}">{{ parent_deck.name }}</a> by {{ parent_deck.creator }}</p>
+  {% endif %}
+  <br>
   <p>Unfinished deck: {{deck.is_draft}}</p>
   <p>Creator: {{deck.creator}}</p>
   <p>Format: {{deck.format}}</p>

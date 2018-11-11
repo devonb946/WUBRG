@@ -147,6 +147,7 @@ def copy_deck(request, deck_id):
     new_deck = Deck.objects.create_deck(
         new_deck_name,
         deck.description,
+        deck.id,
         deck.format,
         deck.card_count,
         deck.sideboard_card_count,
@@ -260,7 +261,7 @@ def mass_entry(request):
             # check if the word we pulled back is actually the quantity
             # and not the first word of the card name
             pattern = re.compile('[0-9]+x$')     # any number followed by x
-            if pattern.match(quantity_candidate):
+            if pattern.match(quantity_candidate):  # can't input more than 999 of a card
                 quantity = int(quantity_candidate[:-1])
                 card_name = ' '.join(line.split(' ')[1:]).strip()
             else:
@@ -270,7 +271,7 @@ def mass_entry(request):
             # TODO make this query smarter
             card_to_add = Card.objects.filter(data__name__icontains=card_name)[0]
             if card_to_add:     # ignore empty results
-                for _ in range(quantity):
+                for _ in range(min(quantity, 999)):
                     add(deck, card_to_add, is_sideboard)
 
         context = { 'deck_id': deck_id }

@@ -302,6 +302,11 @@ def deck_details(request, id):
 
     deck = Deck.objects.get(id=id)
 
+    if deck.parent_id:
+        parent_deck = Deck.objects.get(id=deck.parent_id)
+    else:
+        parent_deck = None
+
     cards = deck.cards.all()
     deck_cards = DeckCard.objects.filter(deck=deck)
     cards_data = zip(cards, deck_cards)
@@ -334,6 +339,7 @@ def deck_details(request, id):
 
     context = {
         'deck': deck,
+        'parent_deck': parent_deck,
         'cards_data': cards_data,
         'sideboard_cards_data': sideboard_cards_data,
         'art_card': art_card,
