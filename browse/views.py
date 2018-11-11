@@ -1,7 +1,7 @@
 from django.utils import timezone
 from django.shortcuts import render
 from .models import Card
-from builder.models import Deck, DeckCard
+from builder.models import Deck, DeckCard, SideboardCard
 from django.http import HttpResponse
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
@@ -106,6 +106,10 @@ def deck_details(request, id):
     deck_cards = DeckCard.objects.filter(deck=deck)
     cards_data = zip(cards, deck_cards)
 
+    sideboard_cards = deck.sideboard_cards.all()
+    sideboard_deck_cards = SideboardCard.objects.filter(deck=deck)
+    sideboard_cards_data = zip(sideboard_cards, sideboard_deck_cards)
+
     art_card = deck.art_card
     page = request.GET.get('page')
 
@@ -126,15 +130,16 @@ def deck_details(request, id):
     else:
         can_edit = False
 
-    mass_entry_string = build_mass_entry(deck_cards)
+    mass_buy_string = build_mass_buy(deck_cards, sideboard_deck_cards)
 
     context = {
         'deck': deck,
         'cards_data': cards_data,
+        'sideboard_cards_data': sideboard_cards_data,
         'art_card': art_card,
         'has_deck': has_deck,
         'can_edit': can_edit,
-        'mass_entry_string': mass_entry_string,
+        'mass_buy_string': mass_buy_string,
         'page': page,
     }
 
@@ -180,18 +185,28 @@ def decks_results(request):
 
     return render(request, 'browse/deck_results.html', context)
 
-def build_mass_entry(deck_cards):
+def build_mass_buy(deck_cards, sideboard_deck_cards):
 
-    me_string = ""
+    mb_string = ""
 
     for deck_card in deck_cards:
-        me_string += str(deck_card.count)
+        mb_string += str(deck_card.count)
 
         name_words = deck_card.card.data['name'].split()
         for word in name_words:
-            me_string += "%20"  # query string space
-            me_string += word
+            mb_string += "%20"  # query string space
+            mb_string += word
 
-        me_string += "||"
+        mb_string += "||"
 
-    return me_string
+    for sideboard_deck_card in sideboard_deck_cards:
+        mb_string += str(sideboard_deck_card.count)
+
+        name_words = sideboard_deck_card.card.data['name'].split()
+        for word in name_words:
+            mb_string += "%20"  # query string space
+            mb_string += word
+
+        mb_string += "||"
+
+    return mb_string

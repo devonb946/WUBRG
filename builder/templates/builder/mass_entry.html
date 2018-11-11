@@ -1,0 +1,40 @@
+{% extends 'builder/base.html' %}
+
+{% block title %}Builder{% endblock %}
+
+{% block content %}
+
+  <h1>Mass entry</h1>
+
+  <p>
+    <b>Type one card name with the quantity per line.</b> <br>
+    The mass entry form will add each normal latest edition card to your chosen
+    deck. If the card with the name you specify does not exist, then that line
+    will be ignored. The quantity must only be specified if you would like
+    multiple of the same card in the deck. The format for quantity is a number
+    followed by an 'x' - e.g. '3x' would specify a quantity of 3 of that card.
+  </p>
+
+  {% if user.is_authenticated %}
+
+  <form action="/builder/add/card/massentry" method="POST" id="mass_entry_form">
+    {% csrf_token %}
+    <select name="deck_id" form="mass_entry_form">
+      {% for deck in decks %}
+        <option value="{{deck.id}}" label="{{deck.name}}"></option>
+      {% endfor %}
+    </select>
+    <br><br>
+    <textarea rows="15" cols="75" name="cards_text" form="mass_entry_form" placeholder="{{placeholder}}"></textarea>
+    <br><br>
+    <button class="btn btn-secondary" role="button" type="submit" name="is_sideboard" value="False">Add cards to deck</button>
+    <button class="btn btn-secondary" role="button" type="submit" name="is_sideboard" value="True">Add cards to sideboard</button>
+  </form>
+  {% else %}
+    <p>Log in to mass add cards to a deck.</p>
+    <a class="btn btn-secondary" href="/profile/login" role="button">Log in</a>
+  {% endif %}
+
+
+
+{% endblock %}

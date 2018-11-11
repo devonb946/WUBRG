@@ -15,4 +15,5 @@ urlpatterns = [
     path('unfollow/deck/<uuid:deck_id>', views.unfollow_deck, name='unfollow_deck'),
     path('validate/deck/<uuid:deck_id>', views.validate_deck, name='validate_deck'),
     path('update/art/<uuid:card_id>', views.update_art_card, name='update_art'),
+    path('add/card/massentry', views.mass_entry, name='mass_entry'),
 ]

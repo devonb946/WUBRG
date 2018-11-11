@@ -24,8 +24,11 @@
   <p>Colors: {{deck.colors}}</p>
   <p>Date Created: {{deck.date_created}}</p>
   <p>Number of cards in deck: {{deck.card_count}}</p>
+  <p>Number of cards in sideboard: {{deck.sideboard_card_count}}</p>
   </div>
 
+  <!-- main deck -->
+  <h3>Mainboard</h3>
   <ul class="list-group">
   {% for card, deck_card in cards_data %}
       <li class="list-group-item">
@@ -60,9 +63,47 @@
   {% endfor %}
   </ul>
 
+  <br>
+
+  <!-- sideboard -->
+  <h3>Sideboard</h3>
+  <ul class="list-group">
+  {% for card, deck_card in sideboard_cards_data %}
+      <li class="list-group-item">
+        <a href="/browse/card_details/{{card.id}}">{{card.data.name}}</a>
+        {% if can_edit %}
+          {% if deck_card.count > 1 %}
+          <form method="POST" action="/builder/remove/card/{{card.id}}" style="float:left;">
+            {% csrf_token %}
+            <input type="hidden" name="deck_id" value="{{deck.id}}" />
+            <input type="number" style="width:50px" name="remove_count" min="1" max="{{deck_card.count}}" />
+            <button type="submit" style="float:left;" class="close" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </form>
+            x{{deck_card.count}}
+          {% else %}
+            <form method="POST" action="/builder/remove/card/{{card.id}}" style="float:left;">
+              {% csrf_token %}
+              <input type="hidden" name="deck_id" value="{{deck.id}}" />
+              <button type="submit" class="close" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </form>
+          {% endif %}
+          <form method="POST" action="/builder/update/art/{{card.id}}" style="float:right;">
+            {% csrf_token %}
+            <input type="hidden" name="deck_id" value="{{deck.id}}" />
+            <button class="btn btn-secondary" type="submit" role="button">Make art card</button>
+          </form>
+        {% endif %}
+      </li>
+  {% endfor %}
+  </ul>
+
   </br>
 
-  <a class="btn btn-secondary" href="https://store.tcgplayer.com/massentry?c={{mass_entry_string}}" target="_blank" role="button">Buy this deck on TCGplayer</a>
+  <a class="btn btn-secondary" href="https://store.tcgplayer.com/massentry?c={{mass_buy_string}}" target="_blank" role="button">Buy this deck on TCGplayer</a>
 
   </br>
   </br>
@@ -70,6 +111,7 @@
   <a href="/browse?page={{page}}">Back</a></br></br>
 
   {% if has_deck and can_edit %}
+    </br><a href="/builder/add/card/massentry">Mass entry</a></br>
     </br><a href="/builder/validate/deck/{{deck.id}}">Validate deck</a></br>
     </br></br>
     <a href="/builder/remove/deck/{{deck.id}}">Remove this deck from your account</a>

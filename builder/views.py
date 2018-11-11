@@ -1,6 +1,7 @@
 import json
 import uuid
-from .models import Deck, DeckCard
+import re
+from .models import Deck, DeckCard, SideboardCard
 from browse.models import Card
 from .forms import DeckCreationForm
 from django.utils import timezone
@@ -63,40 +64,19 @@ def create_success(request):
 def add_card(request, card_id):
     if request.method == 'POST':
         deck_id = request.POST.get('deck_id')
+        is_sideboard = request.POST.get('is_sideboard')
         user = request.user
         card = Card.objects.get(id=card_id)
         deck = Deck.objects.get(id=deck_id)
 
         # prevent followers from editing decks
         if user.username == deck.creator:
-            try:
-                dc_relationship = DeckCard.objects.get(deck=deck, card=card)
-            except DeckCard.DoesNotExist:
-                dc_relationship = DeckCard(deck=deck, card=card, count=0)
-
-            dc_relationship.count += 1
-
-            # add a card by udpating the relationship model
-            dc_relationship.save()
-
-            if deck.card_count == 0:
-                deck.art_card = card
-            deck_cards = DeckCard.objects.filter(deck=deck)
-            deck.card_count = deck_cards.aggregate(Sum('count'))['count__sum']
-            deck.colors = update_deck_colors(deck)
-
-            deck.save()
-
+            add(deck, card, is_sideboard)
             messages.success(request, 'Card has been added.')
 
             page = request.GET.get('page')
 
-            context = {
-                'card': card,
-                'page': page,
-            }
-
-            return render(request, 'browse/card_details.html', context)
+            return HttpResponseRedirect('/browse/card_details/' + str(card_id))
         else:
             return HttpResponse(status=204)
     else:
@@ -106,7 +86,7 @@ def add_card(request, card_id):
 def remove_card(request, card_id):
     user = request.user
     deck_id = request.POST.get('deck_id')
-
+    is_sideboard = request.POST.get('is_sideboard')
     deck = Deck.objects.get(id=deck_id)
     card = Card.objects.get(id=card_id)
 
@@ -144,6 +124,8 @@ def update_deck_colors(deck):
     colors = set()
 
     for card in deck.cards.all():
+        colors = colors.union(card.data['colors'])
+    for card in deck.sideboard_cards.all():
         colors = colors.union(card.data['colors'])
 
     return ''.join(colors)
@@ -235,6 +217,8 @@ def validate_deck(request, deck_id):
     if is_valid:
         deck.is_draft = False
         deck.save()
+        messages.success(request, 'Deck {} has been successfully validated.'.format(deck_id))
+        return HttpResponseRedirect('/browse/deck_details/' + deck_id)
 
     return HttpResponse(status=204)
 
@@ -242,7 +226,11 @@ def validate(deck, format):
     if format in ['standard', 'modern', 'legacy', 'vintage', 'brawl']:
         if deck.card_count < 60:
             return False
-        if format not "brawl" and deck.sideboard_card_count > 15:
+        if format != 'brawl' and deck.sideboard_card_count > 15:
+            return False
+
+    if format == 'commander':
+        if deck.card_count < 100:
             return False
 
     for card in deck.cards.all():
@@ -253,8 +241,77 @@ def validate(deck, format):
     return True
 
 def check_card_legality(card, format):
-    for card in deck.cards.all()
+    for card in deck.cards.all():
         legality = card.data['legalities']['standard']
-        if legality not "legal":
+        if legality != 'legal':
             return False
     return True
+
+def mass_entry(request):
+    if request.method == 'POST' and request.user.is_authenticated:
+        deck_id = request.POST.get('deck_id')
+        is_sideboard = request.POST.get('is_sideboard')
+        cards_text = request.POST.get('cards_text')
+        deck = Deck.objects.get(id=deck_id)
+        cards_text_lines = cards_text.strip().splitlines()
+
+        for line in cards_text_lines:
+            quantity_candidate = line.split(' ')[0].strip()
+            # check if the word we pulled back is actually the quantity
+            # and not the first word of the card name
+            pattern = re.compile('[0-9]+x$')     # any number followed by x
+            if pattern.match(quantity_candidate):
+                quantity = int(quantity_candidate[:-1])
+                card_name = ' '.join(line.split(' ')[1:]).strip()
+            else:
+                quantity = 1
+                card_name = line.strip()
+
+            # TODO make this query smarter
+            card_to_add = Card.objects.filter(data__name__icontains=card_name)[0]
+            if card_to_add:     # ignore empty results
+                for _ in range(quantity):
+                    add(deck, card_to_add, is_sideboard)
+
+        context = { 'deck_id': deck_id }
+        return render(request, 'builder/mass_entry_success.html', context)
+    else:
+        context = {}
+        if request.user.is_authenticated:
+            placeholder = "2x Negate\n1x Thunderclap Wyvern\nKiora, the Crashing Wave\n10x Island"
+            decks = request.user.decks.filter(creator=request.user.username)
+            context = {
+                'placeholder': placeholder,
+                'decks': decks
+            }
+        return render(request, 'builder/mass_entry.html', context)
+
+def add(deck, card, is_sideboard):
+    if is_sideboard == "False":
+        try:
+            dc = DeckCard.objects.get(deck=deck, card=card)
+        except DeckCard.DoesNotExist:
+            dc = DeckCard(deck=deck, card=card, count=0)
+
+        dc.count += 1
+        # add a card by udpating the relationship model
+        dc.save()
+
+        if deck.card_count == 0:
+            deck.art_card = card
+
+        deck_cards = DeckCard.objects.filter(deck=deck)
+        deck.card_count = deck_cards.aggregate(Sum('count'))['count__sum']
+    else:
+        try:
+            sc = SideboardCard.objects.get(deck=deck, card=card)
+        except SideboardCard.DoesNotExist:
+            sc = SideboardCard(deck=deck, card=card, count=0)
+
+        sc.count += 1
+        sc.save()
+        deck_sideboard_cards = SideboardCard.objects.filter(deck=deck)
+        deck.sideboard_card_count = deck_sideboard_cards.aggregate(Sum('count'))['count__sum']
+
+    deck.colors = update_deck_colors(deck)
+    deck.save()
