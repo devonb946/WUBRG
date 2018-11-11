@@ -4,6 +4,32 @@
 
 {% block content %}
 
+  <script type="text/javascript">
+    var getSuggestedCards = async (searchText) => {
+      var queryString = '?q=' + searchText;
+      var response = await fetch('https://api.scryfall.com/cards/autocomplete' + queryString);
+      if (response.status == 200) {
+        var resultJson = await response.json();
+
+        cardsList = resultJson.data;
+        cardsString = "";
+        for(var i=0; i<cardsList.length; i++) {
+          cardsString += '<option value="' + cardsList[i] + '" />';
+        }
+
+        document.getElementById('suggestedCards').innerHTML = cardsString;
+      }
+    }
+
+    function inputCard() {
+      if (typeof cardName != 'undefined') {
+        quantity = document.getElementById('quantity').value;
+        cardName = document.getElementById('cardName').value;
+        document.getElementById('mass_entry_text').value += quantity + "x " + cardName + "\n";
+      }
+    }
+  </script>
+
   <h1>Mass entry</h1>
 
   <p>
@@ -17,6 +43,13 @@
 
   {% if user.is_authenticated %}
 
+  <input type="text" style="width:250px" list="suggestedCards" id="cardName" onkeypress="getSuggestedCards(this.value);"/>
+  <datalist id="suggestedCards"></datalist>
+  <input type="number" style="width:50px" id="quantity" value="1" min="1" max="999"/>
+  <button class="btn btn-secondary" role="button" type="submit" name="is_sideboard" onclick="inputCard()">Add card to mass entry</button>
+
+  <br><br>
+
   <form action="/builder/add/card/massentry" method="POST" id="mass_entry_form">
     {% csrf_token %}
     <select name="deck_id" form="mass_entry_form">
@@ -25,7 +58,7 @@
       {% endfor %}
     </select>
     <br><br>
-    <textarea rows="15" cols="75" name="cards_text" form="mass_entry_form" placeholder="{{placeholder}}"></textarea>
+    <textarea id="mass_entry_text" rows="15" cols="75" name="cards_text" form="mass_entry_form" placeholder="{{placeholder}}"></textarea>
     <br><br>
     <button class="btn btn-secondary" role="button" type="submit" name="is_sideboard" value="False">Add cards to deck</button>
     <button class="btn btn-secondary" role="button" type="submit" name="is_sideboard" value="True">Add cards to sideboard</button>

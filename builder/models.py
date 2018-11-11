@@ -4,11 +4,12 @@ from django.contrib.postgres.fields import JSONField
 from browse.models import Card
 
 class DeckManager(models.Manager):
-    def create_deck(self, name, description, format, card_count, sideboard_card_count, colors, creator, date_created, cards, sideboard_cards, art_card):
+    def create_deck(self, name, description, parent_id, format, card_count, sideboard_card_count, colors, creator, date_created, cards, sideboard_cards, art_card):
         deck = self.create(
             name=name,
             description=description,
             id=uuid.uuid4(),
+            parent_id=parent_id,
             format=format,
             is_draft=True,
             card_count=card_count,
@@ -42,6 +43,7 @@ class Deck(models.Model):
     name = models.CharField(max_length=100, default='')
     description = models.CharField(max_length=10000, default='')
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, null=False)
+    parent_id = models.UUIDField(primary_key=False, editable=False, null=True)
     format = models.CharField(max_length=50, default='')
     is_draft = models.BooleanField(default=True)
     card_count = models.IntegerField(default=0)
