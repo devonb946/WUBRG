@@ -2,17 +2,45 @@
 
 <head>
   <title>WUBRG - Search Cards</title>
+
 </head>
 
 {% block title %}Search Cards{% endblock %}
 
 {% block content %}
+<script type="text/javascript">
+  var getSuggestedCards = async (searchText) => {
+    var queryString = '?q=' + searchText;
+    var response = await fetch('https://api.scryfall.com/cards/autocomplete' + queryString);
+    if (response.status == 200) {
+      var resultJson = await response.json();
+
+      cardsList = resultJson.data;
+      cardsString = "";
+      for(var i=0; i<cardsList.length; i++) {
+        cardsString += '<option value="' + cardsList[i] + '" />';
+      }
+
+      document.getElementById('suggestedCards').innerHTML = cardsString;
+    }
+  }
+
+  function inputCard() {
+    if (typeof cardName != 'undefined') {
+      quantity = document.getElementById('quantity').value;
+      cardName = document.getElementById('cardName').value;
+      document.getElementById('mass_entry_text').value += quantity + "x " + cardName + "\n";
+    }
+  }
+</script>
+
 <header class="container center-align">
   <h1>Search Cards</h1>
 </header>
 
 <form method="get" action="results">
-  Search Cards: <input type="text" name="name" placeholder="Lightning Bolt"/>
+  Search Cards: <input type="text" name="name" id="cardName" list="suggestedCards" onkeypress="getSuggestedCards(this.value);" placeholder="Lightning Bolt"/>
+  <datalist id="suggestedCards"></datalist>
   <input type="submit" value="Search" />
 </form>
 
@@ -20,7 +48,8 @@
 
 <h3>Advanced Search</h3>
 <form method="get" action="adv_results">
-  <label>Card Name:  </label><input type="text" name="name" placeholder="Zacama, Primal Calamity"/><br />
+  <label>Card Name:  </label><input type="text" name="name" list="suggestedCardsAdv" onkeypress="getSuggestedCards(this.value);" placeholder="Zacama, Primal Calamity"/>
+  <datalist id="suggestedCardsAdv"></datalist><br />
   <label>Rules Text:  </label><input type="text" name="text" placeholder="Vigilance, reach, trample"/><br />
   <label>Typeline:  </label><input type="text" name="type" placeholder="Legendary Creature — Elder Dinosaur "/><br /><br />
 
