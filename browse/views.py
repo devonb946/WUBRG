@@ -30,10 +30,13 @@ def cards_all(request):
     return render(request, 'browse/card_results.html', context)
 
 def cards_results(request):
-    query = request.META['QUERY_STRING']
-    name = request.GET.get('name')
-    page = request.GET.get('page')
+    name = request.GET.get('name', None)
+    page = request.GET.get('page', None)
     is_advanced = request.GET.get('is_advanced')
+
+    query = request.META['QUERY_STRING']
+    if "page" in query:
+        query = query[query.find("&"):]
 
     result_cards = Card.objects.filter(data__name__icontains=name)
 
@@ -55,8 +58,8 @@ def cards_results(request):
 
 def card_details(request, id):
     card = Card.objects.get(id=id)
-    page = request.GET.get('page')
-    name = request.GET.get('name')
+    page = request.GET.get('page', None)
+    name = request.GET.get('name', None)
 
     # filter decks to add the card to by editable decks only
     if request.user.is_authenticated:
@@ -137,36 +140,36 @@ def stat_relations(result_cards, attribute, relation, value):
 def legality_relations(result_cards, status, format):
     if format == "standard":
         if status == "legal":
-            result_cards = result_cards.filter(data__legalities__standard=True)
+            result_cards = result_cards.filter(data__legalities__standard="legal")
         elif status == "illegal":
-            result_cards = result_cards.filter(data__legalities__standard=False)
+            result_cards = result_cards.filter(data__legalities__standard="not_legal")
         elif status == "banned":
             result_cards = result_cards.filter(data__legalities__standard="banned")
         elif status == "restricted":
             result_cards = result_cards.filter(data__legalities__standard="restricted")
     elif format == "modern":
         if status == "legal":
-            result_cards = result_cards.filter(data__legalities__modern=True)
+            result_cards = result_cards.filter(data__legalities__modern="legal")
         elif status == "illegal":
-            result_cards = result_cards.filter(data__legalities__modern=False)
+            result_cards = result_cards.filter(data__legalities__modern="not_legal")
         elif status == "banned":
             result_cards = result_cards.filter(data__legalities__modern="banned")
         elif status == "restricted":
             result_cards = result_cards.filter(data__legalities__modern="restricted")
     elif format == "commander":
         if status == "legal":
-            result_cards = result_cards.filter(data__legalities__commander=True)
+            result_cards = result_cards.filter(data__legalities__commander="legal")
         elif status == "illegal":
-            result_cards = result_cards.filter(data__legalities__commander=False)
+            result_cards = result_cards.filter(data__legalities__commander="not_legal")
         elif status == "banned":
             result_cards = result_cards.filter(data__legalities__commander="banned")
         elif status == "restricted":
             result_cards = result_cards.filter(data__legalities__commander="restricted")
     elif format == "legacy":
         if status == "legal":
-            result_cards = result_cards.filter(data__legalities__legacy=True)
+            result_cards = result_cards.filter(data__legalities__legacy="legal")
         elif status == "illegal":
-            result_cards = result_cards.filter(data__legalities__legacy=False)
+            result_cards = result_cards.filter(data__legalities__legacy="not_legal")
         elif status == "banned":
             result_cards = result_cards.filter(data__legalities__legacy="banned")
         elif status == "restricted":
@@ -194,20 +197,22 @@ def legality_relations(result_cards, status, format):
 
 def cards_adv_results(request):
 
-    query = request.META['QUERY_STRING']
+    page = request.GET.get('page', None)
+    name = request.GET.get('name', None)
+    text = request.GET.get('text', None)
+    type = request.GET.get('type', None)
+    value = request.GET.get('value', None)
+    status = request.GET.get('status', None)
+    format = request.GET.get('format', None)
+    set = request.GET.get('set', None)
+    rarity = request.GET.get('rarity', None)
+    artist = request.GET.get('artist', None)
+    flavor = request.GET.get('flavor', None)
+    language = request.GET.get('language', None)
 
-    page = request.GET.get('page')
-    name = request.GET.get('name')
-    text = request.GET.get('text')
-    type = request.GET.get('type')
-    value = request.GET.get('value')
-    status = request.GET.get('status')
-    format = request.GET.get('format')
-    set = request.GET.get('set')
-    rarity = request.GET.get('rarity')
-    artist = request.GET.get('artist')
-    flavor = request.GET.get('flavor')
-    language = request.GET.get('language')
+    query = request.META['QUERY_STRING']
+    if "page" in query:
+        query = query[query.find("&"):]
 
     result_cards = Card.objects.all()
 
@@ -235,7 +240,6 @@ def cards_adv_results(request):
         newcolors = ["W", "U", "R", "B", "G", "C"]
         for i in cols:
             newcolors.remove(i)
-        print(newcolors)
         for i in newcolors:
             result_cards = result_cards.exclude(data__colors__contains=i)
 
@@ -271,6 +275,7 @@ def cards_adv_results(request):
     result_cards = result_cards.order_by("data__name")
     paginator = Paginator(result_cards, 42)
     cards = paginator.get_page(page)
+
 
     context = {
         'query': query,
