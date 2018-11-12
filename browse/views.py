@@ -30,17 +30,15 @@ def cards_all(request):
     return render(request, 'browse/card_results.html', context)
 
 def cards_results(request):
-    name = request.GET.get('name')
-    page = request.GET.get('page')
+    name = request.GET.get('name', None)
+    page = request.GET.get('page', None)
     is_advanced = request.GET.get('is_advanced')
 
-    if is_advanced:
-        result_cards = Card.objects.filter(
-            data__name__icontains=name,
+    query = request.META['QUERY_STRING']
+    if "page" in query:
+        query = query[query.find("&"):]
 
-        ).order_by('data__name')
-    else:
-        result_cards = Card.objects.filter(data__name__icontains=name)
+    result_cards = Card.objects.filter(data__name__icontains=name)
 
     if page == None:
         page = 1
@@ -52,15 +50,16 @@ def cards_results(request):
         'cards': cards,
         'page': page,
         'title': 'Search results for "{}"'.format(name),
-        'name': name
+        'name': name,
+        'query': query
     }
 
     return render(request, 'browse/card_results.html', context)
 
 def card_details(request, id):
     card = Card.objects.get(id=id)
-    page = request.GET.get('page')
-    name = request.GET.get('name')
+    page = request.GET.get('page', None)
+    name = request.GET.get('name', None)
 
     # filter decks to add the card to by editable decks only
     if request.user.is_authenticated:
@@ -76,10 +75,216 @@ def card_details(request, id):
     return render(request, 'browse/card_details.html', context)
 
 def cards_search(request):
-
     context = {}
-
     return render(request, 'browse/card_search.html', context)
+
+def stat_relations(result_cards, attribute, relation, value):
+    if attribute == "cmc":
+        value = float(value)
+        if relation == "eq":
+            result_cards = result_cards.filter(data__cmc=value)
+        elif relation == "gt":
+            result_cards = result_cards.filter(data__cmc__gt=value)
+        elif relation == "lt":
+            result_cards = result_cards.filter(data__cmc__lt=value)
+        elif relation == "gte":
+            result_cards = result_cards.filter(data__cmc__gte=value)
+        elif relation == "lte":
+            result_cards = result_cards.filter(data__cmc__lte=value)
+        elif relation == "ne":
+            result_cards = result_cards.filter(data__cmc__ne=value)
+    elif attribute == "power":
+        value = str(value)
+        if relation == "eq":
+            result_cards = result_cards.filter(data__power=value)
+        elif relation == "gt":
+            result_cards = result_cards.filter(data__power__gt=value)
+        elif relation == "lt":
+            result_cards = result_cards.filter(data__power__lt=value)
+        elif relation == "gte":
+            result_cards = result_cards.filter(data__power__gte=value)
+        elif relation == "lte":
+            result_cards = result_cards.filter(data__power__lte=value)
+        elif relation == "ne":
+            result_cards = result_cards.filter(data__power__ne=value)
+    elif attribute == "toughness":
+        value = str(value)
+        if relation == "eq":
+            result_cards = result_cards.filter(data__toughness=value)
+        elif relation == "gt":
+            result_cards = result_cards.filter(data__toughness__gt=value)
+        elif relation == "lt":
+            result_cards = result_cards.filter(data__toughness__lt=value)
+        elif relation == "gte":
+            result_cards = result_cards.filter(data__toughness__gte=value)
+        elif relation == "lte":
+            result_cards = result_cards.filter(data__toughness__lte=value)
+        elif relation == "ne":
+            result_cards = result_cards.filter(data__toughness__ne=value)
+    elif attribute == "loyalty":
+        value = str(value)
+        if relation == "eq":
+            result_cards = result_cards.filter(data__loyalty=value)
+        elif relation == "gt":
+            result_cards = result_cards.filter(data__loyalty__gt=value)
+        elif relation == "lt":
+            result_cards = result_cards.filter(data__loyalty__lt=value)
+        elif relation == "gte":
+            result_cards = result_cards.filter(data__loyalty__gte=value)
+        elif relation == "lte":
+            result_cards = result_cards.filter(data__loyalty__lte=value)
+        elif relation == "ne":
+            result_cards = result_cards.filter(data__loyalty__ne=value)
+    return result_cards
+
+def legality_relations(result_cards, status, format):
+    if format == "standard":
+        if status == "legal":
+            result_cards = result_cards.filter(data__legalities__standard="legal")
+        elif status == "illegal":
+            result_cards = result_cards.filter(data__legalities__standard="not_legal")
+        elif status == "banned":
+            result_cards = result_cards.filter(data__legalities__standard="banned")
+        elif status == "restricted":
+            result_cards = result_cards.filter(data__legalities__standard="restricted")
+    elif format == "modern":
+        if status == "legal":
+            result_cards = result_cards.filter(data__legalities__modern="legal")
+        elif status == "illegal":
+            result_cards = result_cards.filter(data__legalities__modern="not_legal")
+        elif status == "banned":
+            result_cards = result_cards.filter(data__legalities__modern="banned")
+        elif status == "restricted":
+            result_cards = result_cards.filter(data__legalities__modern="restricted")
+    elif format == "commander":
+        if status == "legal":
+            result_cards = result_cards.filter(data__legalities__commander="legal")
+        elif status == "illegal":
+            result_cards = result_cards.filter(data__legalities__commander="not_legal")
+        elif status == "banned":
+            result_cards = result_cards.filter(data__legalities__commander="banned")
+        elif status == "restricted":
+            result_cards = result_cards.filter(data__legalities__commander="restricted")
+    elif format == "legacy":
+        if status == "legal":
+            result_cards = result_cards.filter(data__legalities__legacy="legal")
+        elif status == "illegal":
+            result_cards = result_cards.filter(data__legalities__legacy="not_legal")
+        elif status == "banned":
+            result_cards = result_cards.filter(data__legalities__legacy="banned")
+        elif status == "restricted":
+            result_cards = result_cards.filter(data__legalities__legacy="restricted")
+    elif format == "vintage":
+        if status == "legal":
+            result_cards = result_cards.filter(data__legalities__vintage=True)
+        elif status == "illegal":
+            result_cards = result_cards.filter(data__legalities__vintage=False)
+        elif status == "banned":
+            result_cards = result_cards.filter(data__legalities__vintage="banned")
+        elif status == "restricted":
+            result_cards = result_cards.filter(data__legalities__vintage="restricted")
+    elif format == "brawl":
+        if status == "legal":
+            result_cards = result_cards.filter(data__legalities__brawl=True)
+        elif status == "illegal":
+            result_cards = result_cards.filter(data__legalities__brawl=False)
+        elif status == "banned":
+            result_cards = result_cards.filter(data__legalities__brawl="banned")
+        elif status == "restricted":
+            result_cards = result_cards.filter(data__legalities__brawl="restricted")
+    return result_cards
+
+
+def cards_adv_results(request):
+
+    page = request.GET.get('page', None)
+    name = request.GET.get('name', None)
+    text = request.GET.get('text', None)
+    type = request.GET.get('type', None)
+    value = request.GET.get('value', None)
+    status = request.GET.get('status', None)
+    format = request.GET.get('format', None)
+    set = request.GET.get('set', None)
+    rarity = request.GET.get('rarity', None)
+    artist = request.GET.get('artist', None)
+    flavor = request.GET.get('flavor', None)
+    language = request.GET.get('language', None)
+
+    query = request.META['QUERY_STRING']
+    if "page" in query:
+        query = query[query.find("&"):]
+
+    result_cards = Card.objects.all()
+
+    if(name):
+        result_cards = result_cards.filter(data__name__icontains=name)
+    if(text):
+        result_cards = result_cards.filter(data__oracle_text__icontains=text)
+    if(type):
+        result_cards = result_cards.filter(data__type_line__icontains=type)
+
+
+    cols = []
+    for i in 'WUBRGC':
+        if bool(request.GET.get(i)):
+            cols += [str(i).upper()]
+    cols = sorted(cols)
+    colors = request.GET.get('colors')
+
+    if colors == 'e':
+        result_cards = result_cards.filter(data__colors=cols)
+    elif colors == 'g':
+        for i in cols:
+            result_cards = result_cards.filter(data__colors__contains=i)
+    elif colors == 'l':
+        newcolors = ["W", "U", "R", "B", "G", "C"]
+        for i in cols:
+            newcolors.remove(i)
+        for i in newcolors:
+            result_cards = result_cards.exclude(data__colors__contains=i)
+
+    comm_cols = []
+    for i in 'WUBRGC':
+        if bool(request.GET.get("C"+i)):
+            comm_cols += [str(i).upper()]
+    comm_cols = sorted(comm_cols)
+    if comm_cols != []:
+        result_cards = result_cards.filter(data__color_identity=comm_cols)
+
+
+    if(value):
+        attribute = request.GET.get('attribute')
+        relation = request.GET.get('relation')
+        result_cards = stat_relations(result_cards, attribute, relation, value)
+
+
+    if(status and format):
+        result_cards = legality_relations(result_cards, status, format)
+
+    if(rarity):
+        result_cards = result_cards.filter(data__rarity=rarity)
+
+    if(artist):
+        result_cards = result_cards.filter(data__artist__icontains=artist)
+
+    if(flavor):
+        result_cards = result_cards.filter(data__flavor_text__icontains=flavor)
+
+
+
+    result_cards = result_cards.order_by("data__name")
+    paginator = Paginator(result_cards, 42)
+    cards = paginator.get_page(page)
+
+
+    context = {
+        'query': query,
+        'cards': cards,
+        'page': page,
+        'title': 'Advanced Search Results',
+    }
+
+    return render(request, 'browse/card_results.html', context)
 
 
 # deck views

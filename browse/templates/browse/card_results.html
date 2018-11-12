@@ -11,10 +11,10 @@
 
 <div class="text-center">
     <span class="step-links">
-      {% if name %}
+      {% if query %}
             {% if cards.has_previous %}
-                <a href="?page=1&name={{ name }}">&laquo; first</a>
-                <a href="?page={{ cards.previous_page_number }}&name={{ name }}">previous</a>
+                <a href="?page=1&name={{ query }}">&laquo; first</a>
+                <a href="?page={{ cards.previous_page_number }}&name={{ query }}">previous</a>
             {% endif %}
 
             <span class="current">
@@ -22,8 +22,8 @@
             </span>
 
             {% if cards.has_next %}
-                <a href="?page={{ cards.next_page_number }}&name={{ name }}">next</a>
-                <a href="?page={{ cards.paginator.num_pages }}&name={{ name }}">last &raquo;</a>
+                <a href="?page={{ cards.next_page_number }}&{{ query }}">next</a>
+                <a href="?page={{ cards.paginator.num_pages }}&{{ query }}">last &raquo;</a>
             {% endif %}
 
       {% else %}
@@ -77,10 +77,10 @@
 
 <div class="text-center">
     <span class="step-links">
-      {% if name %}
+      {% if query %}
             {% if cards.has_previous %}
-                <a href="?page=1&name={{ name }}">&laquo; first</a>
-                <a href="?page={{ cards.previous_page_number }}&name={{ name }}">previous</a>
+                <a href="?page=1&name={{ query }}">&laquo; first</a>
+                <a href="?page={{ cards.previous_page_number }}&name={{ query }}">previous</a>
             {% endif %}
 
             <span class="current">
@@ -88,8 +88,8 @@
             </span>
 
             {% if cards.has_next %}
-                <a href="?page={{ cards.next_page_number }}&name={{ name }}">next</a>
-                <a href="?page={{ cards.paginator.num_pages }}&name={{ name }}">last &raquo;</a>
+                <a href="?page={{ cards.next_page_number }}&{{ query }}">next</a>
+                <a href="?page={{ cards.paginator.num_pages }}&{{ query }}">last &raquo;</a>
             {% endif %}
 
       {% else %}

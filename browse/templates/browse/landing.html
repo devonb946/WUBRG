@@ -27,10 +27,19 @@
   {% for card in cards %}
     <div class="col-sm-2" style="margin:15px !important;">
         <a href="/browse/card_details/{{card.id}}">
-          {% if card.data.layout == "transform"  %}
+          {% if card.data.layout == "transform" or card.data.layout == "double_faced_token" %}
             <img style="height:200px;" src="{{card.data.card_faces.0.image_uris.small}}" />
+            <img style="height:200px;" src="{{card.data.card_faces.1.image_uris.small}}" />
+          {% elif card.data.layout == "flip" %}
+            <img style="height:200px;" src="{{card.data.image_uris.small}}" />
+            <img class="roatate_d" style="height:200px;" src="{{card.data.image_uris.small}}" />
           {% elif card.data.layout == "planar" or card.data.layout == "split"  %}
-            <img class="rotate" style="height:200px;" src="{{card.data.image_uris.small}}" />
+              {% if "Aftermath" in card.data.card_faces.1.oracle_text  %}
+                <img style="height:200px;" src="{{card.data.image_uris.small}}" />
+                <img class="rotate_l" style="height:200px; margin-left:100px;" src="{{card.data.image_uris.small}}" />
+              {% else %}
+                <img class="rotate" style="height:200px;" src="{{card.data.image_uris.small}}" />
+              {% endif %}
           {% else %}
             <img style="height:200px;" src="{{card.data.image_uris.small}}" />
           {% endif %}
