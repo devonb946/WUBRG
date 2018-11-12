@@ -60,6 +60,7 @@ class DeckCard(models.Model):
     deck = models.ForeignKey(Deck, on_delete=models.CASCADE)
     card = models.ForeignKey(Card, on_delete=models.CASCADE)
     count = models.IntegerField(default=0)
+    is_commander = models.BooleanField(default=False)
 
 class SideboardCard(models.Model):
     deck = models.ForeignKey(Deck, on_delete=models.CASCADE)

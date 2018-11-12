@@ -65,13 +65,14 @@ def add_card(request, card_id):
     if request.method == 'POST':
         deck_id = request.POST.get('deck_id')
         is_sideboard = request.POST.get('is_sideboard')
+        is_commander = request.POST.get('is_commander')
         user = request.user
         card = Card.objects.get(id=card_id)
         deck = Deck.objects.get(id=deck_id)
 
         # prevent followers from editing decks
         if user.username == deck.creator:
-            add(deck, card, is_sideboard)
+            add(deck, card, is_sideboard, is_commander)
             messages.success(request, 'Card has been added.')
 
             page = request.GET.get('page')
@@ -214,12 +215,12 @@ def validate_deck(request, deck_id):
     deck = Deck.objects.get(id=deck_id)
     format = deck.format.lower()
 
-    is_valid = validate(deck)
+    is_valid = validate(deck, format)
     if is_valid:
         deck.is_draft = False
         deck.save()
         messages.success(request, 'Deck {} has been successfully validated.'.format(deck_id))
-        return HttpResponseRedirect('/browse/deck_details/' + deck_id)
+        return HttpResponseRedirect('/browse/deck_details/' + str(deck_id))
 
     return HttpResponse(status=204)
 
@@ -234,19 +235,40 @@ def validate(deck, format):
         if deck.card_count < 100:
             return False
 
+    # check for a commander card and color identity
+    if format in ['commander', 'brawl']:
+        deck_cards = DeckCard.objects.filter(deck=deck)
+        is_legal = check_commander_identity(deck_cards)
+        if not is_legal:
+            return False
+
     for card in deck.cards.all():
         is_legal = check_card_legality(card, format)
         if not is_legal:
-            is_valid = False
-            break
+            return False
+
     return True
 
 def check_card_legality(card, format):
-    for card in deck.cards.all():
-        legality = card.data['legalities']['standard']
-        if legality != 'legal':
-            return False
-    return True
+    legality = card.data['legalities'][format]
+    if legality != 'legal':
+        return False
+    else:
+        return True
+
+def check_commander_identity(deck_cards):
+    commanders = all((card for card in deck_cards if card.is_commander), None)
+    if commanders:
+        color_identity = set()
+        for commander in commanders:
+            color_identity = color_identity.union(commander.data['color_identity'])
+        color_identity = list(color_identity)
+        for card in deck_cards:
+            if card.data['color_identity'] not in color_identity:
+                return False
+        return True
+    else:
+        return False
 
 def mass_entry(request):
     if request.method == 'POST' and request.user.is_authenticated:
@@ -268,11 +290,17 @@ def mass_entry(request):
                 quantity = 1
                 card_name = line.strip()
 
-            # TODO make this query smarter
+            # check for special commander string
+            if card_name[-1] == "__commander__":
+                card_name = card_name[:-1]
+                is_commander = True
+            else:
+                is_commander = False
+
             card_to_add = Card.objects.filter(data__name__icontains=card_name)[0]
             if card_to_add:     # ignore empty results
                 for _ in range(min(quantity, 999)):
-                    add(deck, card_to_add, is_sideboard)
+                    add(deck, card_to_add, is_sideboard, is_commander)
 
         context = { 'deck_id': deck_id }
         return render(request, 'builder/mass_entry_success.html', context)
@@ -287,12 +315,17 @@ def mass_entry(request):
             }
         return render(request, 'builder/mass_entry.html', context)
 
-def add(deck, card, is_sideboard):
+def add(deck, card, is_sideboard, is_commander):
     if is_sideboard == "False":
         try:
             dc = DeckCard.objects.get(deck=deck, card=card)
         except DeckCard.DoesNotExist:
             dc = DeckCard(deck=deck, card=card, count=0)
+
+        # check if card is eligible to be a commander
+        is_eligible_commander = check_commander_status(dc.card)
+        if is_commander == "True" and is_eligible_commander:
+            dc.is_commander = True
 
         dc.count += 1
         # add a card by udpating the relationship model
@@ -316,3 +349,11 @@ def add(deck, card, is_sideboard):
 
     deck.colors = update_deck_colors(deck)
     deck.save()
+
+def check_commander_status(card):
+    if "legendary" in card.data['type_line'].lower() and "creature" in card.data['type_line'].lower():
+        return True
+    elif "can be your commander" in card.data['oracle_text'].lower():
+        return True
+    else:
+        return False
