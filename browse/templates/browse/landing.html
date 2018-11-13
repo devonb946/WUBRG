@@ -29,7 +29,6 @@
         <a href="/browse/card_details/{{card.id}}">
           {% if card.data.layout == "transform" or card.data.layout == "double_faced_token" %}
             <img style="height:200px;" src="{{card.data.card_faces.0.image_uris.small}}" />
-            <img style="height:200px;" src="{{card.data.card_faces.1.image_uris.small}}" />
           {% elif card.data.layout == "flip" %}
             <img style="height:200px;" src="{{card.data.image_uris.small}}" />
             <img class="roatate_d" style="height:200px;" src="{{card.data.image_uris.small}}" />
