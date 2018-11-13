@@ -221,8 +221,9 @@ def validate_deck(request, deck_id):
         deck.save()
         messages.success(request, 'Deck {} has been successfully validated.'.format(deck_id))
         return HttpResponseRedirect('/browse/deck_details/' + str(deck_id))
-
-    return HttpResponse(status=204)
+    else:
+        context = { 'deck_id': deck_id }
+        return render(request, 'builder/validate_deck_failure.html', context)
 
 def validate(deck, format):
     if format in ['standard', 'modern', 'legacy', 'vintage', 'brawl']:

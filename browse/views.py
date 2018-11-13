@@ -5,8 +5,8 @@ from builder.models import Deck, DeckCard, SideboardCard
 from django.http import HttpResponse
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
-# Create your views here.
 
+#browse views
 def index(request):
     cards = Card.objects.all().exclude(data__layout = 'token').exclude(data__layout = 'double_faced_token').exclude(data__layout = 'emblem').filter(data__lang = 'en').order_by('?')[:5]
     context = {
