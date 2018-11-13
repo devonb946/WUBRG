@@ -24,7 +24,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project_name.settings.local")
 SECRET_KEY = os.environ.get('WUBRG_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('WUBRG_DEBUG')
+DEBUG = os.environ.get('WUBRG_DEBUG', False)
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'wubrg-mtg.herokuapp.com']
 
