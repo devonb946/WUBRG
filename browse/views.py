@@ -64,6 +64,8 @@ def card_details(request, id):
     # filter decks to add the card to by editable decks only
     if request.user.is_authenticated:
         decks = request.user.decks.filter(creator=request.user.username)
+    else:
+        decks = []
 
     context = {
         'card': card,
