@@ -75,6 +75,7 @@
   {% for card, deck_card in sideboard_cards_data %}
       <li class="list-group-item">
         <a href="/browse/card_details/{{card.id}}">{{card.data.name}}</a>
+        x{{deck_card.count}}
         {% if can_edit %}
           {% if deck_card.count > 1 %}
           <form method="POST" action="/builder/remove/card/{{card.id}}" style="float:left;">
@@ -85,7 +86,6 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </form>
-            x{{deck_card.count}}
           {% else %}
             <form method="POST" action="/builder/remove/card/{{card.id}}" style="float:left;">
               {% csrf_token %}
