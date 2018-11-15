@@ -1,11 +1,10 @@
-from django.conf.urls import url
+from django.urls import path
 from . import views
 
 urlpatterns = [
-    url('', views.index, name='index'),
+    path('', views.index, name='index'),
 
     # informational tools paths
-    url('tools/youtube/', views.youtube, name='youtube'),
-    url('tools/articles/', views.articles, name='articles'),
-    url('tools/tutorials/', views.tutorials, name='tutorials'),
+    path('mtgrss/', views.mtgrss, name='mtgrss'),
+    path('youtube/', views.youtube, name='youtube'),
 ]

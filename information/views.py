@@ -4,11 +4,8 @@ from django.shortcuts import render
 def index(request):
     return render(request, 'information/base.html')
 
+def mtgrss(request):
+    return render(request, 'information/mtgrss.html')
+
 def youtube(request):
-    return render(request, 'information/base.html')
-
-def articles(request):
-    return render(request, 'information/base.html')
-
-def tutorials(request):
-    return render(request, 'information/base.html')
+    return render(request, 'information/youtube.html')
