@@ -6,17 +6,30 @@ Information & Tools
 
 {% block blurb %}
 Check out the latest tournament news, how to play, and more!
-
-<a>RSS Feed</a>
-<a href="mtgrss"><h2>RSS Feed</h2></a>
-<a href="youtube"><h2>Youtube Feed</h2></a>
+<br />
 {% endblock %}
 
 {% block content %}
-
-<h3> Wizards of the Coast's RSS Feed </h3>
-<script src="//rss.bloople.net/?url=https%3A%2F%2Fmagic.wizards.com%2Fen%2Frss%2Frss.xml&showtitle=false&type=js"></script>
-
-<h3>
+<style>
+  img{
+    width:600px;
+  }
+  .wubrgapp-body {
+      padding-left: 5%;
+      padding-right: 5%;
+      padding-top: 40px;
+      padding-bottom: 5%;
+  }
+</style>
+<br />
+<div class="row">
+  <div class="col-sm-6">
+    <h3> Wizards of the Coast's RSS Feed </h3>
+    <script src="//rss.bloople.net/?url=https%3A%2F%2Fmagic.wizards.com%2Fen%2Frss%2Frss.xml&showtitle=false&type=js"></script>
+  </div>
+  <div class="col-sm-6">
+    <h3> Youtube Feed </h3>
+    <iframe src="http://www.youtube.com/embed/?listType=user_uploads&list=TheManaSource" width="480" height="400"></iframe>
+  </div>
 
 {% endblock %}
