@@ -32,8 +32,18 @@ def index(request):
         item.creator = soup_item.find('dc:creator').contents[0] if soup_item.find('dc:creator') else None
         rss_items.append(item)
 
+        channels = [
+            ["Wizards Official", "wizardsmtg"],
+            ["Channel Fireball", "ChannelFireball"],
+            ["Star City Games", "starcitygamesvideo"],
+            ["The Mana Source", "TheManaSource"],
+            ["Tolarian Community College", "TolarianCommunity"],
+            ["Gathering Magic", "generalcollectibles"]
+        ]
+
     context = {
-        'rss_items': rss_items
+        'rss_items': rss_items,
+        'channels': channels
     }
     return render(request, 'information/base.html', context)
 
