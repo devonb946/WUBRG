@@ -24,7 +24,7 @@ Check out the latest tournament news, how to play, and more!
 <br />
 <div class="row">
   <div class="col-sm-6">
-    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+    <div id="rssCarousel" class="carousel slide" data-ride="carousel">
       <div class="carousel-inner">
         {% for rss_item in rss_items %}
           {% if forloop.first %}
@@ -43,11 +43,11 @@ Check out the latest tournament news, how to play, and more!
             </div>
         {% endfor %}
       </div>
-      <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+      <a class="carousel-control-prev" href="#rssCarousel" role="button" data-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="sr-only">Previous</span>
       </a>
-      <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+      <a class="carousel-control-next" href="#rssCarousel" role="button" data-slide="next">
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="sr-only">Next</span>
       </a>
@@ -55,7 +55,7 @@ Check out the latest tournament news, how to play, and more!
   </div>
   <div class="col-sm-6">
     <h3> YouTube Feeds </h3>
-    <div class="accordion" id="accordionExample">
+    <div class="accordion" id="youtubeAccordion">
       {% for channel in channels %}
       <div class="card">
         <div class="card-header" id="headingOne">
@@ -65,7 +65,7 @@ Check out the latest tournament news, how to play, and more!
             </button>
           </h5>
         </div>
-        <div id="{{channel.1}}" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+        <div id="{{channel.1}}" class="panel-collapse collapse" aria-labelledby="headingOne" data-parent="#youtubeAccordion">
           <div class="card-body">
             <iframe src="http://www.youtube.com/embed/?listType=user_uploads&list={{channel.1}}" width="480" height="400"></iframe>
           </div>

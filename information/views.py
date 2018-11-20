@@ -7,10 +7,9 @@ from xml.sax import saxutils as su
 def index(request):
 
     soup = BeautifulSoup(su.unescape(requests.get('https://magic.wizards.com/en/rss/rss.xml').text), 'xml')
-    print(soup.prettify())
     rss_items = []
 
-    for soup_item in soup.find_all('item', limit=2):
+    for soup_item in soup.find_all('item'):
         item = RssItem()
         item.title = soup_item.title.contents[0] if soup_item.title else None
         item.link = 'https://magic.wizards.com' + soup_item.link.contents[0] if soup_item.link else None
@@ -46,12 +45,6 @@ def index(request):
         'channels': channels
     }
     return render(request, 'information/base.html', context)
-
-def mtgrss(request):
-    return render(request, 'information/mtgrss.html')
-
-def youtube(request):
-    return render(request, 'information/youtube.html')
 
 class RssItem(object):
     pass
