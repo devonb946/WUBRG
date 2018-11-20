@@ -16,26 +16,9 @@ OP Bant Turbofog/Storm Hybrid deck and steamroll everyone at your LGS's FNM!
 
 <h2>Recently created decks</h2>
 {% for deck in decks %}
-  {% if forloop.first %}
-    <div class="row" style="padding-top:15px;">
-    {% endif %}
-    <div class="col-sm-4" style="padding:50px;" >
-        <a href="/browse/deck_details/{{deck.id}}">
-          {% if deck.cards.0.data.layout == "transform"  %}
-            <img style="height:200px;" src="{{deck.cards.0.data.card_faces.0.image_uris.png}}" />
-          {% elif deck.cards.0.data.layout == "planar" or deck.cards.0.data.layout == "split"  %}
-            <img class="rotate" style="height:200px;" src="{{deck.cards.0.data.image_uris.png}}" />
-          {% else %}
-            <img style="height:200px;" src="{{deck.cards.0.data.image_uris.png}}" />
-          {% endif %}
-        <li style="list-style:none" class="collection-item">{{deck.name}}</li>
-      </a>
-    </div>
-  {% if forloop.counter|divisibleby:3 %}
-    </div>
-    <div class="row" style="padding-top:15px;">
-  {% endif %}
-{% if forloop.last %}</div>{% endif %}
+    <a href="/browse/deck_details/{{deck.id}}">
+    <li class="list-group-item d-flex justify-content-between align-items-center">{{deck.name}}<span class="badge badge-primary badge-pill">{{deck.format}}</span></li>
+  </a>
 {% endfor %}
 
 {% endblock %}

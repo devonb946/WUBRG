@@ -291,7 +291,7 @@ def cards_adv_results(request):
 
 # deck views
 def decks_all(request):
-    all_decks = Deck.objects.order_by('date_created')
+    all_decks = Deck.objects.order_by('date_created').filter(is_draft=False)
     paginator = Paginator(all_decks, 42)
 
     page = request.GET.get('page')
@@ -365,23 +365,12 @@ def decks_search(request):
 def decks_results(request):
     name = request.GET.get('name')
     page = request.GET.get('page')
-    is_advanced = request.GET.get('is_advanced')
+    draft = request.GET.get('draft')
 
-    if is_advanced:
-        format = request.GET.get('format')
-        is_draft = request.GET.get('is_draft')
-        date_created = request.GET.get('date_created')
-
-        result_decks = Deck.objects.filter(
-            name__icontains=name,
-            format__iexact=format,
-            is_draft__iexact=is_draft,
-            colors__icontains=colors,
-            creator__icontains=creator,
-            date_created__gte=date_created,
-        ).order_by('date_created')
-    else:
+    if(draft == "True"):
         result_decks = Deck.objects.filter(name__icontains=name).order_by('date_created')
+    else:
+        result_decks = Deck.objects.filter(name__icontains=name).order_by('date_created').filter(is_draft=False)
 
     if page == None:
         page = 1

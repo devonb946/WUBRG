@@ -13,16 +13,10 @@
 
 <form method="get" action="results">
   Search Decks: <input type="text" name="name" placeholder="My Deck"/>
+  <label>Include Drafts <label>
+  <input type="checkbox" name="draft" value="True"></input>
   <input type="submit" value="Search" />
 </form>
 
-<hr>
-
-<h3>Advanced Search</h3>
-<form method="get" action="results">
-  <input type="text" name="name" placeholder="My Deck"/>
-  <input type="hidden" name="is_advanced" value="True">
-  <input type="submit" value="Search" />
-</form>
 
 {% endblock %}
