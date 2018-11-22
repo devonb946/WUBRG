@@ -15,10 +15,10 @@
         {% endif %}
         <div class="col-sm-4" style="padding:50px;" >
             <a href="/browse/deck_details/{{deck.id}}">
-              {% if deck.cards.0.data.layout == "transform"  %}
-                <img style="height:200px;" src="{{deck.art_card.data.card_faces.0.image_uris.art_crop}}" />
-              {% elif deck.cards.0.data.layout == "planar" or deck.cards.0.data.layout == "split"  %}
-                <img class="rotate" style="height:200px;" src="{{deck.art_card.data.image_uris.art_crop}}" />
+              {% if deck.art_card.data.layout == "transform"  %}
+                <img style="height:150px;" src="{{deck.art_card.data.card_faces.0.image_uris.art_crop}}" />
+              {% elif deck.art_card.data.layout == "planar" or deck.art_card.data.layout == "split"  %}
+                <img style="height:150px;" src="{{deck.art_card.data.image_uris.art_crop}}" />
               {% else %}
                 <img style="height:150px;" src="{{deck.art_card.data.image_uris.art_crop}}" />
               {% endif %}

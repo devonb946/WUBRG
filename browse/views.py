@@ -31,17 +31,16 @@ def cards_all(request):
 
 def cards_results(request):
     name = request.GET.get('name', None)
-    page = request.GET.get('page', None)
+    page = request.GET.get('page', 1)
     is_advanced = request.GET.get('is_advanced')
 
     query = request.META['QUERY_STRING']
     if "page" in query:
         query = query[query.find("&"):]
+    if query[0] != "&":
+        query = "&" + query
 
     result_cards = Card.objects.filter(data__name__icontains=name)
-
-    if page == None:
-        page = 1
 
     paginator = Paginator(result_cards, 42)
     cards = paginator.get_page(page)
@@ -60,6 +59,44 @@ def card_details(request, id):
     card = Card.objects.get(id=id)
     page = request.GET.get('page', None)
     name = request.GET.get('name', None)
+    query = request.META['QUERY_STRING']
+    if "page" in query:
+        query = query[query.find("&"):]
+    if query != "" and query[0] != "&":
+        query = "&" + query
+
+    if page == None:
+        page = 1
+
+    #pretty mana cost for details desplay
+    pmc = card.data["mana_cost"] if "mana_cost" in card.data else []
+    if("//" in pmc):
+        temp = "".join([i for i in pmc.split("//") if i != ""]).split("  ")
+        pmc = []
+        for i in temp:
+            instance = i.split("}")
+            pmc.append([j[1:] for j in instance if j != ""])
+        pmc = [pmc[0]] + [["//"]] + [pmc[1]]
+        pmc = [item for sublist in pmc for item in sublist]
+    else:
+        pmc = pmc.split("}")
+        pmc = [i[1:] for i in pmc if i != ""]
+    print(pmc)
+
+
+    if "oracle_text" in card.data:
+        formatted_oracle = card.data["oracle_text"].replace("\n", "<br />").replace("(", "<i>(").replace(")", ")</i>")
+    else:
+        if "card_faces" in card.data:
+            formatted_oracle = card.data["card_faces"][0]["oracle_text"].replace("\n", "<br />").replace("(", "<i>(").replace(")", ")</i>") + "<hr />" + card.data["card_faces"][1]["oracle_text"].replace("\n", "<br />").replace("(", "<i>(").replace(")", ")</i>")
+
+    for i in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,"W","U","B","R","G","C","X"]:
+        formatted_oracle = formatted_oracle.replace("{%s}" % i, '<span style="display:inline"><i class="ms ms-%s"></i></span>' % str(i).lower() )
+    for i in ["W/P","U/P","B/P","R/P","G/P"]:
+        formatted_oracle = formatted_oracle.replace("{%s}" % i, '<span style="display:inline"><i class="ms ms-%s ms-p"></i></span>' % i[0].lower() )
+    formatted_oracle = formatted_oracle.replace("{P}", '<span style="display:inline"><i class="ms ms-p" style="background:none;border:0px;"></i></span>')
+    formatted_oracle = formatted_oracle.replace("{S}", '<span style="display:inline"><i class="ms ms-s" style="background:none;border:0px;"></i></span>')
+    print(formatted_oracle)
 
     # filter decks to add the card to by editable decks only
     if request.user.is_authenticated:
@@ -71,7 +108,10 @@ def card_details(request, id):
         'card': card,
         'decks': decks,
         'page': page,
-        'name': name
+        'name': name,
+        'query': query,
+        'pmc': pmc,
+        'formatted_oracle': formatted_oracle,
     }
 
     return render(request, 'browse/card_details.html', context)
@@ -199,7 +239,7 @@ def legality_relations(result_cards, status, format):
 
 def cards_adv_results(request):
 
-    page = request.GET.get('page', None)
+    page = request.GET.get('page', 1)
     name = request.GET.get('name', None)
     text = request.GET.get('text', None)
     type = request.GET.get('type', None)
@@ -215,6 +255,8 @@ def cards_adv_results(request):
     query = request.META['QUERY_STRING']
     if "page" in query:
         query = query[query.find("&"):]
+    if query[0] != "&":
+        query = "&" + query
 
     result_cards = Card.objects.all()
 

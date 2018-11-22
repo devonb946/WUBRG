@@ -11,34 +11,100 @@
     <h1>{{card.data.name}}</h1>
     <a href="/browse/cards/results?name={{card.data.name}}"><p><small>Find other printings!</small></p></a>
   </header>
-  <div class="container center-align">
-    <a href="{{card.data.image_uris.png}}">
-      {% if card.data.layout == "transform" or card.data.layout == "double_faced_token" %}
-        <img style="height:500px;" src="{{card.data.card_faces.0.image_uris.png}}" />
-        <img style="height:500px;" src="{{card.data.card_faces.1.image_uris.png}}" />
-      {% elif card.data.layout == "flip" %}
-        <img style="height:500px;" src="{{card.data.image_uris.png}}" />
-        <img class="roatate_d" style="height:500px;" src="{{card.data.image_uris.png}}" />
-      {% elif card.data.layout == "planar" or card.data.layout == "split"  %}
-          {% if "Aftermath" in card.data.card_faces.1.oracle_text  %}
-            <img style="height:500px;" src="{{card.data.image_uris.png}}" />
-            <img class="rotate_l" style="height:500px; margin-left:100px;" src="{{card.data.image_uris.png}}" />
-          {% else %}
-            <img class="rotate" style="height:500px;" src="{{card.data.image_uris.png}}" />
-          {% endif %}
-      {% else %}
-        <img style="height:500px;" src="{{card.data.image_uris.png}}" />
-      {% endif %}
-    </a>
-  <br>
-    {{card.data.oracle_text}}
-  <br>
-    {{card.data}}
-    {% if name %}
-      <a href="/browse/cards/results?page={{page}}&name={{name}}">Back</a>
-    {% else %}
-      <a href="/browse/cards/all?page={{page}}">Back</a>
+  <div class="container">
+      <a href="{{card.data.image_uris.png}}">
+        {% if card.data.layout == "transform" or card.data.layout == "double_faced_token" %}
+          <img style="height:500px;" src="{{card.data.card_faces.0.image_uris.png}}" />
+          <img style="height:500px;" src="{{card.data.card_faces.1.image_uris.png}}" />
+        {% elif card.data.layout == "flip" %}
+          <img style="height:500px;" src="{{card.data.image_uris.png}}" />
+          <img class="roatate_d" style="height:500px;" src="{{card.data.image_uris.png}}" />
+        {% elif card.data.layout == "planar" or card.data.layout == "split"  %}
+            {% if "Aftermath" in card.data.card_faces.1.oracle_text  %}
+              <img style="height:500px;" src="{{card.data.image_uris.png}}" />
+              <img class="rotate_l" style="height:500px; margin-left:100px;" src="{{card.data.image_uris.png}}" />
+            {% else %}
+              <img class="rotate" style="height:500px;" src="{{card.data.image_uris.png}}" />
+            {% endif %}
+        {% elif card.data.layout == "meld" %}
+          <img style="height:500px;" src="{{card.data.image_uris.png}}" />
+        {% else %}
+          <img style="height:500px;" src="{{card.data.image_uris.png}}" />
+        {% endif %}
+      </a>
+    <br>
+    {% if card.data.layout == "meld" %}
+      <a href="/browse/cards/results?name={{card.data.all_parts.0.name}}">{{card.data.all_parts.0.name}}</a> melds with <a href="/browse/cards/results?name={{card.data.all_parts.2.name}}">{{card.data.all_parts.2.name}}</a> into <a href="/browse/cards/results?name={{card.data.all_parts.1.name}}">{{card.data.all_parts.1.name}}</a>.
     {% endif %}
+    <div><br>
+
+
+
+      <h5>{{card.data.name}}</h5>
+      {% if pmc %}
+        Mana Cost:
+        <span class="badge badge-secondary badge-pill">
+        {% for item in pmc %}
+          <!--Edge cases: Hybrid Mana, Phyrexean Mana, Unstable, etc...-->
+          {% if item|lower == "hw" %}
+                <img src="http://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=HalfW&type=symbol" />
+          {% elif item == "W/U" %}
+                <img src="http://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=WU&type=symbol" />
+          {% elif item == "U/B" %}
+                <img src="http://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=UB&type=symbol" />
+          {% elif item == "B/R" %}
+                <img src="http://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=BR&type=symbol" />
+          {% elif item == "R/G" %}
+                <img src="http://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=RG&type=symbol" />
+          {% elif item == "G/W" %}
+                <img src="http://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=GW&type=symbol" />
+          {% elif item == "W/B" %}
+                <img src="http://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=WB&type=symbol" />
+          {% elif item == "U/R" %}
+                <img src="http://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=UR&type=symbol" />
+          {% elif item == "B/G" %}
+                <img src="http://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=BG&type=symbol" />
+          {% elif item == "R/W" %}
+                <img src="http://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=RW&type=symbol" />
+          {% elif item == "G/U" %}
+                <img src="http://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=GU&type=symbol" />
+
+          {% elif item|lower == "w/p" %}
+                <i class="ms ms-w ms-p"></i>
+          {% elif item|lower == "u/p" %}
+                <i class="ms ms-u ms-p"></i>
+          {% elif item|lower == "b/p" %}
+                <i class="ms ms-b ms-p"></i>
+          {% elif item|lower == "r/p" %}
+                <i class="ms ms-r ms-p"></i>
+          {% elif item|lower == "g/p" %}
+                <i class="ms ms-g ms-p"></i>
+          {% elif item == "//" %}
+            </span>//<span class="badge badge-secondary badge-pill">
+          {% else %}
+            <i class="ms ms-{{item|lower}}"></i>
+          {% endif %}
+        {% endfor %}
+        </span>
+      {% endif %}
+      <br />
+
+      Converted Mana Cost: {{card.data.cmc}}<br />
+      Types: {{card.data.type_line}}<br /><br />
+      Oracle Text: <div class="card oracle_text"><p>{{formatted_oracle | safe}}</p></div>
+
+
+
+
+      <br>
+        {% if name %}
+          <a href="/browse/cards/results?page={{page}}&name={{name}}">Back to search results for "{{name}}"</a>
+        {% elif query %}
+          <a href="/browse/cards/adv_results?page={{page}}{{query}}">Back to advanced search results</a>
+        {% else %}
+          <a href="/browse/cards/all?page={{page}}">Back</a>
+        {% endif %}
+    </div>
   </div>
 
 

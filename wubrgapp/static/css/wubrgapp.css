@@ -56,3 +56,54 @@ h1 a {
 .feed-title-image{
   width:200px;
 }
+
+.oracle_text{
+  
+}
+
+.ms{
+  background: #CAC3C0;
+  border-radius:75px;
+  border:5px solid #CAC3C0;
+  /*color: #221F1F;*/
+  color:black;
+}
+.ms-w{
+  background: #F8E7B9;
+  border-radius:75px;
+  border:5px solid #F8E7B9;
+  /*color: #F9FAF4;*/
+  color:black;
+}
+
+.ms-u{
+  background: #B3CEEA;
+  border-radius:75px;
+  border:5px solid #B3CEEA;
+  /*color: #0E68AB;*/
+  color:black;
+}
+
+.ms-b{
+  background: #A69F9D;
+  border-radius:75px;
+  border:5px solid #A69F9D;
+  /*color: #150B00;*/
+  color:black;
+}
+
+.ms-r{
+  background: #EB9F82;
+  border-radius:75px;
+  border:5px solid #EB9F82;
+  /*color: #D3202A;*/
+  color:black;
+}
+
+.ms-g{
+  background: #C4D3CA;
+  border-radius:75px;
+  border:5px solid #C4D3CA;
+  /*color: #00733E;*/
+  color:black;
+}

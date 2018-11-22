@@ -124,10 +124,23 @@ def remove_card(request, card_id):
 def update_deck_colors(deck):
     colors = set()
 
+
     for card in deck.cards.all():
-        colors = colors.union(card.data['colors'])
-    for card in deck.sideboard_cards.all():
-        colors = colors.union(card.data['colors'])
+        if "colors" in card.data:
+            colors = colors.union(card.data['colors'])
+        elif "card_faces" in card.data["card_faces"][0]:
+            if "colors" in card.data:
+                colors = card.data["card_faces"][0]["colors"] + card.data["card_faces"][1]["colors"]
+
+    for card in deck.cards.all():
+        if "colors" in card.data:
+            colors = colors.union(card.data['colors'])
+        elif "card_faces" in card.data["card_faces"][0]:
+            if "colors" in card.data:
+                colors = card.data["card_faces"][0]["colors"] + card.data["card_faces"][1]["colors"]
+
+    order = {"W":0, "U": 1, "B": 2, "R": 3, "G": 4}
+    colors = sorted(colors, key = lambda x: order[x])
 
     return ''.join(colors)
 
@@ -352,6 +365,9 @@ def add(deck, card, is_sideboard, is_commander):
     deck.save()
 
 def check_commander_status(card):
+    if hasattr(card.data, "card_faces"):
+        card.data["type_line"] = card.data["card_faces"][0]["type_line"]
+        card.data["oracle_text"] = card.data["card_faces"][0]["oracle_text"]
     if "legendary" in card.data['type_line'].lower() and "creature" in card.data['type_line'].lower():
         return True
     elif "can be your commander" in card.data['oracle_text'].lower():

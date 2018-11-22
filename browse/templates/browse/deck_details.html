@@ -9,9 +9,7 @@
   <br>
     <a href="{{art_card.data.image_uris.art_crop}}">
       {% if art_card.data.layout == "transform"  %}
-        <img class="details-deck-image" style="height:300px;" src="{{art_card.data.card_faces.0.image_uris.art_crop}}" />
-      {% elif art_card.data.layout == "planar" or art_card.data.layout == "split"  %}
-        <img class="rotate details-deck-image" style="height:300px;" src="{{art_card.data.image_uris.art_crop}}" />
+        <img class="details-deck-image" src="{{art_card.data.card_faces.0.image_uris.art_crop}}" />
       {% else %}
         <img class="details-deck-image" style="height:300px;" src="{{art_card.data.image_uris.art_crop}}" />
       {% endif %}
@@ -25,7 +23,11 @@
   <p>Unfinished deck: {{deck.is_draft}}</p>
   <p>Creator: {{deck.creator}}</p>
   <p>Format: {{deck.format}}</p>
-  <p>Colors: {{deck.colors}}</p>
+  <p>Colors:
+    {% for color in deck.colors %}
+      <i class="ms ms-{{color|lower}}"></i>
+    {% endfor %}
+  </p>
   <p>Date Created: {{deck.date_created}}</p>
   <p>Number of cards in deck: {{deck.card_count}}</p>
   <p>Number of cards in sideboard: {{deck.sideboard_card_count}}</p>
@@ -36,7 +38,13 @@
   <ul class="list-group">
   {% for card, deck_card in cards_data %}
       <li class="list-group-item">
-        <a href="/browse/card_details/{{card.id}}">{{card.data.name}}</a>
+
+        {% if card.data.layout == "transform" or card.data.layout == "double_faced_token"  %}
+          <a href="/browse/card_details/{{card.id}}" data-toggle="tooltip" data-html="true" title="<img src=&quot;{{card.data.card_faces.0.image_uris.small}}&quot;>">{{card.data.name}}</a>
+          {% else %}
+            <a href="/browse/card_details/{{card.id}}" data-toggle="tooltip" data-html="true" title="<img src=&quot;{{card.data.image_uris.small}}&quot;>">{{card.data.name}}</a>
+        {% endif %}
+
         {% if deck_card.count > 1 %}
         x{{deck_card.count}}
         {% endif %}
@@ -59,6 +67,17 @@
               </button>
             </form>
           {% endif %}
+
+          {% if card.data.colors|length > 0 %}
+            <span class="badge badge-primary badge-pill">
+                {% for color in card.data.colors %}
+                  <i class="ms ms-{{color|lower}}"></i>
+                {% endfor %}
+            </span>
+        {% else %}
+          <span class="badge badge-primary badge-pill"><i class="ms ms-c"></i></span>
+        {% endif %}
+
           <form method="POST" action="/builder/update/art/{{card.id}}" style="float:right;">
             {% csrf_token %}
             <input type="hidden" name="deck_id" value="{{deck.id}}" />
@@ -70,13 +89,18 @@
   </ul>
 
   <br>
-
   <!-- sideboard -->
   <h3>Sideboard</h3>
   <ul class="list-group">
   {% for card, side_card in sideboard_cards_data %}
       <li class="list-group-item">
-        <a href="/browse/card_details/{{card.id}}">{{card.data.name}}</a>
+
+        {% if card.data.layout == "transform" or card.data.layout == "double_faced_token"  %}
+          <a href="/browse/card_details/{{card.id}}" data-toggle="tooltip" data-html="true" title="<img src=&quot;{{card.data.card_faces.0.image_uris.small}}&quot;>">{{card.data.name}}</a>
+          {% else %}
+            <a href="/browse/card_details/{{card.id}}" data-toggle="tooltip" data-html="true" title="<img src=&quot;{{card.data.image_uris.small}}&quot;>">{{card.data.name}}</a>
+        {% endif %}
+
         {% if side_card.count > 1 %}
         x{{side_card.count}}
         {% endif %}
@@ -99,6 +123,17 @@
               </button>
             </form>
           {% endif %}
+
+          {% if card.data.colors|length > 0 %}
+            <span class="badge badge-primary badge-pill">
+                {% for color in card.data.colors %}
+                  <i class="ms ms-{{color|lower}}"></i>
+                {% endfor %}
+            </span>
+        {% else %}
+          <span class="badge badge-primary badge-pill"><i class="ms ms-c"></i></span>
+        {% endif %}
+          
           <form method="POST" action="/builder/update/art/{{card.id}}" style="float:right;">
             {% csrf_token %}
             <input type="hidden" name="deck_id" value="{{deck.id}}" />
