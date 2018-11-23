@@ -78,25 +78,41 @@ def card_details(request, id):
             pmc.append([j[1:] for j in instance if j != ""])
         pmc = [pmc[0]] + [["//"]] + [pmc[1]]
         pmc = [item for sublist in pmc for item in sublist]
+    elif "card_faces" in card.data:
+            pmc = card.data["card_faces"][0]["mana_cost"] + card.data["card_faces"][1]["mana_cost"]
+            pmc = pmc.split("}")
+            pmc = [i[1:] for i in pmc if i != ""]
     else:
         pmc = pmc.split("}")
         pmc = [i[1:] for i in pmc if i != ""]
-    print(pmc)
 
 
     if "oracle_text" in card.data:
         formatted_oracle = card.data["oracle_text"].replace("\n", "<br />").replace("(", "<i>(").replace(")", ")</i>")
     else:
         if "card_faces" in card.data:
-            formatted_oracle = card.data["card_faces"][0]["oracle_text"].replace("\n", "<br />").replace("(", "<i>(").replace(")", ")</i>") + "<hr />" + card.data["card_faces"][1]["oracle_text"].replace("\n", "<br />").replace("(", "<i>(").replace(")", ")</i>")
+            formatted_oracle = card.data["card_faces"][0]["oracle_text"].replace("\n", "<br />").replace("(", "<i>(").replace(")", ")</i>") + "</p><hr /><p>" + card.data["card_faces"][1]["oracle_text"].replace("\n", "<br />").replace("(", "<i>(").replace(")", ")</i>")
 
+    #mana symbols
     for i in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,"W","U","B","R","G","C","X"]:
         formatted_oracle = formatted_oracle.replace("{%s}" % i, '<span style="display:inline"><i class="ms ms-%s"></i></span>' % str(i).lower() )
+    #Phyrexean mana
     for i in ["W/P","U/P","B/P","R/P","G/P"]:
         formatted_oracle = formatted_oracle.replace("{%s}" % i, '<span style="display:inline"><i class="ms ms-%s ms-p"></i></span>' % i[0].lower() )
+    #hybrid mana
+    for i in ["W/U", "U/B", "B/R", "R/G", "G/W", "W/B", "U/R", "B/G", "R/W", "G/U"]:
+        formatted_oracle = formatted_oracle.replace("{%s}" % i, '<img src="http://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name={}{}&type=symbol" />'.format(i[0], i[-1]))
+    for i in "WUBRG":
+        formatted_oracle = formatted_oracle.replace("{" + "2/{}".format(i) + "}", '<img src="http://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=2{}&type=symbol" />'.format(i))
+
+    #Phyrexean, snow, tap, energy, untap, chaos
     formatted_oracle = formatted_oracle.replace("{P}", '<span style="display:inline"><i class="ms ms-p" style="background:none;border:0px;"></i></span>')
     formatted_oracle = formatted_oracle.replace("{S}", '<span style="display:inline"><i class="ms ms-s" style="background:none;border:0px;"></i></span>')
-    print(formatted_oracle)
+    formatted_oracle = formatted_oracle.replace("{T}", '<span style="display:inline"><i class="ms ms-tap" style="background:none;border:0px;"></i></span>')
+    formatted_oracle = formatted_oracle.replace("{E}", '<span style="display:inline"><i class="ms ms-e" style="background:none;border:0px;"></i></span>')
+    formatted_oracle = formatted_oracle.replace("{Q}", '<span style="display:inline"><i class="ms ms-untap" style="background:none;border:0px;"></i></span>')
+    formatted_oracle = formatted_oracle.replace("{CHAOS}", '<span style="display:inline"><i class="ms ms-chaos" style="background:none;border:0px;"></i></span>')
+
 
     # filter decks to add the card to by editable decks only
     if request.user.is_authenticated:
@@ -304,6 +320,9 @@ def cards_adv_results(request):
 
     if(status and format):
         result_cards = legality_relations(result_cards, status, format)
+
+    if(set):
+        result_cards = result_cards.filter(data__set_name__icontains=set)
 
     if(rarity):
         result_cards = result_cards.filter(data__rarity=rarity)

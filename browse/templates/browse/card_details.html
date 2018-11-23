@@ -48,6 +48,7 @@
           <!--Edge cases: Hybrid Mana, Phyrexean Mana, Unstable, etc...-->
           {% if item|lower == "hw" %}
                 <img src="http://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=HalfW&type=symbol" />
+
           {% elif item == "W/U" %}
                 <img src="http://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=WU&type=symbol" />
           {% elif item == "U/B" %}
@@ -69,6 +70,17 @@
           {% elif item == "G/U" %}
                 <img src="http://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=GU&type=symbol" />
 
+          {% elif item == "2/W" %}
+                <img src="http://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=2W&type=symbol" />
+          {% elif item == "2/U" %}
+                <img src="http://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=2U&type=symbol" />
+          {% elif item == "2/B" %}
+                <img src="http://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=2B&type=symbol" />
+          {% elif item == "2/R" %}
+                <img src="http://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=2R&type=symbol" />
+          {% elif item == "2/G" %}
+                <img src="http://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=2G&type=symbol" />
+
           {% elif item|lower == "w/p" %}
                 <i class="ms ms-w ms-p"></i>
           {% elif item|lower == "u/p" %}
@@ -79,6 +91,7 @@
                 <i class="ms ms-r ms-p"></i>
           {% elif item|lower == "g/p" %}
                 <i class="ms ms-g ms-p"></i>
+
           {% elif item == "//" %}
             </span>//<span class="badge badge-secondary badge-pill">
           {% else %}
@@ -93,7 +106,15 @@
       Types: {{card.data.type_line}}<br /><br />
       Oracle Text: <div class="card oracle_text"><p>{{formatted_oracle | safe}}</p></div>
 
+      {% if card.data.power %}
+        Power/Toughness: {{card.data.power}}/{{card.data.toughness}}
+      {% endif %}
+      {% if card.data.loyalty %}
+        Starting Loyalty: {{card.data.loyalty}}
+      {% endif %}<br /><br />
 
+      Rarity: {{card.data.rarity|title}}<br />
+      Set: {{card.data.set_name}} ({{card.data.set|upper}})
 
 
       <br>
