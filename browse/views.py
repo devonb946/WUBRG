@@ -29,10 +29,28 @@ def cards_all(request):
 
     return render(request, 'browse/card_results.html', context)
 
+def other_printings(request):
+    name = request.GET.get('name', None)
+    page = request.GET.get('page', 1)
+
+    result_cards = Card.objects.filter(data__name__contains=name)
+
+    paginator = Paginator(result_cards, 42)
+    cards = paginator.get_page(page)
+
+    context = {
+        'cards': cards,
+        'page': page,
+        'title': 'All printings for "{}"'.format(name),
+        'name': name,
+    }
+
+    return render(request, 'browse/card_results.html', context)
+
+
 def cards_results(request):
     name = request.GET.get('name', None)
     page = request.GET.get('page', 1)
-    is_advanced = request.GET.get('is_advanced')
 
     query = request.META['QUERY_STRING']
     if "page" in query:

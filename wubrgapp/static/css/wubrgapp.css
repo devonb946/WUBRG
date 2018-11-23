@@ -6,16 +6,6 @@ h1 a {
     color: #00CC66;
 }
 
-.welcome-bar {
-  padding: 20px;
-  text-align:center;
-}
-
-.wubrgapp-navbar {
-  padding-top: 15px;
-  padding-bottom: 15px;
-}
-
 .wubrgapp-body {
     padding-left: 20%;
     padding-right: 20%;
@@ -23,8 +13,32 @@ h1 a {
     padding-bottom: 5%;
 }
 
-.navbar-link {
-    color: #ffff;
+.nav-link {
+    padding-top:1px;
+}
+
+.nav-item{
+  margin-top:1px;
+}
+
+.navbar-dark .navbar-nav .nav-link:focus, .navbar-dark .navbar-nav .nav-link:hover {
+    background: rgb(188, 159, 94);
+    border-radius:3px;
+}
+
+.pagination > li > a, .pagination > li > span{
+     background:#343a40;
+     border: 1px solid #09080a
+}
+
+.page-link{
+  color:#b3ceea;
+}
+.page-link:hover {
+    color: #994aa1;
+    text-decoration: none;
+    background-color: #A69F9D;
+    border-color: #A69F9D;
 }
 
 .rotate {
@@ -51,6 +65,8 @@ h1 a {
 
 .details-deck-image {
     width: 300px;
+    border:3px solid black;
+    border-radius:3px;
 }
 
 .feed-title-image{
@@ -58,7 +74,7 @@ h1 a {
 }
 
 .oracle_text{
-  
+
 }
 
 .ms{

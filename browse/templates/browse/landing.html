@@ -17,33 +17,34 @@
       <a href="/browse/decks/search"><h1>Search For Decks</h1></a>
     </div>
   </div>
-<br>
-<br>
-<br>
-<div class="text-center">
-  <h3>Cards you might not have seen before:</h3>
-</div>
-<div class="row">
-  {% for card in cards %}
-    <div class="col-sm-2" style="margin:15px !important;">
-        <a href="/browse/card_details/{{card.id}}">
-          {% if card.data.layout == "transform" or card.data.layout == "double_faced_token" %}
-            <img style="height:200px;" src="{{card.data.card_faces.0.image_uris.small}}" />
-          {% elif card.data.layout == "flip" %}
-            <img style="height:200px;" src="{{card.data.image_uris.small}}" />
-          {% elif card.data.layout == "planar" or card.data.layout == "split"  %}
-              {% if "Aftermath" in card.data.card_faces.1.oracle_text  %}
-                <img style="height:200px;" src="{{card.data.image_uris.small}}" />
-              {% else %}
-                <img class="rotate" style="height:200px;" src="{{card.data.image_uris.small}}" />
-              {% endif %}
-          {% else %}
-            <img style="height:200px;" src="{{card.data.image_uris.small}}" />
-          {% endif %}
-        <li style="list-style:none" class="collection-item">{{card.data.name}}</li>
-      </a>
-    </div>
-  {% endfor %}
-</div>
+  <br>
+  <br>
+  <br>
+  <div class="text-center">
+    <h3>Cards you might not have seen before:</h3>
+  </div>
+  <div class="row">
+    {% for card in cards %}
+      <div class="col-sm-2" style="margin:15px !important;">
+          <a href="/browse/card_details/{{card.id}}">
+            {% if card.data.layout == "transform" or card.data.layout == "double_faced_token" %}
+              <img style="height:200px;" src="{{card.data.card_faces.0.image_uris.small}}" />
+            {% elif card.data.layout == "flip" %}
+              <img style="height:200px;" src="{{card.data.image_uris.small}}" />
+            {% elif card.data.layout == "planar" or card.data.layout == "split"  %}
+                {% if "Aftermath" in card.data.card_faces.1.oracle_text  %}
+                  <img style="height:200px;" src="{{card.data.image_uris.small}}" />
+                {% else %}
+                  <img class="rotate" style="height:200px;" src="{{card.data.image_uris.small}}" />
+                {% endif %}
+            {% else %}
+              <img style="height:200px;" src="{{card.data.image_uris.small}}" />
+            {% endif %}
+          <li style="list-style:none" class="collection-item">{{card.data.name}}</li>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+
 
 {% endblock %}

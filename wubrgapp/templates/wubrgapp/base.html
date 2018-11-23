@@ -41,31 +41,50 @@
 </head>
 <body>
 
-  <div class="welcome-bar">
-    <h1 align="center" style="display:inline-block">{% block title %}{% endblock %}</h1>
-    <div style="display:inline-block;float:right">
-        {% if user.is_authenticated %}
-          <h4><a href="/profile/user_page">{{ user.username }}</a></h4>
-          <h4><a href="/profile/logout">Logout</a></h4>
-        {% else %}
-          <h4><a href="/profile/register">Register</a></h4>
-          <h4><a href="/profile/login">Login</a></h4>
-        {% endif %}
-    </div>
-  </div>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/home">WUBRG - {% block title %}{% endblock %}</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-  <div>
-    <nav class="navbar navbar-dark bg-dark wubrgapp-navbar">
-      {% block sidebar %}
-        <h5><a class="navbar-link" href="/home">Home</a></h5>
-        <h5><a class="navbar-link" href="/browse?page=1">Browse Content</a></h5>
-        <h5><a class="navbar-link" href="/builder">Build</a></h5>
-        <h5><a class="navbar-link" href="/profile">Profile</a></h5>
-        <h5><a class="navbar-link" href="/tools">Informational Tools</a></h5>
-        <h5><a class="navbar-link" href="/admin">Admin Login</a></h5>
-      {% endblock %}
-    </nav>
-  </div>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a style="color:#F9FAF4;" class="nav-link" href="/home"><i class="ms ms-w"></i> Home</a>
+        </li>
+        <li class="nav-item">
+          <a style="color:#0E68AB;" class="nav-link" href="/browse"><i class="ms ms-u"></i> Browse Content</a>
+        </li>
+        <li class="nav-item">
+          <a style="color:#994aa1;" class="nav-link" href="/builder"><i class="ms ms-b"></i> Build</a>
+        </li>
+        <li class="nav-item">
+          <a style="color:#D3202A;" class="nav-link" href="/profile"><i class="ms ms-r"></i> Profile</a>
+        </li>
+        <li class="nav-item">
+          <a style="color:#00733E;" class="nav-link" href="/tools"><i class="ms ms-g"></i> Informational Tools</a>
+        </li>
+      </ul>
+
+      <ul class="navbar-nav ml-auto">
+        {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="/profile/user_page">{{ user.username }}</a>
+          </li>
+          <li>
+            <a class="nav-link" href="/profile/logout"><i class="ms ms-untap"></i> Logout</a>
+          <li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="/profile/register">Register</a>
+        </li>
+        <li>
+          <a class="nav-link" href="/profile/login">Login</a></a>
+        <li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
 
   <div class="wubrgapp-body" align="center">
     {% block blurb %}{% endblock %}

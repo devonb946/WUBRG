@@ -9,7 +9,7 @@
 <body>
   <header class="container center-align">
     <h1>{{card.data.name}}</h1>
-    <a href="/browse/cards/results?name={{card.data.name}}"><p><small>Find other printings!</small></p></a>
+    <a href="/browse/cards/printings?page=1&name={{card.data.name}}"><p><small>Find other printings!</small></p></a>
   </header>
   <div class="container">
       <a href="{{card.data.image_uris.png}}">
@@ -104,7 +104,9 @@
 
       Converted Mana Cost: {{card.data.cmc}}<br />
       Types: {{card.data.type_line}}<br /><br />
-      Oracle Text: <div class="card oracle_text"><p>{{formatted_oracle | safe}}</p></div>
+      {% if not "Token" in card.data.type_line %}
+        Oracle Text: <div class="card oracle_text"><p>{{formatted_oracle | safe}}</p></div>
+      {% endif %}
 
       {% if card.data.power %}
         Power/Toughness: {{card.data.power}}/{{card.data.toughness}}

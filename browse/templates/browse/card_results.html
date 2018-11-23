@@ -9,48 +9,64 @@
 {% block content %}
 <br>
 
-<div class="text-center">
-    <span class="step-links">
+<nav>
+  <ul class="pagination justify-content-center">
       {% if query %}
-            {% if cards.has_previous %}
-                <a href="?page=1{{query}}">&laquo; first</a>
-                <a href="?page={{ cards.previous_page_number }}{{query}}">previous</a>
-            {% endif %}
+        {% if cards.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page=1{{query}}">&laquo; first</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ cards.previous_page_number }}{{query}}">previous</a></li>
+        {% endif %}
 
-            <span class="current">
-                Page {{ cards.number }} of {{ cards.paginator.num_pages }}
-            </span>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page }}{{query}}">Page {{ cards.number }} of {{ cards.paginator.num_pages }}</a>
+        </li>
 
-            {% if cards.has_next %}
-                <a href="?page={{ cards.next_page_number }}{{query}}">next</a>
-                <a href="?page={{ cards.paginator.num_pages }}{{ query }}">last &raquo;</a>
-            {% endif %}
+        {% if cards.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ cards.next_page_number }}{{query}}">next</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ cards.paginator.num_pages }}{{ query }}">last &raquo;</a></li>
+        {% endif %}
 
-        {% else %}
+        {% elif name %}
 
           {% if cards.has_previous %}
-              <a href="?page=1">&laquo; first</a>
-              <a href="?page={{ cards.previous_page_number }}">previous</a>
+              <li class="page-item"><a class="page-link" href="?page=1&name={{name}}">&laquo; first</a></li>
+              <li class="page-item"><a class="page-link" href="?page={{ cards.previous_page_number }}&name={{name}}">previous</a></li>
           {% endif %}
 
-          <span class="current">
-              Page {{ cards.number }} of {{ cards.paginator.num_pages }}
-          </span>
+          <li class="page-item">
+              <a class="page-link" href="?page={{ page }}&name={{name}}">Page {{ cards.number }} of {{ cards.paginator.num_pages }}</a>
+          </li>
 
           {% if cards.has_next %}
-              <a href="?page={{ cards.next_page_number }}">next</a>
-              <a href="?page={{ cards.paginator.num_pages }}">last &raquo;</a>
+              <li class="page-item"><a class="page-link" href="?page={{ cards.next_page_number }}&name={{name}}">next</a></li>
+              <li class="page-item"><a class="page-link" href="?page={{ cards.paginator.num_pages }}&name={{name}}">last &raquo;</a></li>
           {% endif %}
 
-      {% endif %}
-    </span>
-</div>
+          {% else %}
+
+            {% if cards.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ cards.previous_page_number }}">previous</a></li>
+            {% endif %}
+
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page }}{{query}}">Page {{ cards.number }} of {{ cards.paginator.num_pages }}</a>
+            </li>
+
+            {% if cards.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ cards.next_page_number }}">next</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ cards.paginator.num_pages }}">last &raquo;</a></li>
+            {% endif %}
+
+          {% endif %}
+    </ul>
+  </nav>
 
   {% for card in cards %}
       {% if forloop.first %}
         <div class="row" style="padding-top:15px;">
         {% endif %}
-        <div class="col-sm-4" style="padding:50px;" >
+        <div class="col-md-4" style="padding:50px;" >
             <a href="/browse/card_details/{{card.id}}?page={{page}}{{query}}">
               {% if card.data.layout == "transform" or card.data.layout == "double_faced_token"  %}
                 <img style="height:200px;" src="{{card.data.card_faces.0.image_uris.small}}" />
@@ -75,41 +91,57 @@
 
 
 
-<div class="text-center">
-    <span class="step-links">
+<nav>
+  <ul class="pagination justify-content-center">
       {% if query %}
-            {% if cards.has_previous %}
-                <a href="?page=1{{query}}">&laquo; first</a>
-                <a href="?page={{ cards.previous_page_number }}{{query}}">previous</a>
-            {% endif %}
+        {% if cards.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page=1{{query}}">&laquo; first</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ cards.previous_page_number }}{{query}}">previous</a></li>
+        {% endif %}
 
-            <span class="current">
-                Page {{ cards.number }} of {{ cards.paginator.num_pages }}
-            </span>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page }}{{query}}">Page {{ cards.number }} of {{ cards.paginator.num_pages }}</a>
+        </li>
 
-            {% if cards.has_next %}
-                <a href="?page={{ cards.next_page_number }}{{query}}">next</a>
-                <a href="?page={{ cards.paginator.num_pages }}{{ query }}">last &raquo;</a>
-            {% endif %}
+        {% if cards.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ cards.next_page_number }}{{query}}">next</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ cards.paginator.num_pages }}{{ query }}">last &raquo;</a></li>
+        {% endif %}
 
-        {% else %}
+        {% elif name %}
 
           {% if cards.has_previous %}
-              <a href="?page=1">&laquo; first</a>
-              <a href="?page={{ cards.previous_page_number }}">previous</a>
+              <li class="page-item"><a class="page-link" href="?page=1&name={{name}}">&laquo; first</a></li>
+              <li class="page-item"><a class="page-link" href="?page={{ cards.previous_page_number }}&name={{name}}">previous</a></li>
           {% endif %}
 
-          <span class="current">
-              Page {{ cards.number }} of {{ cards.paginator.num_pages }}
-          </span>
+          <li class="page-item">
+              <a class="page-link" href="?page={{ page }}&name={{name}}">Page {{ cards.number }} of {{ cards.paginator.num_pages }}</a>
+          </li>
 
           {% if cards.has_next %}
-              <a href="?page={{ cards.next_page_number }}">next</a>
-              <a href="?page={{ cards.paginator.num_pages }}">last &raquo;</a>
+              <li class="page-item"><a class="page-link" href="?page={{ cards.next_page_number }}&name={{name}}">next</a></li>
+              <li class="page-item"><a class="page-link" href="?page={{ cards.paginator.num_pages }}&name={{name}}">last &raquo;</a></li>
           {% endif %}
 
-      {% endif %}
-    </span>
-</div>
+          {% else %}
 
+            {% if cards.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ cards.previous_page_number }}">previous</a></li>
+            {% endif %}
+
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page }}{{query}}">Page {{ cards.number }} of {{ cards.paginator.num_pages }}</a>
+            </li>
+
+            {% if cards.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ cards.next_page_number }}">next</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ cards.paginator.num_pages }}">last &raquo;</a></li>
+            {% endif %}
+
+          {% endif %}
+    </ul>
+  </nav>
+  
 {% endblock %}

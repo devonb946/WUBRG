@@ -9,42 +9,42 @@
 {% block content %}
 <br>
 
-<div class="text-center">
-    <span class="step-links">
-      {% if name %}
-          {% if decks.has_previous %}
-              <a href="?page=1">&laquo; first</a>
-              <a href="?page={{ decks.previous_page_number }}">previous</a>
-          {% endif %}
+<nav>
+  <ul class="pagination justify-content-center">
+    {% if name %}
+        {% if decks.has_previous %}
+          <li class="page-item"><a class="page-link" href="?page=1&name={{name}}">&laquo; first</a></li>
+          <li class="page-item"><a class="page-link" href="?page={{ decks.previous_page_number }}&name={{name}}">previous</a></li>
+        {% endif %}
 
-          <span class="current">
-              Page {{ decks.number }} of {{ decks.paginator.num_pages }}
-          </span>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page }}&name={{name}}">Page {{ decks.number }} of {{ decks.paginator.num_pages }}</a>
+        </li>
 
-          {% if decks.has_next %}
-              <a href="?page={{ decks.next_page_number }}">next</a>
-              <a href="?page={{ decks.paginator.num_pages }}">last &raquo;</a>
-          {% endif %}
+        {% if cards.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ decks.next_page_number }}&name={{name}}">next</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ decks.paginator.num_pages }}&name={{name}}">last &raquo;</a></li>
+        {% endif %}
 
-      {% else %}
+    {% else %}
 
-              {% if cards.has_previous %}
-                  <a href="?page=1">&laquo; first</a>
-                  <a href="?page={{ decks.previous_page_number }}">previous</a>
-              {% endif %}
+    {% if decks.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ decks.previous_page_number }}">previous</a></li>
+    {% endif %}
 
-              <span class="current">
-                  Page {{ cards.number }} of {{ cards.paginator.num_pages }}
-              </span>
+    <li class="page-item">
+        <a class="page-link" href="?page={{ page }}">Page {{ decks.number }} of {{ decks.paginator.num_pages }}</a>
+    </li>
 
-              {% if cards.has_next %}
-                  <a href="?page={{ decks.next_page_number }}">next</a>
-                  <a href="?page={{ decks.paginator.num_pages }}">last &raquo;</a>
-              {% endif %}
+    {% if cards.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ decks.next_page_number }}">next</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ decks.paginator.num_pages }}">last &raquo;</a></li>
+    {% endif %}
 
-          {% endif %}
-    </span>
-</div>
+        {% endif %}
+      </ul>
+    </nav>
 
 {% for deck in decks %}
     {% if forloop.first %}
@@ -75,41 +75,41 @@
 
 
 
-<div class="text-center">
-    <span class="step-links">
-      {% if name %}
-          {% if decks.has_previous %}
-              <a href="?page=1">&laquo; first</a>
-              <a href="?page={{ decks.previous_page_number }}">previous</a>
-          {% endif %}
+<nav>
+  <ul class="pagination justify-content-center">
+    {% if name %}
+        {% if decks.has_previous %}
+          <li class="page-item"><a class="page-link" href="?page=1&name={{name}}">&laquo; first</a></li>
+          <li class="page-item"><a class="page-link" href="?page={{ decks.previous_page_number }}&name={{name}}">previous</a></li>
+        {% endif %}
 
-          <span class="current">
-              Page {{ decks.number }} of {{ decks.paginator.num_pages }}
-          </span>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page }}&name={{name}}">Page {{ decks.number }} of {{ decks.paginator.num_pages }}</a>
+        </li>
 
-          {% if decks.has_next %}
-              <a href="?page={{ decks.next_page_number }}">next</a>
-              <a href="?page={{ decks.paginator.num_pages }}">last &raquo;</a>
-          {% endif %}
+        {% if cards.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ decks.next_page_number }}&name={{name}}">next</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ decks.paginator.num_pages }}&name={{name}}">last &raquo;</a></li>
+        {% endif %}
 
-      {% else %}
+    {% else %}
 
-              {% if cards.has_previous %}
-                  <a href="?page=1">&laquo; first</a>
-                  <a href="?page={{ decks.previous_page_number }}">previous</a>
-              {% endif %}
+    {% if decks.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ decks.previous_page_number }}">previous</a></li>
+    {% endif %}
 
-              <span class="current">
-                  Page {{ cards.number }} of {{ cards.paginator.num_pages }}
-              </span>
+    <li class="page-item">
+        <a class="page-link" href="?page={{ page }}">Page {{ decks.number }} of {{ decks.paginator.num_pages }}</a>
+    </li>
 
-              {% if cards.has_next %}
-                  <a href="?page={{ decks.next_page_number }}">next</a>
-                  <a href="?page={{ decks.paginator.num_pages }}">last &raquo;</a>
-              {% endif %}
+    {% if cards.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ decks.next_page_number }}">next</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ decks.paginator.num_pages }}">last &raquo;</a></li>
+    {% endif %}
 
-          {% endif %}
-    </span>
-</div>
+        {% endif %}
+      </ul>
+    </nav>
 
 {% endblock %}
