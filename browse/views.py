@@ -393,12 +393,12 @@ def deck_details(request, id):
     else:
         parent_deck = None
 
-    cards = deck.cards.all()
-    deck_cards = DeckCard.objects.filter(deck=deck)
+    cards = deck.cards.all().order_by('data__name')
+    deck_cards = DeckCard.objects.filter(deck=deck).order_by('card__data__name')
     cards_data = zip(cards, deck_cards)
 
-    sideboard_cards = deck.sideboard_cards.all()
-    sideboard_deck_cards = SideboardCard.objects.filter(deck=deck)
+    sideboard_cards = deck.sideboard_cards.all().order_by('data__name')
+    sideboard_deck_cards = SideboardCard.objects.filter(deck=deck).order_by('card__data__name')
     sideboard_cards_data = zip(sideboard_cards, sideboard_deck_cards)
 
     art_card = deck.art_card

@@ -9,7 +9,7 @@
     <br>
 
     <h2> Decks </h2></br>
-    {% for deck in decks|slice:":3" %}
+    {% for deck in decks %}
         {% if forloop.first %}
         <div class="row" style="padding-top:15px;">
         {% endif %}
@@ -25,12 +25,12 @@
             <li style="list-style:none" class="collection-item">{{deck.name}}</li>
           </a>
         </div>
-      {% if forloop.counter|divisibleby:3 %}
-        </div>
-        <div class="row" style="padding-top:15px;">
-      {% endif %}
     {% if forloop.last %}</div>{% endif %}
     {% endfor %}
+
+  </br>
+
+  <h5><a href="{% url 'profile_decks' %}">View all decks</a></h5>
 
   </br>
 

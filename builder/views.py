@@ -94,26 +94,9 @@ def remove_card(request, card_id):
     #prevent followers from editing decks
     if user.username == deck.creator:
         remove_count = parse_remove_count(request.POST.get('remove_count'))
+        remove(deck, card, is_sideboard, remove_count)
 
-        dc_relationship = DeckCard.objects.get(deck=deck, card=card)
-
-        dc_relationship.count = dc_relationship.count - remove_count
-
-        if dc_relationship.count <= 0:
-            dc_relationship.delete()
-        else:
-            dc_relationship.save()
-
-        deck_cards = DeckCard.objects.filter(deck=deck)
-        if not deck_cards:
-            deck.card_count = 0
-        else:
-            deck.card_count = deck_cards.aggregate(Sum('count'))['count__sum']
-        deck.colors = update_deck_colors(deck)
-
-        deck.save()
-
-        page = request.GET.get('page')
+        #page = request.GET.get('page')
 
         messages.success(request, 'Card has been removed.')
 
@@ -360,6 +343,44 @@ def add(deck, card, is_sideboard, is_commander):
         sc.save()
         deck_sideboard_cards = SideboardCard.objects.filter(deck=deck)
         deck.sideboard_card_count = deck_sideboard_cards.aggregate(Sum('count'))['count__sum']
+
+    deck.colors = update_deck_colors(deck)
+    deck.save()
+
+def remove(deck, card, is_sideboard, remove_count):
+    if is_sideboard == "False":
+        try:
+            dc = DeckCard.objects.get(deck=deck, card=card)
+        except DeckCard.DoesNotExist:
+            dc = DeckCard(deck=deck, card=card, count=0)
+
+        dc.count = dc.count - remove_count
+        if dc.count <= 0:
+            dc.delete()
+        else:
+            dc.save()
+
+        deck_cards = DeckCard.objects.filter(deck=deck)
+        deck.card_count = deck_cards.aggregate(Sum('count'))['count__sum']
+        if not deck.card_count:     # aggregate will return None if 0
+            deck.card_count = 0
+
+    else:
+        try:
+            sc = SideboardCard.objects.get(deck=deck, card=card)
+        except SideboardCard.DoesNotExist:
+            sc = SideboardCard(deck=deck, card=card, count=0)
+
+        sc.count = sc.count - remove_count
+        if sc.count <= 0:
+            sc.delete()
+        else:
+            sc.save()
+
+        deck_sideboard_cards = SideboardCard.objects.filter(deck=deck)
+        deck.sideboard_card_count = deck_sideboard_cards.aggregate(Sum('count'))['count__sum']
+        if not deck.sideboard_card_count:   # aggregate will return None if 0
+            deck.sideboard_card_count = 0
 
     deck.colors = update_deck_colors(deck)
     deck.save()

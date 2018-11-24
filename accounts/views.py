@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model, logout
 from .forms import WubrgUserCreationForm, WubrgUserChangeForm
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 User = get_user_model()
 
@@ -40,7 +41,8 @@ def user_page(request):
 @login_required
 def profile(request, username):
     user = User.objects.get(username=username)
-    decks = user.decks.all()
+    # restrict decks to 3 on front page of profile
+    decks = user.decks.all().order_by('-date_created')[:3]
 
     context = {
         'user': user,
@@ -52,7 +54,21 @@ def profile(request, username):
 # TODO display user decks
 @login_required
 def profile_decks(request):
-    return render(request, 'accounts/base.html')
+    user = request.user
+    user_decks = user.decks.all().order_by('-date_created')
+
+    paginator = Paginator(user_decks, 12)
+
+    page = request.GET.get('page')
+    decks = paginator.get_page(page)
+
+    context = {
+        'user': user,
+        'decks': decks,
+        'page': page,
+    }
+
+    return render(request, 'accounts/user_decks.html', context)
 
 @login_required
 def password_change_done(request):
