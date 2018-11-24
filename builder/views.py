@@ -139,6 +139,14 @@ def copy_deck(request, deck_id):
     user = request.user
     deck = Deck.objects.get(id=deck_id)
 
+    cards = deck.cards.all().order_by('data__name')
+    deck_cards = DeckCard.objects.filter(deck=deck).order_by('card__data__name')
+    cards_data = zip(cards, deck_cards)
+
+    sideboard_cards = deck.sideboard_cards.all().order_by('data__name')
+    sideboard_deck_cards = SideboardCard.objects.filter(deck=deck).order_by('card__data__name')
+    sideboard_cards_data = zip(sideboard_cards, sideboard_deck_cards)
+
     # create new copy of deck
     new_deck_name = "{} ({}\'s copy)".format(deck.name, user.username)
     new_deck = Deck.objects.create_deck(
@@ -151,8 +159,8 @@ def copy_deck(request, deck_id):
         deck.colors,
         user.username,
         timezone.now(),
-        deck.cards.all(),
-        deck.sideboard_cards.all(),
+        cards_data,
+        sideboard_cards_data,
         deck.art_card
     )
 

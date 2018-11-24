@@ -4,7 +4,7 @@ from django.contrib.postgres.fields import JSONField
 from browse.models import Card
 
 class DeckManager(models.Manager):
-    def create_deck(self, name, description, parent_id, format, card_count, sideboard_card_count, colors, creator, date_created, cards, sideboard_cards, art_card):
+    def create_deck(self, name, description, parent_id, format, card_count, sideboard_card_count, colors, creator, date_created, cards_data, sideboard_cards_data, art_card):
         deck = self.create(
             name=name,
             description=description,
@@ -19,23 +19,24 @@ class DeckManager(models.Manager):
             date_created=date_created,
             art_card=art_card)
 
-        # to copy cards over, we must create a new relationship model
-        # for each one
-        for card in cards:
-            try:
-                dc = DeckCard.objects.get(deck=deck, card=card)
-            except DeckCard.DoesNotExist:
-                dc = DeckCard(deck=deck, card=card, count=0)
-            dc.count += 1
-            dc.save()
+        # to copy cards over, we must create a new relationship models
+        for card, deck_card in cards_data:
+            for _ in range(deck_card.count):
+                try:
+                    dc = DeckCard.objects.get(deck=deck, card=card)
+                except DeckCard.DoesNotExist:
+                    dc = DeckCard(deck=deck, card=card, count=0)
+                dc.count += 1
+                dc.save()
 
-        for sideboard_card in sideboard_cards:
-            try:
-                sc = SideboardCard.objects.get(deck=deck, card=card)
-            except SideboardCard.DoesNotExist:
-                sc = SideboardCard(deck=deck, card=card, count=0)
-            sc.count += 1
-            sc.save()
+        for sideboard_card, sideboard_deck_card in sideboard_cards_data:
+            for _ in range(sideboard_deck_card.count):
+                try:
+                    sc = SideboardCard.objects.get(deck=deck, card=sideboard_card)
+                except SideboardCard.DoesNotExist:
+                    sc = SideboardCard(deck=deck, card=sideboard_card, count=0)
+                sc.count += 1
+                sc.save()
 
         return deck
 
