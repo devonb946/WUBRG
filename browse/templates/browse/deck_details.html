@@ -4,18 +4,30 @@
 
 {% block content %}
 
+{% load static %}
+
+<script>
+  function goBack() {
+    window.history.back();
+  }
+</script>
+
   <div class="container center-align">
     <h2>{{deck.name}}</h2>
   <br>
-    <a href="{{art_card.data.image_uris.art_crop}}">
-      {% if art_card.data.layout == "transform"  %}
-        <img class="details-deck-image" src="{{art_card.data.card_faces.0.image_uris.art_crop}}" />
-      {% else %}
-        <img class="details-deck-image" style="height:300px;" src="{{art_card.data.image_uris.art_crop}}" />
-      {% endif %}
-    </a>
+  <a href="{{art_card.data.image_uris.art_crop}}">
+    {% if not deck.art_card %}
+      <img class="details-deck-image" style="height:300px;" src="{% static 'images/NoCardsAddedDetails.png' %}" />
+    {% else %}
+          {% if art_card.data.layout == "transform" or art_card.data.layout == "double_faced_token" or art_card.data.layout == "planar" or art_card.data.layout == "split" %}
+            <img class="details-deck-image" style="height:300px; width:650px;" src="{{art_card.data.image_uris.art_crop}}" />
+          {% else %}
+            <img class="details-deck-image" style="height:300px;" src="{{art_card.data.image_uris.art_crop}}" />
+          {% endif %}
+    {% endif %}
+  </a>
+    <br><br>
     <p>{{deck.description}}</p>
-  <br>
   {% if parent_deck %}
     <p>Based on: <a href="/browse/deck_details/{{parent_deck.id}}">{{ parent_deck.name }}</a> by {{ parent_deck.creator }}</p>
   {% endif %}
@@ -37,7 +49,7 @@
   <h3>Mainboard</h3>
   <ul class="list-group">
   {% for card, deck_card in cards_data %}
-      <li class="list-group-item">
+      <li class="list-group-item bg-dark">
 
         {% if card.data.layout == "transform" or card.data.layout == "double_faced_token"  %}
           <a href="/browse/card_details/{{card.id}}" data-toggle="tooltip" data-html="true" title="<img src=&quot;{{card.data.card_faces.0.image_uris.small}}&quot;>">{{card.data.name}}</a>
@@ -46,7 +58,7 @@
         {% endif %}
 
         {% if deck_card.count > 1 %}
-        x{{deck_card.count}}
+        <p style="color:#F9FAF4;display:inline;">x{{deck_card.count}}</p>
         {% endif %}
         {% if can_edit %}
           {% if deck_card.count > 1 %}
@@ -54,7 +66,7 @@
             {% csrf_token %}
             <input type="hidden" name="deck_id" value="{{deck.id}}" />
             <input type="number" style="width:50px" name="remove_count" min="1" max="{{deck_card.count}}" />
-            <button type="submit" style="float:left;" class="close" aria-label="Close">
+            <button type="submit" style="float:left;" class="close" aria-label="Close" name="is_sideboard" value="False">
               <span aria-hidden="true">&times;</span>
             </button>
           </form>
@@ -62,7 +74,7 @@
             <form method="POST" action="/builder/remove/card/{{card.id}}" style="float:left;">
               {% csrf_token %}
               <input type="hidden" name="deck_id" value="{{deck.id}}" />
-              <button type="submit" class="close" aria-label="Close">
+              <button type="submit" class="close" aria-label="Close" name="is_sideboard" value="False">
                 <span aria-hidden="true">&times;</span>
               </button>
             </form>
@@ -93,16 +105,16 @@
   <h3>Sideboard</h3>
   <ul class="list-group">
   {% for card, side_card in sideboard_cards_data %}
-      <li class="list-group-item">
+      <li class="list-group-item bg-dark">
 
         {% if card.data.layout == "transform" or card.data.layout == "double_faced_token"  %}
           <a href="/browse/card_details/{{card.id}}" data-toggle="tooltip" data-html="true" title="<img src=&quot;{{card.data.card_faces.0.image_uris.small}}&quot;>">{{card.data.name}}</a>
-          {% else %}
-            <a href="/browse/card_details/{{card.id}}" data-toggle="tooltip" data-html="true" title="<img src=&quot;{{card.data.image_uris.small}}&quot;>">{{card.data.name}}</a>
+        {% else %}
+          <a href="/browse/card_details/{{card.id}}" data-toggle="tooltip" data-html="true" title="<img src=&quot;{{card.data.image_uris.small}}&quot;>">{{card.data.name}}</a>
         {% endif %}
 
         {% if side_card.count > 1 %}
-        x{{side_card.count}}
+        <p style="color:#F9FAF4;display:inline;">x{{side_card.count}}</p>
         {% endif %}
         {% if can_edit %}
           {% if side_card.count > 1 %}
@@ -110,7 +122,7 @@
             {% csrf_token %}
             <input type="hidden" name="deck_id" value="{{deck.id}}" />
             <input type="number" style="width:50px" name="remove_count" min="1" max="{{side_card.count}}" />
-            <button type="submit" style="float:left;" class="close" aria-label="Close">
+            <button type="submit" style="float:left;" class="close" aria-label="Close" name="is_sideboard" value="True">
               <span aria-hidden="true">&times;</span>
             </button>
           </form>
@@ -118,7 +130,7 @@
             <form method="POST" action="/builder/remove/card/{{card.id}}" style="float:left;">
               {% csrf_token %}
               <input type="hidden" name="deck_id" value="{{deck.id}}" />
-              <button type="submit" class="close" aria-label="Close">
+              <button type="submit" class="close" aria-label="Close" name="is_sideboard" value="True">
                 <span aria-hidden="true">&times;</span>
               </button>
             </form>
@@ -133,7 +145,7 @@
         {% else %}
           <span class="badge badge-primary badge-pill"><i class="ms ms-c"></i></span>
         {% endif %}
-          
+
           <form method="POST" action="/builder/update/art/{{card.id}}" style="float:right;">
             {% csrf_token %}
             <input type="hidden" name="deck_id" value="{{deck.id}}" />
@@ -151,7 +163,7 @@
   </br>
   </br>
 
-  <a href="/browse?page={{page}}">Back</a></br></br>
+  <a class="btn btn-secondary" role="button" style="color:white;" onclick="goBack()"">Back</a></br></br>
 
   {% if has_deck and can_edit %}
     </br><a href="/builder/add/card/massentry">Mass entry</a></br>
