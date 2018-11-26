@@ -152,6 +152,24 @@
   <a class="btn btn-secondary" href="https://shop.tcgplayer.com/magic/product/show?ProductName={{card.data.name}}&Price_Condition=Less+Than" target="_blank" role="button">Buy on TCGplayer</a>
 
   <br><br><br>
-    <a class="btn btn-secondary" role="button" style="color:white;" onclick="goBack()"">Back</a>
+  {% if name %}
+    <a class="btn btn-secondary" role="button" href="/browse/cards/results?page={{page}}&name={{name}}">Back to search results for "{{name}}"</a>
+  {% elif query %}
+    <a class="btn btn-secondary" role="button" href="/browse/cards/adv_results?page={{page}}{{query}}">Back to search results</a>
+  {% else %}
+    <a class="btn btn-secondary" role="button" href="/browse/cards/all?page={{page}}">Back</a>
+  {% endif %}
+
+  <br><br>
+
+  {% if messages %}
+    {% for m in messages %}
+      <div class="alert alert-success alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        {{m.message}}
+      </div>
+    {% endfor %}
+  {% endif %}
+
 
 {% endblock %}
