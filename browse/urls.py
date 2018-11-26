@@ -10,6 +10,7 @@ urlpatterns = [
     path('cards/search', views.cards_search, name='Search Cards'),
     path('cards/results', views.cards_results, name='Card Results'),
     path('cards/adv_results', views.cards_adv_results, name='Advanced Card Results'),
+    path('cards/printings', views.other_printings, name='Printings'),
     # deck paths
     path('decks/all', views.decks_all, name='All Decks'),
     path('deck_details/<uuid:id>', views.deck_details, name='Deck Details'),

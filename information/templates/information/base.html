@@ -23,7 +23,7 @@ Check out the latest tournament news, how to play, and more!
 </style>
 <br />
 <div class="row">
-  <div class="col-sm-6">
+  <div class="col-lg-6">
     <div id="rssCarousel" class="carousel slide" data-ride="carousel">
       <div class="carousel-inner">
         {% for rss_item in rss_items %}
@@ -53,11 +53,11 @@ Check out the latest tournament news, how to play, and more!
       </a>
     </div>
   </div>
-  <div class="col-sm-6">
+  <div class="col-lg-6">
     <h3> YouTube Feeds </h3>
     <div class="accordion" id="youtubeAccordion">
       {% for channel in channels %}
-      <div class="card">
+      <div class="card bg-dark">
         <div class="card-header" id="headingOne">
           <h5 class="mb-0">
             <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#{{channel.1}}" aria-expanded="false" aria-controls="{{channel.1}}">

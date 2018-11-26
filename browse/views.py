@@ -29,10 +29,28 @@ def cards_all(request):
 
     return render(request, 'browse/card_results.html', context)
 
+def other_printings(request):
+    name = request.GET.get('name', None)
+    page = request.GET.get('page', 1)
+
+    result_cards = Card.objects.filter(data__name__contains=name)
+
+    paginator = Paginator(result_cards, 42)
+    cards = paginator.get_page(page)
+
+    context = {
+        'cards': cards,
+        'page': page,
+        'title': 'All printings for "{}"'.format(name),
+        'name': name,
+    }
+
+    return render(request, 'browse/card_results.html', context)
+
+
 def cards_results(request):
     name = request.GET.get('name', None)
     page = request.GET.get('page', 1)
-    is_advanced = request.GET.get('is_advanced')
 
     query = request.META['QUERY_STRING']
     if "page" in query:
@@ -375,12 +393,12 @@ def deck_details(request, id):
     else:
         parent_deck = None
 
-    cards = deck.cards.all()
-    deck_cards = DeckCard.objects.filter(deck=deck)
+    cards = deck.cards.all().order_by('data__name')
+    deck_cards = DeckCard.objects.filter(deck=deck).order_by('card__data__name')
     cards_data = zip(cards, deck_cards)
 
-    sideboard_cards = deck.sideboard_cards.all()
-    sideboard_deck_cards = SideboardCard.objects.filter(deck=deck)
+    sideboard_cards = deck.sideboard_cards.all().order_by('data__name')
+    sideboard_deck_cards = SideboardCard.objects.filter(deck=deck).order_by('card__data__name')
     sideboard_cards_data = zip(sideboard_cards, sideboard_deck_cards)
 
     art_card = deck.art_card

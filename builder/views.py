@@ -47,7 +47,11 @@ def create(request):
             user.decks.add(deck)
             messages.success(request, 'Deck has been created.')
 
-            return redirect('create_success')
+            context = {
+                'deck_id': deck.id
+            }
+
+            return render(request, 'builder/create_deck_success.html', context)
     else :
         form = DeckCreationForm()
 
@@ -56,9 +60,6 @@ def create(request):
     }
 
     return render(request, 'builder/create_deck.html', context)
-
-def create_success(request):
-    return render(request, 'builder/create_deck_success.html')
 
 @login_required
 def add_card(request, card_id):
@@ -94,26 +95,9 @@ def remove_card(request, card_id):
     #prevent followers from editing decks
     if user.username == deck.creator:
         remove_count = parse_remove_count(request.POST.get('remove_count'))
+        remove(deck, card, is_sideboard, remove_count)
 
-        dc_relationship = DeckCard.objects.get(deck=deck, card=card)
-
-        dc_relationship.count = dc_relationship.count - remove_count
-
-        if dc_relationship.count <= 0:
-            dc_relationship.delete()
-        else:
-            dc_relationship.save()
-
-        deck_cards = DeckCard.objects.filter(deck=deck)
-        if not deck_cards:
-            deck.card_count = 0
-        else:
-            deck.card_count = deck_cards.aggregate(Sum('count'))['count__sum']
-        deck.colors = update_deck_colors(deck)
-
-        deck.save()
-
-        page = request.GET.get('page')
+        #page = request.GET.get('page')
 
         messages.success(request, 'Card has been removed.')
 
@@ -156,6 +140,14 @@ def copy_deck(request, deck_id):
     user = request.user
     deck = Deck.objects.get(id=deck_id)
 
+    cards = deck.cards.all().order_by('data__name')
+    deck_cards = DeckCard.objects.filter(deck=deck).order_by('card__data__name')
+    cards_data = zip(cards, deck_cards)
+
+    sideboard_cards = deck.sideboard_cards.all().order_by('data__name')
+    sideboard_deck_cards = SideboardCard.objects.filter(deck=deck).order_by('card__data__name')
+    sideboard_cards_data = zip(sideboard_cards, sideboard_deck_cards)
+
     # create new copy of deck
     new_deck_name = "{} ({}\'s copy)".format(deck.name, user.username)
     new_deck = Deck.objects.create_deck(
@@ -168,8 +160,8 @@ def copy_deck(request, deck_id):
         deck.colors,
         user.username,
         timezone.now(),
-        deck.cards.all(),
-        deck.sideboard_cards.all(),
+        cards_data,
+        sideboard_cards_data,
         deck.art_card
     )
 
@@ -311,10 +303,10 @@ def mass_entry(request):
             else:
                 is_commander = False
 
-            card_to_add = Card.objects.filter(data__name__icontains=card_name)[0]
+            card_to_add = Card.objects.filter(data__name__icontains=card_name)
             if card_to_add:     # ignore empty results
                 for _ in range(min(quantity, 999)):
-                    add(deck, card_to_add, is_sideboard, is_commander)
+                    add(deck, card_to_add[0], is_sideboard, is_commander)
 
         context = { 'deck_id': deck_id }
         return render(request, 'builder/mass_entry_success.html', context)
@@ -364,13 +356,55 @@ def add(deck, card, is_sideboard, is_commander):
     deck.colors = update_deck_colors(deck)
     deck.save()
 
+def remove(deck, card, is_sideboard, remove_count):
+    if is_sideboard == "False":
+        try:
+            dc = DeckCard.objects.get(deck=deck, card=card)
+        except DeckCard.DoesNotExist:
+            dc = DeckCard(deck=deck, card=card, count=0)
+
+        dc.count = dc.count - remove_count
+        if dc.count <= 0:
+            dc.delete()
+        else:
+            dc.save()
+
+        deck_cards = DeckCard.objects.filter(deck=deck)
+        deck.card_count = deck_cards.aggregate(Sum('count'))['count__sum']
+        if not deck.card_count:     # aggregate will return None if 0
+            deck.card_count = 0
+
+    else:
+        try:
+            sc = SideboardCard.objects.get(deck=deck, card=card)
+        except SideboardCard.DoesNotExist:
+            sc = SideboardCard(deck=deck, card=card, count=0)
+
+        sc.count = sc.count - remove_count
+        if sc.count <= 0:
+            sc.delete()
+        else:
+            sc.save()
+
+        deck_sideboard_cards = SideboardCard.objects.filter(deck=deck)
+        deck.sideboard_card_count = deck_sideboard_cards.aggregate(Sum('count'))['count__sum']
+        if not deck.sideboard_card_count:   # aggregate will return None if 0
+            deck.sideboard_card_count = 0
+
+    deck.colors = update_deck_colors(deck)
+    deck.save()
+
 def check_commander_status(card):
-    if hasattr(card.data, "card_faces"):
-        card.data["type_line"] = card.data["card_faces"][0]["type_line"]
-        card.data["oracle_text"] = card.data["card_faces"][0]["oracle_text"]
-    if "legendary" in card.data['type_line'].lower() and "creature" in card.data['type_line'].lower():
+    if 'card_faces' in card.data:
+        type_line = card.data["card_faces"][0]["type_line"].lower()
+        oracle_text = card.data["card_faces"][0]["oracle_text"].lower()
+    else:
+        type_line = card.data['type_line'].lower()
+        oracle_text = card.data['oracle_text'].lower()
+
+    if "legendary" in type_line and "creature" in type_line:
         return True
-    elif "can be your commander" in card.data['oracle_text'].lower():
+    elif "can be your commander" in oracle_text:
         return True
     else:
         return False

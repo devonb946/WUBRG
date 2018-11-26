@@ -2,6 +2,8 @@
 
 {% block content %}
 
+{% load static %}
+
   {% if user.is_authenticated %}
 
     <h1> Welcome, {{ user.username }} </h1>
@@ -9,28 +11,32 @@
     <br>
 
     <h2> Decks </h2></br>
-    {% for deck in decks|slice:":3" %}
+    {% for deck in decks %}
         {% if forloop.first %}
         <div class="row" style="padding-top:15px;">
         {% endif %}
         <div class="col-sm-4" style="padding:50px;" >
             <a href="/browse/deck_details/{{deck.id}}">
-              {% if deck.art_card.data.layout == "transform"  %}
-                <img style="height:150px;" src="{{deck.art_card.data.card_faces.0.image_uris.art_crop}}" />
-              {% elif deck.art_card.data.layout == "planar" or deck.art_card.data.layout == "split"  %}
-                <img style="height:150px;" src="{{deck.art_card.data.image_uris.art_crop}}" />
+              {% if not deck.art_card %}
+                <img class="details-deck-image" style="height:150px; width:200px;" src="{% static 'images/NoCardsAddedProfile.png' %}" />
               {% else %}
-                <img style="height:150px;" src="{{deck.art_card.data.image_uris.art_crop}}" />
+                {% if deck.art_card.data.layout == "transform" or deck.art_card.data.layout == "double_faced_token" %}
+                  <img style="height:150px;" src="{{deck.art_card.data.card_faces.0.image_uris.art_crop}}" />
+                {% elif deck.art_card.data.layout == "planar" or deck.art_card.data.layout == "split"  %}
+                  <img style="height:150px;" src="{{deck.art_card.data.image_uris.art_crop}}" />
+                {% else %}
+                  <img style="height:150px;" src="{{deck.art_card.data.image_uris.art_crop}}" />
+                {% endif %}
               {% endif %}
             <li style="list-style:none" class="collection-item">{{deck.name}}</li>
           </a>
         </div>
-      {% if forloop.counter|divisibleby:3 %}
-        </div>
-        <div class="row" style="padding-top:15px;">
-      {% endif %}
     {% if forloop.last %}</div>{% endif %}
     {% endfor %}
+
+  </br>
+
+  <h5><a href="{% url 'profile_decks' %}">View all decks</a></h5>
 
   </br>
 

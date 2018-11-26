@@ -17,17 +17,19 @@ OP Bant Turbofog/Storm Hybrid deck and steamroll everyone at your LGS's FNM!
 <h2>Recently created decks</h2>
 {% for deck in decks %}
     <a href="/browse/deck_details/{{deck.id}}">
-    <li class="list-group-item d-flex justify-content-between align-items-center">{{deck.name}}
+    <li class="list-group-item d-flex justify-content-between align-items-center bg-dark">{{deck.name}}
 
     {% if deck.colors|length > 0 %}
-      <p><span class="badge badge-primary badge-pill">
+      <p><span class="badge badge-secondary badge-pill mr-auto">
         {% for color in deck.colors %}
           <i class="ms ms-{{color|lower}}"></i>
         {% endfor %}
       </span></p>
+    {% else %}
+    <p><span class="badge badge-secondary badge-pill"><i class="ms ms-c"></i>
     {% endif %}
 
-      <p><span class="badge badge-primary badge-pill">{{deck.format}}</span></p></li>
+      <p><span class="badge badge-secondary badge-pill">{{deck.format}}</span></p></li>
   </a>
 {% endfor %}
 
