@@ -10,7 +10,7 @@
       {% endif %}
       <div class="col-sm-4" style="padding:50px;" >
           <a href="/browse/deck_details/{{deck.id}}">
-            {% if deck.art_card.data.layout == "transform"  %}
+            {% if deck.art_card.data.layout == "transform" or deck.art_card.data.layout == "double_faced_token" %}
               <img style="height:150px;" src="{{deck.art_card.data.card_faces.0.image_uris.art_crop}}" />
             {% elif deck.art_card.data.layout == "planar" or deck.art_card.data.layout == "split"  %}
               <img style="height:150px;" src="{{deck.art_card.data.image_uris.art_crop}}" />

@@ -4,18 +4,30 @@
 
 {% block content %}
 
+{% load static %}
+
+<script>
+  function goBack() {
+    window.history.back();
+  }
+</script>
+
   <div class="container center-align">
     <h2>{{deck.name}}</h2>
   <br>
-    <a href="{{art_card.data.image_uris.art_crop}}">
-        {% if art_card.data.layout == "transform"  %}
-          <img class="details-deck-image" src="{{art_card.data.card_faces.0.image_uris.art_crop}}" />
-        {% else %}
-          <img class="details-deck-image" style="height:300px;" src="{{art_card.data.image_uris.art_crop}}" />
-        {% endif %}
-    </a>
+  <a href="{{art_card.data.image_uris.art_crop}}">
+    {% if not deck.art_card %}
+      <img class="details-deck-image" style="height:300px;" src="{% static 'images/NoCardsAddedDetails.png' %}" />
+    {% else %}
+          {% if art_card.data.layout == "transform" or art_card.data.layout == "double_faced_token" or art_card.data.layout == "planar" or art_card.data.layout == "split" %}
+            <img class="details-deck-image" style="height:300px; width:650px;" src="{{art_card.data.image_uris.art_crop}}" />
+          {% else %}
+            <img class="details-deck-image" style="height:300px;" src="{{art_card.data.image_uris.art_crop}}" />
+          {% endif %}
+    {% endif %}
+  </a>
+    <br><br>
     <p>{{deck.description}}</p>
-  <br>
   {% if parent_deck %}
     <p>Based on: <a href="/browse/deck_details/{{parent_deck.id}}">{{ parent_deck.name }}</a> by {{ parent_deck.creator }}</p>
   {% endif %}
@@ -97,8 +109,8 @@
 
         {% if card.data.layout == "transform" or card.data.layout == "double_faced_token"  %}
           <a href="/browse/card_details/{{card.id}}" data-toggle="tooltip" data-html="true" title="<img src=&quot;{{card.data.card_faces.0.image_uris.small}}&quot;>">{{card.data.name}}</a>
-          {% else %}
-            <a href="/browse/card_details/{{card.id}}" data-toggle="tooltip" data-html="true" title="<img src=&quot;{{card.data.image_uris.small}}&quot;>">{{card.data.name}}</a>
+        {% else %}
+          <a href="/browse/card_details/{{card.id}}" data-toggle="tooltip" data-html="true" title="<img src=&quot;{{card.data.image_uris.small}}&quot;>">{{card.data.name}}</a>
         {% endif %}
 
         {% if side_card.count > 1 %}
@@ -151,7 +163,7 @@
   </br>
   </br>
 
-  <a href="/browse?page={{page}}">Back</a></br></br>
+  <a class="btn btn-secondary" role="button" style="color:white;" onclick="goBack()"">Back</a></br></br>
 
   {% if has_deck and can_edit %}
     </br><a href="/builder/add/card/massentry">Mass entry</a></br>

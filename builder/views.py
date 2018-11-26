@@ -47,7 +47,11 @@ def create(request):
             user.decks.add(deck)
             messages.success(request, 'Deck has been created.')
 
-            return redirect('create_success')
+            context = {
+                'deck_id': deck.id
+            }
+
+            return render(request, 'builder/create_deck_success.html', context)
     else :
         form = DeckCreationForm()
 
@@ -56,9 +60,6 @@ def create(request):
     }
 
     return render(request, 'builder/create_deck.html', context)
-
-def create_success(request):
-    return render(request, 'builder/create_deck_success.html')
 
 @login_required
 def add_card(request, card_id):
@@ -302,10 +303,10 @@ def mass_entry(request):
             else:
                 is_commander = False
 
-            card_to_add = Card.objects.filter(data__name__icontains=card_name)[0]
+            card_to_add = Card.objects.filter(data__name__icontains=card_name)
             if card_to_add:     # ignore empty results
                 for _ in range(min(quantity, 999)):
-                    add(deck, card_to_add, is_sideboard, is_commander)
+                    add(deck, card_to_add[0], is_sideboard, is_commander)
 
         context = { 'deck_id': deck_id }
         return render(request, 'builder/mass_entry_success.html', context)
@@ -394,12 +395,16 @@ def remove(deck, card, is_sideboard, remove_count):
     deck.save()
 
 def check_commander_status(card):
-    if hasattr(card.data, "card_faces"):
-        card.data["type_line"] = card.data["card_faces"][0]["type_line"]
-        card.data["oracle_text"] = card.data["card_faces"][0]["oracle_text"]
-    if "legendary" in card.data['type_line'].lower() and "creature" in card.data['type_line'].lower():
+    if 'card_faces' in card.data:
+        type_line = card.data["card_faces"][0]["type_line"].lower()
+        oracle_text = card.data["card_faces"][0]["oracle_text"].lower()
+    else:
+        type_line = card.data['type_line'].lower()
+        oracle_text = card.data['oracle_text'].lower()
+
+    if "legendary" in type_line and "creature" in type_line:
         return True
-    elif "can be your commander" in card.data['oracle_text'].lower():
+    elif "can be your commander" in oracle_text:
         return True
     else:
         return False

@@ -7,6 +7,12 @@
   <title>WUBRG</title>
 </head>
 <body>
+  <script>
+    function goBack() {
+      window.history.back();
+    }
+  </script>
+
   <header class="container center-align">
     <h1>{{card.data.name}}</h1>
     <a href="/browse/cards/printings?page=1&name={{card.data.name}}"><p><small>Find other printings!</small></p></a>
@@ -36,9 +42,7 @@
     {% if card.data.layout == "meld" %}
       <a href="/browse/cards/results?name={{card.data.all_parts.0.name}}">{{card.data.all_parts.0.name}}</a> melds with <a href="/browse/cards/results?name={{card.data.all_parts.2.name}}">{{card.data.all_parts.2.name}}</a> into <a href="/browse/cards/results?name={{card.data.all_parts.1.name}}">{{card.data.all_parts.1.name}}</a>.
     {% endif %}
-    <div><br>
-
-
+    <div>
 
       <h5>{{card.data.name}}</h5>
       {% if pmc %}
@@ -113,26 +117,14 @@
       {% endif %}
       {% if card.data.loyalty %}
         Starting Loyalty: {{card.data.loyalty}}
-      {% endif %}<br /><br />
+      {% endif %}<br />
 
       Rarity: {{card.data.rarity|title}}<br />
       Set: {{card.data.set_name}} ({{card.data.set|upper}})
-
-
-      <br>
-        {% if name %}
-          <a href="/browse/cards/results?page={{page}}&name={{name}}">Back to search results for "{{name}}"</a>
-        {% elif query %}
-          <a href="/browse/cards/adv_results?page={{page}}{{query}}">Back to advanced search results</a>
-        {% else %}
-          <a href="/browse/cards/all?page={{page}}">Back</a>
-        {% endif %}
     </div>
   </div>
 
-
 <br><br>
-
 
   {% if user.is_authenticated %}
     <div class="container center-align">
@@ -143,8 +135,8 @@
             <option value="{{deck.id}}" label="{{deck.name}}"></option>
           {% endfor %}
         </select>
+        <input type="checkbox" name="is_commander" value="True">Make commander<br><br>
         <button class="btn btn-secondary" role="button" type="submit" name="is_sideboard" value="False">Add card to deck</button>
-        <input type="checkbox" name="is_commander" value="True">Make commander<br>
         <button class="btn btn-secondary" role="button" type="submit" name="is_sideboard" value="True">Add card to sideboard</button>
       </form>
     </div>
@@ -155,16 +147,11 @@
     </div>
   {% endif %}
 
-  <br><br>
+  <br>
 
   <a class="btn btn-secondary" href="https://shop.tcgplayer.com/magic/product/show?ProductName={{card.data.name}}&Price_Condition=Less+Than" target="_blank" role="button">Buy on TCGplayer</a>
 
-  {% if messages %}
-    {% for message in messages %}
-      {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-        <div class="alert alert-success" role="alert">{{ message }}</div>
-      {% endif %}
-    {% endfor %}
-  {% endif %}
+  <br><br><br>
+    <a class="btn btn-secondary" role="button" style="color:white;" onclick="goBack()"">Back</a>
 
 {% endblock %}
