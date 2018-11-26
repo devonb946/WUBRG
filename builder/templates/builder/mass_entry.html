@@ -63,7 +63,11 @@
     <br><br>
     <select name="deck_id" form="mass_entry_form">
       {% for deck in decks %}
-        <option value="{{deck.id}}" label="{{deck.name}}"></option>
+        {% if deck.id == focus_deck_id %}
+          <option value="{{deck.id}}" label="{{deck.name}}" selected></option>
+        {% else %}
+          <option value="{{deck.id}}" label="{{deck.name}}"></option>
+        {% endif %}
       {% endfor %}
     </select>
     <button class="btn btn-secondary" role="button" type="submit" name="is_sideboard" value="False">Add cards to deck</button>

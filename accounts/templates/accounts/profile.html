@@ -47,4 +47,20 @@
 
   {% endif %}
 
+  {% if messages %}
+    {% for m in messages %}
+      {% if m.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+        <div class="alert alert-error alert-dismissable">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+          {{m.message}}
+        </div>
+      {% else %}
+        <div class="alert alert-success alert-dismissable">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+          {{m.message}}
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+
 {% endblock %}

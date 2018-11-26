@@ -22,10 +22,7 @@ def register(request):
         form = WubrgUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Account has been created.')
-
-            #TODO change to actual profile page
-            return redirect('login')
+            return redirect('accounts/index')
     else:
         form = WubrgUserCreationForm()
 
@@ -40,7 +37,7 @@ def user_page(request):
 
 @login_required
 def profile(request, username):
-    user = User.objects.get(username=username)
+    user = request.user
     # restrict decks to 3 on front page of profile
     decks = user.decks.all().order_by('-date_created')[:3]
 
@@ -80,8 +77,7 @@ def remove_account(request, username):
         user = User.objects.get(username=username)
         user.is_active = False
         user.save()
-        messages.success(request, 'User {username} has been deleted.')
-
+        messages.success(request, 'User {username} has been removed successfully.')
     except User.DoesNotExist:
-        messages.error(request, 'User {username} does not exist. Please try again')
+        messages.error(request, 'User {username} does not exist. Please try again.')
     return redirect('logout')

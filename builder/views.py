@@ -14,7 +14,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 # builder views
 def index(request):
-    all_decks = Deck.objects.order_by('date_created')
+    all_decks = Deck.objects.order_by('-date_created')
 
     paginator = Paginator(all_decks, 12)
 
@@ -45,7 +45,6 @@ def create(request):
 
             # adding deck to user's account
             user.decks.add(deck)
-            messages.success(request, 'Deck has been created.')
 
             context = {
                 'deck_id': deck.id
@@ -166,7 +165,6 @@ def copy_deck(request, deck_id):
     )
 
     user.decks.add(new_deck)
-    messages.success(request, 'Deck has been successfully copied.')
     return render(request, 'builder/copy_deck_success.html')
 
 @login_required
@@ -175,7 +173,6 @@ def follow_deck(request, deck_id):
     deck = Deck.objects.get(id=deck_id)
 
     user.decks.add(deck)
-    messages.success(request, 'Deck has been successfully followed.')
     return render(request, 'builder/follow_deck_success.html')
 
 @login_required
@@ -188,7 +185,6 @@ def remove_deck(request, deck_id):
     deck.save()
 
     user.decks.remove(deck)
-    messages.success(request, 'Deck has been removed.')
     return render(request, 'builder/remove_deck_success.html')
 
 @login_required
@@ -197,7 +193,6 @@ def unfollow_deck(request, deck_id):
     deck = Deck.objects.get(id=deck_id)
 
     user.decks.remove(deck)
-    messages.success(request, 'Deck has been unfollowed.')
     return render(request, 'builder/unfollow_deck_success.html')
 
 @login_required
@@ -263,14 +258,15 @@ def check_card_legality(card, format):
         return True
 
 def check_commander_identity(deck_cards):
-    commanders = all((card for card in deck_cards if card.is_commander), None)
+    commanders = [card for card in deck_cards if card.is_commander]
     if commanders:
         color_identity = set()
         for commander in commanders:
-            color_identity = color_identity.union(commander.data['color_identity'])
+            color_identity = color_identity.union(commander.card.data['color_identity'])
         color_identity = list(color_identity)
-        for card in deck_cards:
-            if card.data['color_identity'] not in color_identity:
+        for deck_card in deck_cards:
+            is_within_identity = all(color in color_identity for color in deck_card.card.data['color_identity'])
+            if not is_within_identity:
                 return False
         return True
     else:
@@ -297,9 +293,9 @@ def mass_entry(request):
                 card_name = line.strip()
 
             # check for special commander string
-            if card_name[-1] == "__commander__":
-                card_name = card_name[:-1]
+            if card_name.endswith("__commander__"):
                 is_commander = True
+                card_name = card_name[:-13].strip()
             else:
                 is_commander = False
 
@@ -311,13 +307,15 @@ def mass_entry(request):
         context = { 'deck_id': deck_id }
         return render(request, 'builder/mass_entry_success.html', context)
     else:
-        context = {}
         if request.user.is_authenticated:
             placeholder = "2x Negate\n1x Thunderclap Wyvern\nKiora, the Crashing Wave\n10x Island"
             decks = request.user.decks.filter(creator=request.user.username)
+            focus_deck_id = request.GET.get('focus_deck_id', None)
+            focus_deck_id = uuid.UUID(focus_deck_id)
             context = {
                 'placeholder': placeholder,
-                'decks': decks
+                'decks': decks,
+                'focus_deck_id': focus_deck_id,
             }
         return render(request, 'builder/mass_entry.html', context)
 
@@ -330,7 +328,7 @@ def add(deck, card, is_sideboard, is_commander):
 
         # check if card is eligible to be a commander
         is_eligible_commander = check_commander_status(dc.card)
-        if is_commander == "True" and is_eligible_commander:
+        if str(is_commander) == "True" and is_eligible_commander:
             dc.is_commander = True
 
         dc.count += 1

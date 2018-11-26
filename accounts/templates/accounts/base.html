@@ -8,4 +8,13 @@ Profile
 Sign up and start building decks today!
 <h3><a class="navbar-link" href="/profile/register">Register</a></h3>
 <h3><a class="navbar-link" href="/profile/login">Login</a></h3>
+
+{% if messages %}
+  {% for m in messages %}
+    <div class="alert alert-success alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      {{m.message}}
+    </div>
+  {% endfor %}
+{% endif %}
 {% endblock %}
