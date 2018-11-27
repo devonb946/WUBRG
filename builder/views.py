@@ -107,7 +107,6 @@ def remove_card(request, card_id):
 def update_deck_colors(deck):
     colors = set()
 
-
     for card in deck.cards.all():
         if "colors" in card.data:
             colors = colors.union(card.data['colors'])
@@ -213,17 +212,19 @@ def update_art_card(request, card_id):
 def validate_deck(request, deck_id):
     user = request.user
     deck = Deck.objects.get(id=deck_id)
-    format = deck.format.lower()
 
-    is_valid = validate(deck, format)
-    if is_valid:
-        deck.is_draft = False
-        deck.save()
-        messages.success(request, 'Deck {} has been successfully validated.'.format(deck_id))
-        return HttpResponseRedirect('/browse/deck_details/' + str(deck_id))
-    else:
-        context = { 'deck_id': deck_id }
-        return render(request, 'builder/validate_deck_failure.html', context)
+    if deck.is_draft:
+        format = deck.format.lower()
+        is_valid = validate(deck, format)
+        if is_valid:
+            deck.is_draft = False
+            deck.save()
+            messages.success(request, 'Deck {} has been successfully validated.'.format(deck_id))
+            return HttpResponseRedirect('/browse/deck_details/' + str(deck_id))
+        else:
+            context = { 'deck_id': deck_id }
+            return render(request, 'builder/validate_deck_failure.html', context)
+
 
 def validate(deck, format):
     if format in ['standard', 'modern', 'legacy', 'vintage', 'brawl']:
@@ -272,6 +273,7 @@ def check_commander_identity(deck_cards):
     else:
         return False
 
+@login_required
 def mass_entry(request):
     if request.method == 'POST' and request.user.is_authenticated:
         deck_id = request.POST.get('deck_id')
@@ -351,6 +353,7 @@ def add(deck, card, is_sideboard, is_commander):
         deck_sideboard_cards = SideboardCard.objects.filter(deck=deck)
         deck.sideboard_card_count = deck_sideboard_cards.aggregate(Sum('count'))['count__sum']
 
+    deck.is_draft = True    # if a user makes a change to a deck make un-validate it
     deck.colors = update_deck_colors(deck)
     deck.save()
 
@@ -389,6 +392,7 @@ def remove(deck, card, is_sideboard, remove_count):
         if not deck.sideboard_card_count:   # aggregate will return None if 0
             deck.sideboard_card_count = 0
 
+    deck.is_draft = True    # if a user makes a change to a deck make un-validate it
     deck.colors = update_deck_colors(deck)
     deck.save()
 
