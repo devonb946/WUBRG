@@ -46,5 +46,6 @@ def index(request):
     }
     return render(request, 'information/base.html', context)
 
+# dynamic object for RSS contents
 class RssItem(object):
     pass
