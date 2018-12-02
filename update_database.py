@@ -18,10 +18,6 @@ cards = requests.get(url).json()
 
 cur = conn.cursor()
 
-#cur.execute("DROP TABLE IF EXISTS browse_card_2;")
-#cur.execute("CREATE TABLE browse_card_2 (data jsonb not null, id uuid PRIMARY KEY);")
-#conn.commit()
-
 total_cards = len(cards)
 count = 0
 
@@ -43,13 +39,7 @@ for item in cards:
     count += 1
     print(count, "/", total_cards, " cards inserted")
 
-    # cur.execute("INSERT INTO browse_card_2(data, id) VALUES (\'%s\', \'%s\');" % (json.dumps(item).replace("'", "''"), item.get("id")))
-
 conn.commit()
-
-#cur.execute("DROP TABLE browse_card;")
-#cur.execute("ALTER TABLE browse_card_2 RENAME TO browse_card;")
-#conn.commit()
 
 cur.close()
 conn.close()
