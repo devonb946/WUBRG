@@ -24,7 +24,7 @@
           <img style="height:500px;" src="{{card.data.card_faces.1.image_uris.png}}" />
         {% elif card.data.layout == "flip" %}
           <img style="height:500px;" src="{{card.data.image_uris.png}}" />
-          <img class="roatate_d" style="height:500px;" src="{{card.data.image_uris.png}}" />
+          <img class="rotate_d" style="height:500px;" src="{{card.data.image_uris.png}}" />
         {% elif card.data.layout == "planar" or card.data.layout == "split"  %}
             {% if "Aftermath" in card.data.card_faces.1.oracle_text  %}
               <img style="height:500px;" src="{{card.data.image_uris.png}}" />
@@ -124,7 +124,7 @@
       Art by: {{card.data.artist}}<br />
       Colector number: {{card.data.collector_number}}
 
-      {{card.data.image_uris}}
+      {{card.data}}
     </div>
   </div>
 
