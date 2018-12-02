@@ -270,7 +270,7 @@ def check_card_legality(deck_card, format, request):
     card_name = deck_card.card.data['name']
     if legality != 'legal':
         if legality == 'restricted' and deck_card.count > 1:
-            messages.info('Card \'{}\' is restricted, can have no more than one copy.'.format(card_name)))
+            messages.info('Card \'{}\' is restricted, can have no more than one copy.'.format(card_name))
             is_valid = False
         else:
             messages.info(request, 'Card \'{}\' in the deck is not legal for {} format.'.format(card_name, format))
