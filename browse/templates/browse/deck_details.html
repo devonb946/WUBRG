@@ -70,6 +70,17 @@
         {% if deck_card.count > 1 %}
         <p style="color:#F9FAF4;display:inline;">x{{deck_card.count}}</p>
         {% endif %}
+
+        {% if card.data.colors|length > 0 %}
+          <span class="badge badge-secondary badge-pill">
+              {% for color in card.data.colors %}
+                <i class="ms ms-{{color|lower}}"></i>
+              {% endfor %}
+          </span>
+      {% else %}
+        <span class="badge badge-secondary badge-pill"><i class="ms ms-c"></i></span>
+      {% endif %}
+
         {% if can_edit %}
           {% if deck_card.count > 1 %}
           <form method="POST" action="/builder/remove/card/{{card.id}}" style="float:left;">
@@ -89,16 +100,6 @@
               </button>
             </form>
           {% endif %}
-
-          {% if card.data.colors|length > 0 %}
-            <span class="badge badge-primary badge-pill">
-                {% for color in card.data.colors %}
-                  <i class="ms ms-{{color|lower}}"></i>
-                {% endfor %}
-            </span>
-        {% else %}
-          <span class="badge badge-primary badge-pill"><i class="ms ms-c"></i></span>
-        {% endif %}
 
           <form method="POST" action="/builder/update/art/{{card.id}}" style="float:right;">
             {% csrf_token %}
@@ -123,6 +124,16 @@
           <a href="/browse/card_details/{{card.id}}" data-toggle="tooltip" data-html="true" title="<img src=&quot;{{card.data.image_uris.small}}&quot;>">{{card.data.name}}</a>
         {% endif %}
 
+        {% if card.data.colors|length > 0 %}
+          <span class="badge badge-secondary badge-pill">
+              {% for color in card.data.colors %}
+                <i class="ms ms-{{color|lower}}"></i>
+              {% endfor %}
+          </span>
+      {% else %}
+        <span class="badge badge-secondary badge-pill"><i class="ms ms-c"></i></span>
+      {% endif %}
+
         {% if side_card.count > 1 %}
         <p style="color:#F9FAF4;display:inline;">x{{side_card.count}}</p>
         {% endif %}
@@ -145,16 +156,6 @@
               </button>
             </form>
           {% endif %}
-
-          {% if card.data.colors|length > 0 %}
-            <span class="badge badge-primary badge-pill">
-                {% for color in card.data.colors %}
-                  <i class="ms ms-{{color|lower}}"></i>
-                {% endfor %}
-            </span>
-        {% else %}
-          <span class="badge badge-primary badge-pill"><i class="ms ms-c"></i></span>
-        {% endif %}
 
           <form method="POST" action="/builder/update/art/{{card.id}}" style="float:right;">
             {% csrf_token %}
