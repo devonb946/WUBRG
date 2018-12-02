@@ -88,22 +88,26 @@ def card_details(request, id):
         page = 1
 
     #pretty mana cost for details desplay
-    pmc = card.data["mana_cost"] if "mana_cost" in card.data else []
-    if("//" in pmc):
-        temp = "".join([i for i in pmc.split("//") if i != ""]).split("  ")
+    if "mana_cost" in card.data:
+        pmc = card.data["mana_cost"]
+    else:
         pmc = []
-        for i in temp:
-            instance = i.split("}")
-            pmc.append([j[1:] for j in instance if j != ""])
-        pmc = [pmc[0]] + [["//"]] + [pmc[1]]
-        pmc = [item for sublist in pmc for item in sublist]
-    elif "card_faces" in card.data:
-            pmc = card.data["card_faces"][0]["mana_cost"] + card.data["card_faces"][1]["mana_cost"]
+    if pmc != []:
+        if("//" in pmc):
+            temp = "".join([i for i in pmc.split("//") if i != ""]).split("  ")
+            pmc = []
+            for i in temp:
+                instance = i.split("}")
+                pmc.append([j[1:] for j in instance if j != ""])
+            pmc = [pmc[0]] + [["//"]] + [pmc[1]]
+            pmc = [item for sublist in pmc for item in sublist]
+        elif "card_faces" in card.data:
+                pmc = card.data["card_faces"][0]["mana_cost"] + card.data["card_faces"][1]["mana_cost"]
+                pmc = pmc.split("}")
+                pmc = [i[1:] for i in pmc if i != ""]
+        else:
             pmc = pmc.split("}")
             pmc = [i[1:] for i in pmc if i != ""]
-    else:
-        pmc = pmc.split("}")
-        pmc = [i[1:] for i in pmc if i != ""]
 
 
     if "oracle_text" in card.data:
@@ -309,6 +313,9 @@ def cards_adv_results(request):
             cols += [str(i).upper()]
     cols = sorted(cols)
     colors = request.GET.get('colors')
+
+    print(cols)
+    print(colors)
 
     if colors == 'e':
         result_cards = result_cards.filter(data__colors=cols)

@@ -71,7 +71,7 @@
               {% if card.data.layout == "transform" or card.data.layout == "double_faced_token"  %}
                 <img style="height:200px;" src="{{card.data.card_faces.0.image_uris.small}}" />
               {% elif card.data.layout == "planar" or card.data.layout == "split"  %}
-                {% if card.data.set_name == "Amonkhet" or card.data.set_name == "Hour of Devastation"  %}
+                {% if card.data.layout == "split"  and "Aftermath" in card.data.card_faces.1.oracle_text  %}
                   <img style="height:200px;" src="{{card.data.image_uris.small}}" />
                 {% else %}
                   <img class="rotate" style="height:200px;" src="{{card.data.image_uris.small}}" />
@@ -143,5 +143,5 @@
           {% endif %}
     </ul>
   </nav>
-  
+
 {% endblock %}
