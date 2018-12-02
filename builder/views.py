@@ -223,7 +223,7 @@ def validate_deck(request, deck_id):
 
     if deck.is_draft:
         format = deck.format.lower()
-        is_valid = validate(deck, format)
+        is_valid = validate(deck, format, request)
         if is_valid:
             deck.is_draft = False
             deck.save()
