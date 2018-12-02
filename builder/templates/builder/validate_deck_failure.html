@@ -8,5 +8,14 @@
   <br>
   <p><a href="/browse/deck_details/{{deck_id}}">Back</a></p>
 
+  {% if messages %}
+    {% for m in messages %}
+      <div class="alert alert-danger alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        {{m.message}}
+      </div>
+    {% endfor %}
+  {% endif %}
+
 
 {% endblock %}

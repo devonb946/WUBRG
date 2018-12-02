@@ -163,16 +163,24 @@ def copy_deck(request, deck_id):
         deck.art_card
     )
 
+    context = {
+        'deck_id': new_deck.id
+    }
+
     user.decks.add(new_deck)
-    return render(request, 'builder/copy_deck_success.html')
+    return render(request, 'builder/copy_deck_success.html', context)
 
 @login_required
 def follow_deck(request, deck_id):
     user = request.user
     deck = Deck.objects.get(id=deck_id)
 
+    context = {
+        'deck_id': deck.id
+    }
+
     user.decks.add(deck)
-    return render(request, 'builder/follow_deck_success.html')
+    return render(request, 'builder/follow_deck_success.html', context)
 
 @login_required
 def remove_deck(request, deck_id):
@@ -226,39 +234,45 @@ def validate_deck(request, deck_id):
             return render(request, 'builder/validate_deck_failure.html', context)
 
 
-def validate(deck, format):
+def validate(deck, format, request):
+    is_valid = True
     if format in ['standard', 'modern', 'legacy', 'vintage', 'brawl']:
         if deck.card_count < 60:
-            return False
+            messages.info(request, 'Card count must be at least 60. Current count is {}'.format(deck.card_count))
+            is_valid = False
         if format != 'brawl' and deck.sideboard_card_count > 15:
-            return False
+            messages.info(request, 'Sideboard card count is greater than 15. Current count is {}'.format(deck.sideboard_card_count))
+            is_valid = False
 
     if format == 'commander':
         if deck.card_count < 100:
-            return False
+            messages.info(request, 'Card count must be at least 100. Current count is {}'.format(deck.card_count))
+            is_valid = False
 
     # check for a commander card and color identity
     if format in ['commander', 'brawl']:
         deck_cards = DeckCard.objects.filter(deck=deck)
-        is_legal = check_commander_identity(deck_cards)
+        is_legal = check_commander_identity(deck_cards, request)
         if not is_legal:
-            return False
+            is_valid = False
 
     for card in deck.cards.all():
-        is_legal = check_card_legality(card, format)
+        is_legal = check_card_legality(card, format, request)
         if not is_legal:
-            return False
+            is_valid = False
 
-    return True
+    return is_valid
 
-def check_card_legality(card, format):
+def check_card_legality(card, format, request):
+    is_valid = True
     legality = card.data['legalities'][format]
     if legality != 'legal':
-        return False
-    else:
-        return True
+        messages.info(request, 'Card \'{}\' in the deck is not legal for {} format.'.format(deck_card.card.data['name'], format))
+        is_valid = False
+    return is_valid
 
-def check_commander_identity(deck_cards):
+def check_commander_identity(deck_cards, request):
+    is_valid = True
     commanders = [card for card in deck_cards if card.is_commander]
     if commanders:
         color_identity = set()
@@ -268,10 +282,13 @@ def check_commander_identity(deck_cards):
         for deck_card in deck_cards:
             is_within_identity = all(color in color_identity for color in deck_card.card.data['color_identity'])
             if not is_within_identity:
-                return False
-        return True
+                messages.info(request, 'Card \'{}\' in the deck is not a part of the commander\'s color identity.'.format(deck_card.card.data['name']))
+                is_valid = False
     else:
-        return False
+        messages.info(request, 'No commanders found in deck. You must have at least one commander.')
+        is_valid = False
+
+    return is_valid
 
 @login_required
 def mass_entry(request):
