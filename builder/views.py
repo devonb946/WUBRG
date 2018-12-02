@@ -318,7 +318,7 @@ def mass_entry(request):
             else:
                 is_commander = False
 
-            card_to_add = Card.objects.filter(data__name__icontains=card_name)
+            card_to_add = Card.objects.filter(data__name__contains=card_name)
             if card_to_add:     # ignore empty results
                 for _ in range(min(quantity, 999)):
                     add(deck, card_to_add[0], is_sideboard, is_commander)

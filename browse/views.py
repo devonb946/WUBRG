@@ -314,9 +314,6 @@ def cards_adv_results(request):
     cols = sorted(cols)
     colors = request.GET.get('colors')
 
-    print(cols)
-    print(colors)
-
     if colors == 'e':
         result_cards = result_cards.filter(data__colors=cols)
     elif colors == 'g':
