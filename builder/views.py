@@ -249,26 +249,33 @@ def validate(deck, format, request):
             messages.info(request, 'Card count must be at least 100. Current count is {}'.format(deck.card_count))
             is_valid = False
 
+    deck_cards = DeckCard.objects.filter(deck=deck)
+
     # check for a commander card and color identity
     if format in ['commander', 'brawl']:
-        deck_cards = DeckCard.objects.filter(deck=deck)
         is_legal = check_commander_identity(deck_cards, request)
         if not is_legal:
             is_valid = False
 
-    for card in deck.cards.all():
-        is_legal = check_card_legality(card, format, request)
+    for deck_card in deck_cards:
+        is_legal = check_card_legality(deck_card, format, request)
         if not is_legal:
             is_valid = False
 
     return is_valid
 
-def check_card_legality(card, format, request):
+def check_card_legality(deck_card, format, request):
     is_valid = True
-    legality = card.data['legalities'][format]
+    legality = deck_card.card.data['legalities'][format]
+    card_name = deck_card.card.data['name']
     if legality != 'legal':
-        messages.info(request, 'Card \'{}\' in the deck is not legal for {} format.'.format(card.data['name'], format))
-        is_valid = False
+        if legality == 'restricted' and deck_card.count > 1:
+            messages.info('Card \'{}\' is restricted, can have no more than one copy.'.format(card_name)))
+            is_valid = False
+        else:
+            messages.info(request, 'Card \'{}\' in the deck is not legal for {} format.'.format(card_name, format))
+            is_valid = False
+
     return is_valid
 
 def check_commander_identity(deck_cards, request):
