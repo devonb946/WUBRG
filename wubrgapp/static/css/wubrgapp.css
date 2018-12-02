@@ -31,8 +31,10 @@ h1 a {
      border: 1px solid #09080a
 }
 
+
 .page-link{
   color:#b3ceea;
+  overflow:hidden;
 }
 .page-link:hover {
     color: #994aa1;

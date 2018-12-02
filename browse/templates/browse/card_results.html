@@ -14,7 +14,7 @@
       {% if query %}
         {% if cards.has_previous %}
             <li class="page-item"><a class="page-link" href="?page=1{{query}}">&laquo; first</a></li>
-            <li class="page-item"><a class="page-link" href="?page={{ cards.previous_page_number }}{{query}}">previous</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ cards.previous_page_number }}{{query}}">previous page</a></li>
         {% endif %}
 
         <li class="page-item">
@@ -22,7 +22,7 @@
         </li>
 
         {% if cards.has_next %}
-            <li class="page-item"><a class="page-link" href="?page={{ cards.next_page_number }}{{query}}">next</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ cards.next_page_number }}{{query}}">next page</a></li>
             <li class="page-item"><a class="page-link" href="?page={{ cards.paginator.num_pages }}{{ query }}">last &raquo;</a></li>
         {% endif %}
 
@@ -30,7 +30,7 @@
 
           {% if cards.has_previous %}
               <li class="page-item"><a class="page-link" href="?page=1&name={{name}}">&laquo; first</a></li>
-              <li class="page-item"><a class="page-link" href="?page={{ cards.previous_page_number }}&name={{name}}">previous</a></li>
+              <li class="page-item"><a class="page-link" href="?page={{ cards.previous_page_number }}&name={{name}}">previous page</a></li>
           {% endif %}
 
           <li class="page-item">
@@ -38,7 +38,7 @@
           </li>
 
           {% if cards.has_next %}
-              <li class="page-item"><a class="page-link" href="?page={{ cards.next_page_number }}&name={{name}}">next</a></li>
+              <li class="page-item"><a class="page-link" href="?page={{ cards.next_page_number }}&name={{name}}">next page</a></li>
               <li class="page-item"><a class="page-link" href="?page={{ cards.paginator.num_pages }}&name={{name}}">last &raquo;</a></li>
           {% endif %}
 
@@ -46,7 +46,7 @@
 
             {% if cards.has_previous %}
                 <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a></li>
-                <li class="page-item"><a class="page-link" href="?page={{ cards.previous_page_number }}">previous</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ cards.previous_page_number }}">previous page</a></li>
             {% endif %}
 
             <li class="page-item">
@@ -54,7 +54,7 @@
             </li>
 
             {% if cards.has_next %}
-                <li class="page-item"><a class="page-link" href="?page={{ cards.next_page_number }}">next</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ cards.next_page_number }}">next page</a></li>
                 <li class="page-item"><a class="page-link" href="?page={{ cards.paginator.num_pages }}">last &raquo;</a></li>
             {% endif %}
 
@@ -96,7 +96,7 @@
       {% if query %}
         {% if cards.has_previous %}
             <li class="page-item"><a class="page-link" href="?page=1{{query}}">&laquo; first</a></li>
-            <li class="page-item"><a class="page-link" href="?page={{ cards.previous_page_number }}{{query}}">previous</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ cards.previous_page_number }}{{query}}">previous page</a></li>
         {% endif %}
 
         <li class="page-item">
@@ -104,7 +104,7 @@
         </li>
 
         {% if cards.has_next %}
-            <li class="page-item"><a class="page-link" href="?page={{ cards.next_page_number }}{{query}}">next</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ cards.next_page_number }}{{query}}">next page</a></li>
             <li class="page-item"><a class="page-link" href="?page={{ cards.paginator.num_pages }}{{ query }}">last &raquo;</a></li>
         {% endif %}
 
@@ -112,7 +112,7 @@
 
           {% if cards.has_previous %}
               <li class="page-item"><a class="page-link" href="?page=1&name={{name}}">&laquo; first</a></li>
-              <li class="page-item"><a class="page-link" href="?page={{ cards.previous_page_number }}&name={{name}}">previous</a></li>
+              <li class="page-item"><a class="page-link" href="?page={{ cards.previous_page_number }}&name={{name}}">previous page</a></li>
           {% endif %}
 
           <li class="page-item">
@@ -120,7 +120,7 @@
           </li>
 
           {% if cards.has_next %}
-              <li class="page-item"><a class="page-link" href="?page={{ cards.next_page_number }}&name={{name}}">next</a></li>
+              <li class="page-item"><a class="page-link" href="?page={{ cards.next_page_number }}&name={{name}}">next page</a></li>
               <li class="page-item"><a class="page-link" href="?page={{ cards.paginator.num_pages }}&name={{name}}">last &raquo;</a></li>
           {% endif %}
 
@@ -128,7 +128,7 @@
 
             {% if cards.has_previous %}
                 <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a></li>
-                <li class="page-item"><a class="page-link" href="?page={{ cards.previous_page_number }}">previous</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ cards.previous_page_number }}">previous page</a></li>
             {% endif %}
 
             <li class="page-item">
@@ -136,7 +136,7 @@
             </li>
 
             {% if cards.has_next %}
-                <li class="page-item"><a class="page-link" href="?page={{ cards.next_page_number }}">next</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ cards.next_page_number }}">next page</a></li>
                 <li class="page-item"><a class="page-link" href="?page={{ cards.paginator.num_pages }}">last &raquo;</a></li>
             {% endif %}
 
