@@ -267,7 +267,7 @@ def check_card_legality(card, format, request):
     is_valid = True
     legality = card.data['legalities'][format]
     if legality != 'legal':
-        messages.info(request, 'Card \'{}\' in the deck is not legal for {} format.'.format(deck_card.card.data['name'], format))
+        messages.info(request, 'Card \'{}\' in the deck is not legal for {} format.'.format(card.data['name'], format))
         is_valid = False
     return is_valid
 
