@@ -250,15 +250,21 @@ def validate(deck, format, request):
             is_valid = False
 
     deck_cards = DeckCard.objects.filter(deck=deck)
+    deck_sideboard_cards = SideboardCard.objects.filter(deck=deck)
 
     # check for a commander card and color identity
     if format in ['commander', 'brawl']:
-        is_legal = check_commander_identity(deck_cards, request)
+        is_legal = check_commander_identity(deck_cards, deck_sideboard_cards, request)
         if not is_legal:
             is_valid = False
 
     for deck_card in deck_cards:
         is_legal = check_card_legality(deck_card, format, request)
+        if not is_legal:
+            is_valid = False
+
+    for deck_sideboard_card in deck_sideboard_cards:
+        is_legal = check_card_legality(deck_sideboard_card, format, request)
         if not is_legal:
             is_valid = False
 
@@ -278,7 +284,7 @@ def check_card_legality(deck_card, format, request):
 
     return is_valid
 
-def check_commander_identity(deck_cards, request):
+def check_commander_identity(deck_cards, deck_sideboard_cards, request):
     is_valid = True
     commanders = [card for card in deck_cards if card.is_commander]
     if commanders:
@@ -286,7 +292,8 @@ def check_commander_identity(deck_cards, request):
         for commander in commanders:
             color_identity = color_identity.union(commander.card.data['color_identity'])
         color_identity = list(color_identity)
-        for deck_card in deck_cards:
+        all_cards = deck_cards + deck_sideboard_cards
+        for deck_card in all_cards:
             is_within_identity = all(color in color_identity for color in deck_card.card.data['color_identity'])
             if not is_within_identity:
                 messages.info(request, 'Card \'{}\' in the deck is not a part of the commander\'s color identity.'.format(deck_card.card.data['name']))
