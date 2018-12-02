@@ -252,6 +252,18 @@ def validate(deck, format, request):
     deck_cards = DeckCard.objects.filter(deck=deck)
     deck_sideboard_cards = SideboardCard.objects.filter(deck=deck)
 
+    counts = {}
+    for deck_card in deck_cards:
+        if deck_card.card.data["name"] in counts:
+            counts[deck_card.card.data["name"]] += deck_card.count
+        else:
+            counts[deck_card.card.data["name"]] = deck_card.count
+    for deck_card in deck_sideboard_cards:
+        if deck_card.card.data["name"] in counts:
+            counts[deck_card.card.data["name"]] += deck_card.count
+        else:
+            counts[deck_card.card.data["name"]] = deck_card.count
+
     # check for a commander card and color identity
     if format in ['commander', 'brawl']:
         is_legal = check_commander_identity(deck_cards, deck_sideboard_cards, request)
@@ -259,25 +271,26 @@ def validate(deck, format, request):
             is_valid = False
 
     for deck_card in deck_cards:
-        is_legal = check_card_legality(deck_card, format, request)
+        is_legal = check_card_legality(deck_card, format, counts, request)
         if not is_legal:
             is_valid = False
 
     for deck_sideboard_card in deck_sideboard_cards:
-        is_legal = check_card_legality(deck_sideboard_card, format, request)
+        is_legal = check_card_legality(deck_sideboard_card, format, counts, request)
         if not is_legal:
             is_valid = False
 
     return is_valid
 
-def check_card_legality(deck_card, format, request):
+def check_card_legality(deck_card, format, counts, request):
     is_valid = True
     legality = deck_card.card.data['legalities'][format]
     card_name = deck_card.card.data['name']
     if legality != 'legal':
-        if legality == 'restricted' and deck_card.count > 1:
-            messages.info(request, 'Card \'{}\' is restricted, can have no more than one copy. Current count is {}.'.format(card_name, deck_card.count))
-            is_valid = False
+        if legality == 'restricted':
+            if counts[deck_card.card.data["name"]] > 1:
+                messages.info(request, 'Card \'{}\' is restricted, can have no more than one copy. Current count is {}.'.format(card_name, counts[deck_card.card.data["name"]]))
+                is_valid = False                
         else:
             messages.info(request, 'Card \'{}\' in the deck is not legal for {} format.'.format(card_name, format))
             is_valid = False
