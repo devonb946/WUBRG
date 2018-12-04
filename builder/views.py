@@ -11,6 +11,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from itertools import chain
 
 # builder views
 def index(request):
@@ -290,9 +291,15 @@ def check_card_legality(deck_card, format, counts, request):
         if legality == 'restricted':
             if counts[deck_card.card.data["name"]] > 1:
                 messages.info(request, 'Card \'{}\' is restricted, can have no more than one copy. Current count is {}.'.format(card_name, counts[deck_card.card.data["name"]]))
-                is_valid = False                
+                is_valid = False
         else:
             messages.info(request, 'Card \'{}\' in the deck is not legal for {} format.'.format(card_name, format))
+            is_valid = False
+
+    cap = 1 if format in ['commander', 'brawl'] else 4
+    if not("Basic" in deck_card.card.data["type_line"] or "A deck can have any number of cards named" in deck_card.card.data["oracle_text"]):
+        if counts[deck_card.card.data["name"]] > cap:
+            messages.info(request, 'Too many copies of card \'{}\' for a {} deck. Current count is {}, max is {}.'.format(card_name, format, counts[deck_card.card.data["name"]], cap))
             is_valid = False
 
     return is_valid
@@ -305,12 +312,12 @@ def check_commander_identity(deck_cards, deck_sideboard_cards, request):
         for commander in commanders:
             color_identity = color_identity.union(commander.card.data['color_identity'])
         color_identity = list(color_identity)
-        all_cards = deck_cards + deck_sideboard_cards
-        for deck_card in all_cards:
-            is_within_identity = all(color in color_identity for color in deck_card.card.data['color_identity'])
-            if not is_within_identity:
-                messages.info(request, 'Card \'{}\' in the deck is not a part of the commander\'s color identity.'.format(deck_card.card.data['name']))
-                is_valid = False
+        for section in [deck_cards, deck_sideboard_cards]:
+            for deck_card in section:
+                is_within_identity = all(color in color_identity for color in deck_card.card.data['color_identity'])
+                if not is_within_identity:
+                    messages.info(request, 'Card \'{}\' in the deck is not a part of the commander\'s color identity.'.format(deck_card.card.data['name']))
+                    is_valid = False
     else:
         messages.info(request, 'No commanders found in deck. You must have at least one commander.')
         is_valid = False
