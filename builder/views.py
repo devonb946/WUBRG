@@ -297,10 +297,11 @@ def check_card_legality(deck_card, format, counts, request):
             is_valid = False
 
     cap = 1 if format in ['commander', 'brawl'] else 4
-    if not("Basic" in deck_card.card.data["type_line"] or "A deck can have any number of cards named" in deck_card.card.data["oracle_text"]):
-        if counts[deck_card.card.data["name"]] > cap:
-            messages.info(request, 'Too many copies of card \'{}\' for a {} deck. Current count is {}, max is {}.'.format(card_name, format, counts[deck_card.card.data["name"]], cap))
-            is_valid = False
+    if "oracle_text" in deck_card.card.data and "type_line" in deck_card.card.data:
+        if not("Basic" in deck_card.card.data["type_line"] or "A deck can have any number of cards named" in deck_card.card.data["oracle_text"]):
+            if counts[deck_card.card.data["name"]] > cap:
+                messages.info(request, 'Too many copies of card \'{}\' for a {} deck. Current count is {}, max is {}.'.format(card_name, format, counts[deck_card.card.data["name"]], cap))
+                is_valid = False
 
     return is_valid
 
