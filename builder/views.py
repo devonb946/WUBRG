@@ -290,7 +290,7 @@ def check_card_legality(deck_card, format, counts, request):
         if legality == 'restricted':
             if counts[deck_card.card.data["name"]] > 1:
                 messages.info(request, 'Card \'{}\' is restricted, can have no more than one copy. Current count is {}.'.format(card_name, counts[deck_card.card.data["name"]]))
-                is_valid = False                
+                is_valid = False
         else:
             messages.info(request, 'Card \'{}\' in the deck is not legal for {} format.'.format(card_name, format))
             is_valid = False
@@ -326,11 +326,12 @@ def mass_entry(request):
         deck = Deck.objects.get(id=deck_id)
         cards_text_lines = cards_text.strip().splitlines()
 
+        # pattern is any number followed by x
+        pattern = re.compile('[0-9]+x$')
         for line in cards_text_lines:
             quantity_candidate = line.split(' ')[0].strip()
             # check if the word we pulled back is actually the quantity
             # and not the first word of the card name
-            pattern = re.compile('[0-9]+x$')     # any number followed by x
             if pattern.match(quantity_candidate):  # can't input more than 999 of a card
                 quantity = int(quantity_candidate[:-1])
                 card_name = ' '.join(line.split(' ')[1:]).strip()
